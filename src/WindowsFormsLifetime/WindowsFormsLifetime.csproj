@@ -9,6 +9,9 @@
     <PackageTags>aspnetcore;hosting;winforms</PackageTags>
     <PackageId>OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime</PackageId>
     <Version>0.0.1</Version>
+    <RepositoryUrl>https://github.com/oswald-technologies/WindowsFormsLifetime</RepositoryUrl>
+    <Authors>Alex Oswald</Authors>
+    <Company>Oswald Technologies, LLC</Company>
   </PropertyGroup>
 
   <ItemGroup>

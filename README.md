@@ -1,7 +1,7 @@
 # OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
 
-
-
+![Nuget](https://img.shields.io/nuget/v/OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime)
+![Nuget](https://img.shields.io/nuget/dt/OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime)
 
 A Windows Forms hosting extension for .NET Core's generic host. Enables you to configure the generic host to use the lifetime of Windows Forms.
 When configured, the generic host will start an `IHostedService` that runs Windows Forms in a separate thread.

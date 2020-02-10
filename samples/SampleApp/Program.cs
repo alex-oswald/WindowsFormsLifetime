@@ -19,6 +19,7 @@ namespace WindowsFormsLifetime.Sample
                     options.EnableVisualStyles = true;
                     options.CompatibleTextRenderingDefault = false;
                     options.SuppressStatusMessages = false;
+                    options.EnableConsoleShutdown = false;
                 })
                 .ConfigureServices((hostContext, services) =>
                 {

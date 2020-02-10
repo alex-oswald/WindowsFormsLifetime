@@ -52,13 +52,18 @@ namespace OswaldTechnologies.Extensions.Hosting.Lifetime
                 this);
             }
 
+            if (Options.EnableConsoleShutdown)
+            {
+                Console.CancelKeyPress += OnCancelKeyPress;
+            }
+
             // Windows Forms applications start immediately.
             return Task.CompletedTask;
         }
 
         private void OnApplicationStarted()
         {
-            Logger.LogInformation("Application started. Close the startup Form to shut down.");
+            Logger.LogInformation("Application started. Close the startup Form" + (Options.EnableConsoleShutdown ? " or press Ctrl+C" : string.Empty) + " to shut down.");
             Logger.LogInformation("Hosting environment: {envName}", Environment.EnvironmentName);
             Logger.LogInformation("Content root path: {contentRoot}", Environment.ContentRootPath);
         }
@@ -66,6 +71,12 @@ namespace OswaldTechnologies.Extensions.Hosting.Lifetime
         private void OnApplicationStopping()
         {
             Logger.LogInformation("Application is shutting down...");
+        }
+
+        private void OnCancelKeyPress(object sender, ConsoleCancelEventArgs e)
+        {
+            e.Cancel = true;
+            ApplicationLifetime.StopApplication();
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
@@ -78,6 +89,11 @@ namespace OswaldTechnologies.Extensions.Hosting.Lifetime
         {
             _applicationStartedRegistration.Dispose();
             _applicationStoppingRegistration.Dispose();
+
+            if (Options.EnableConsoleShutdown)
+            {
+                Console.CancelKeyPress -= OnCancelKeyPress;
+            }
         }
     }
 }

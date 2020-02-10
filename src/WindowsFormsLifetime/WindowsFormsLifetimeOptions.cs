@@ -27,5 +27,11 @@ namespace OswaldTechnologies.Extensions.Hosting.Lifetime
         /// The default is false.
         /// </summary>
         public bool SuppressStatusMessages { get; set; }
+
+        /// <summary>
+        /// Enables listening for Ctrl+C to additionally initiate shutdown.
+        /// The default is false.
+        /// </summary>
+        public bool EnableConsoleShutdown { get; set; }
     }
 }

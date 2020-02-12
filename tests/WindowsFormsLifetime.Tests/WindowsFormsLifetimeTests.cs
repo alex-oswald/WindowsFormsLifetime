@@ -2,7 +2,7 @@ using Microsoft.Extensions.Hosting;
 using System.Windows.Forms;
 using Xunit;
 using Microsoft.Extensions.DependencyInjection;
-using OswaldTechnologies.Extensions.Hosting.Lifetime;
+using OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime;
 
 namespace WindowsFormsLifetimeTests
 {

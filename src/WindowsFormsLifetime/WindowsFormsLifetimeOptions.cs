@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace OswaldTechnologies.Extensions.Hosting.Lifetime
+namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
 {
     public class WindowsFormsLifetimeOptions
     {

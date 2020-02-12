@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,16 +14,16 @@ namespace OswaldTechnologies.Extensions.Hosting.Lifetime
         private CancellationTokenRegistration _applicationStoppingRegistration;
         private readonly WindowsFormsLifetimeOptions _options;
         private readonly IHostApplicationLifetime _hostApplicationLifetime;
-        private readonly TStartForm _form;
+        private readonly IServiceProvider _serviceProvider;
 
         public WindowsFormsHostedService(
             IOptions<WindowsFormsLifetimeOptions> options,
             IHostApplicationLifetime hostApplicationLifetime,
-            TStartForm form)
+            IServiceProvider serviceProvider)
         {
             _options = options.Value;
             _hostApplicationLifetime = hostApplicationLifetime;
-            _form = form;
+            _serviceProvider = serviceProvider;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -54,20 +55,25 @@ namespace OswaldTechnologies.Extensions.Hosting.Lifetime
             }
             Application.SetCompatibleTextRenderingDefault(_options.CompatibleTextRenderingDefault);
             Application.ApplicationExit += OnApplicationExit;
-            Application.Run(_form);
+
+            var form = _serviceProvider.GetService<TStartForm>();
+
+            Application.Run(form);
         }
 
         private void OnApplicationStopping()
         {
+            var form = _serviceProvider.GetService<TStartForm>();
+
             // If the form is closed then the handle no longer exists
             // We would get an exception trying to invoke from the control when it is already closed
-            if (_form.IsHandleCreated)
+            if (form.IsHandleCreated)
             {
                 // If the host lifetime is stopped, gracefully close and dispose of forms in the service provider
-                _form.Invoke(new Action(() =>
+                form.Invoke(new Action(() =>
                 {
-                    _form.Close();
-                    _form.Dispose();
+                    form.Close();
+                    form.Dispose();
                 }));
             }
         }

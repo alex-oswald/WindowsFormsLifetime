@@ -28,12 +28,12 @@ namespace Microsoft.Extensions.Hosting
             hostBuilder.ConfigureServices((hostContext, services) =>
             {
                 services.AddSingleton<IHostLifetime, WindowsFormsLifetime>();
-                services.AddSingleton<IHostedService, WindowsFormsHostedService<TStartForm>>();
                 services.AddSingleton<TStartForm>();
+                services.AddHostedService<WindowsFormsHostedService<TStartForm>>();
                 services.Configure(configure);
             });
 
             return hostBuilder;
         }
     }
-} 
+}

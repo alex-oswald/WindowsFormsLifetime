@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using OswaldTechnologies.Extensions.Hosting.Lifetime;
+using OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime;
 using System;
 using System.Windows.Forms;
 

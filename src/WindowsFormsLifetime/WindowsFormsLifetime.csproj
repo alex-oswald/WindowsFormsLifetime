@@ -8,10 +8,12 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageTags>aspnetcore;hosting;winforms</PackageTags>
     <PackageId>OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime</PackageId>
-    <Version>0.0.2</Version>
+    <Version>0.0.3</Version>
     <RepositoryUrl>https://github.com/oswald-technologies/WindowsFormsLifetime</RepositoryUrl>
     <Authors>Alex Oswald</Authors>
     <Company>Oswald Technologies, LLC</Company>
+    <RootNamespace>OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime</RootNamespace>
+    <AssemblyName>OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

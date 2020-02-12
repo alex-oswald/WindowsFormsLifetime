@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace OswaldTechnologies.Extensions.Hosting.Lifetime
+namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
 {
     /// <summary>
     /// Listens for the startup <see cref="Form"/> to close, then initiates shutdown.

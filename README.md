@@ -1,5 +1,6 @@
 # OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
 
+[![Build Status](https://dev.azure.com/oswaldtechnologies/WindowsFormsLifetime/_apis/build/status/oswald-technologies.WindowsFormsLifetime?branchName=master)](https://dev.azure.com/oswaldtechnologies/WindowsFormsLifetime/_build/latest?definitionId=13&branchName=master)
 ![Nuget](https://img.shields.io/nuget/v/OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime)
 ![Nuget](https://img.shields.io/nuget/dt/OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime)
 

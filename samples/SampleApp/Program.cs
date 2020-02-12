@@ -1,4 +1,6 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SampleApp;
 using System;
 using System.Windows.Forms;
 
@@ -23,7 +25,8 @@ namespace WindowsFormsLifetime.Sample
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
-                    
+                    services.AddHostedService<HostedService1>();
+                    services.AddHostedService<HostedService2>();
                 });
     }
 }

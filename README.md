@@ -98,6 +98,7 @@ static class Program
                 options.EnableVisualStyles = true;
                 options.CompatibleTextRenderingDefault = false;
                 options.SuppressStatusMessages = false;
+                options.EnableConsoleShutdown = true;
             })
             .ConfigureServices((hostContext, services) =>
             {
@@ -105,6 +106,9 @@ static class Program
             });
 }
 ```
+
+`EnableConsoleShutdown`
+Allows the use of Ctrl+C to shutdown the host while the console is being used.
 
 
 #### Only use the Console while debugging

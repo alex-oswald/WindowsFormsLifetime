@@ -8,6 +8,7 @@
         <SelfContained>false</SelfContained>
         <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
         <IsPackable>false</IsPackable>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>

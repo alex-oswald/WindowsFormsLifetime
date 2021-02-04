@@ -4,15 +4,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Extensions.Logging;
+using Specshell.WinForm.HiddenForm;
 
 namespace HiddenAppConsoleContext
 {
-    public class MainHiddenForm : HiddenForm, IHiddenForm
+    public class Main : MainHiddenForm
     {
-        private readonly ILogger<MainHiddenForm> _logger;
+        private readonly ILogger<Main> _logger;
         private readonly CancellationTokenSource _cancellationTokenSource;
 
-        public MainHiddenForm(ILogger<MainHiddenForm> logger)
+        public Main(ILogger<Main> logger)
         {
             _logger = logger;
             _cancellationTokenSource = new CancellationTokenSource();

@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleApp", "samples\Sample
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFormsLifetimeTests", "tests\WindowsFormsLifetime.Tests\WindowsFormsLifetimeTests.csproj", "{33444554-2175-4AD5-A018-70A5EF258D5C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HiddenAppConsoleContext", "samples\HiddenAppConsoleContext\HiddenAppConsoleContext.csproj", "{94297776-27CB-458B-9545-4C28423F8FE2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{33444554-2175-4AD5-A018-70A5EF258D5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33444554-2175-4AD5-A018-70A5EF258D5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33444554-2175-4AD5-A018-70A5EF258D5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94297776-27CB-458B-9545-4C28423F8FE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94297776-27CB-458B-9545-4C28423F8FE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94297776-27CB-458B-9545-4C28423F8FE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94297776-27CB-458B-9545-4C28423F8FE2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

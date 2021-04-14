@@ -8,8 +8,7 @@ using System.Windows.Forms;
 
 namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
 {
-    public class WindowsFormsHostedService<TStartForm> : IHostedService, IDisposable
-        where TStartForm : Form
+    public class WindowsFormsHostedService : IHostedService, IDisposable
     {
         private CancellationTokenRegistration _applicationStoppingRegistration;
         private readonly WindowsFormsLifetimeOptions _options;
@@ -30,7 +29,7 @@ namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
         {
             _applicationStoppingRegistration = _hostApplicationLifetime.ApplicationStopping.Register(state =>
             {
-                ((WindowsFormsHostedService<TStartForm>)state).OnApplicationStopping();
+                ((WindowsFormsHostedService)state).OnApplicationStopping();
             },
             this);
 
@@ -56,18 +55,19 @@ namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
             Application.SetCompatibleTextRenderingDefault(_options.CompatibleTextRenderingDefault);
             Application.ApplicationExit += OnApplicationExit;
 
-            var form = _serviceProvider.GetService<TStartForm>();
+            var applicationContext = _serviceProvider.GetService<ApplicationContext>();
 
-            Application.Run(form);
+            Application.Run(applicationContext);
         }
 
         private void OnApplicationStopping()
         {
-            var form = _serviceProvider.GetService<TStartForm>();
+            var applicationContext = _serviceProvider.GetService<ApplicationContext>();
+            var form = applicationContext.MainForm;
 
             // If the form is closed then the handle no longer exists
             // We would get an exception trying to invoke from the control when it is already closed
-            if (form.IsHandleCreated)
+            if (form != null && form.IsHandleCreated)
             {
                 // If the host lifetime is stopped, gracefully close and dispose of forms in the service provider
                 form.Invoke(new Action(() =>

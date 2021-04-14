@@ -11,29 +11,38 @@ namespace Microsoft.Extensions.Hosting
         /// Enables Windows Forms support, builds and starts the host, starts the startup <see cref="Form"/>, then waits for the startup form to close before shutting down.
         /// </summary>
         /// <param name="hostBuilder">The <see cref="IHostBuilder" /> to configure.</param>
+        /// <param name="configure">The delegate for configuring the <see cref="WindowsFormsLifetime"/>.</param>
         /// <returns>The same instance of the <see cref="IHostBuilder"/> for chaining.</returns>
-        public static IHostBuilder UseWindowsFormsLifetime<TStartForm>(this IHostBuilder hostBuilder)
+        public static IHostBuilder UseWindowsFormsLifetime<TStartForm>(this IHostBuilder hostBuilder, Action<WindowsFormsLifetimeOptions> configure = null)
             where TStartForm : Form
-            => UseWindowsFormsLifetime<TStartForm>(hostBuilder, _ => new WindowsFormsLifetimeOptions());
+            => hostBuilder.ConfigureServices((hostContext, services) =>
+            {
+                services
+                    .AddSingleton<TStartForm>()
+                    .AddSingleton(provider => new ApplicationContext(provider.GetRequiredService<TStartForm>()))
+                    .AddWindowsFormsLifetime(configure);
+            });
 
         /// <summary>
-        /// Enables Windows Forms support, builds and starts the host, starts the startup <see cref="Form"/>, then waits for the startup form to close before shutting down.
+        /// Enables Windows Forms support, builds and starts the host, starts the startup <see cref="ApplicationContext"/>, then waits for the startup context to close before shutting down.
         /// </summary>
         /// <param name="hostBuilder">The <see cref="IHostBuilder" /> to configure.</param>
         /// <param name="configure">The delegate for configuring the <see cref="WindowsFormsLifetime"/>.</param>
         /// <returns>The same instance of the <see cref="IHostBuilder"/> for chaining.</returns>
-        public static IHostBuilder UseWindowsFormsLifetime<TStartForm>(this IHostBuilder hostBuilder, Action<WindowsFormsLifetimeOptions> configure)
-            where TStartForm : Form
-        {
-            hostBuilder.ConfigureServices((hostContext, services) =>
+        public static IHostBuilder UseWindowsFormsLifetimeAppContext<TAppContext>(this IHostBuilder hostBuilder, Action<WindowsFormsLifetimeOptions> configure = null)
+            where TAppContext : ApplicationContext
+            => hostBuilder.ConfigureServices((hostContext, services) =>
             {
-                services.AddSingleton<IHostLifetime, WindowsFormsLifetime>();
-                services.AddSingleton<TStartForm>();
-                services.AddHostedService<WindowsFormsHostedService<TStartForm>>();
-                services.Configure(configure);
+                services
+                    .AddSingleton<TAppContext>()
+                    .AddSingleton<ApplicationContext>(provider => provider.GetRequiredService<TAppContext>())
+                    .AddWindowsFormsLifetime(configure);
             });
 
-            return hostBuilder;
-        }
+        private static IServiceCollection AddWindowsFormsLifetime(this IServiceCollection services, Action<WindowsFormsLifetimeOptions> configure)
+            => services
+                .AddSingleton<IHostLifetime, WindowsFormsLifetime>()
+                .AddHostedService<WindowsFormsHostedService>()
+                .Configure(configure ?? (_ => new WindowsFormsLifetimeOptions()));
     }
 }

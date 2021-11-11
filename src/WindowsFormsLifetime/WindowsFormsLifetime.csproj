@@ -16,7 +16,7 @@
 		<IncludeSymbols>true</IncludeSymbols>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<PackageProjectUrl>https://github.com/alex-oswald/WindowsFormsLifetime</PackageProjectUrl>
-		<!--<PackageReadmeFile>README.md</PackageReadmeFile>-->
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 
 		<PackageTags>netcore;hosting;winforms</PackageTags>
@@ -26,6 +26,10 @@
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
 		<NoWarn>CS1591</NoWarn>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\..\README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />

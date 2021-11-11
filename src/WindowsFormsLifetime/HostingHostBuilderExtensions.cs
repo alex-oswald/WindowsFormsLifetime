@@ -42,6 +42,9 @@ namespace Microsoft.Extensions.Hosting
         private static IServiceCollection AddWindowsFormsLifetime(this IServiceCollection services, Action<WindowsFormsLifetimeOptions> configure)
             => services
                 .AddSingleton<IHostLifetime, WindowsFormsLifetime>()
+                .AddSingleton<FormProvider>()
+                .AddSingleton<IFormProvider>(sp => sp.GetRequiredService<FormProvider>())
+                .AddSingleton<IGuiContext>(sp => sp.GetRequiredService<FormProvider>())
                 .AddHostedService<WindowsFormsHostedService>()
                 .Configure(configure ?? (_ => new WindowsFormsLifetimeOptions()));
     }

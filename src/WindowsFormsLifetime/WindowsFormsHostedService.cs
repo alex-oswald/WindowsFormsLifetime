@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,15 +14,18 @@ namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
         private readonly WindowsFormsLifetimeOptions _options;
         private readonly IHostApplicationLifetime _hostApplicationLifetime;
         private readonly IServiceProvider _serviceProvider;
+        private readonly FormProvider _formProvider;
 
         public WindowsFormsHostedService(
             IOptions<WindowsFormsLifetimeOptions> options,
             IHostApplicationLifetime hostApplicationLifetime,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            FormProvider formProvider)
         {
             _options = options.Value;
             _hostApplicationLifetime = hostApplicationLifetime;
             _serviceProvider = serviceProvider;
+            _formProvider = formProvider;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -33,7 +36,8 @@ namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
             },
             this);
 
-            var thread = new Thread(StartUiThread);
+            Thread thread = new(StartUiThread);
+            thread.Name = "WindowsFormsLifetime UI Thread";
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
 
@@ -55,8 +59,14 @@ namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
             Application.SetCompatibleTextRenderingDefault(_options.CompatibleTextRenderingDefault);
             Application.ApplicationExit += OnApplicationExit;
 
-            var applicationContext = _serviceProvider.GetService<ApplicationContext>();
+            // Don't autoinstall since we are creating our own
+            WindowsFormsSynchronizationContext.AutoInstall = false;
 
+            // Create the sync context on our UI thread
+            _formProvider.SynchronizationContext = new WindowsFormsSynchronizationContext();
+            SynchronizationContext.SetSynchronizationContext(_formProvider.SynchronizationContext);
+
+            var applicationContext = _serviceProvider.GetService<ApplicationContext>();
             Application.Run(applicationContext);
         }
 

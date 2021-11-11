@@ -27,6 +27,7 @@ namespace WindowsFormsLifetime.Sample
                 {
                     services.AddHostedService<HostedService1>();
                     services.AddHostedService<HostedService2>();
+                    services.AddTransient<Form2>();
                 });
     }
 }

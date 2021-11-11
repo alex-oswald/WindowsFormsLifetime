@@ -27,13 +27,12 @@ namespace SampleApp
             int count = 0;
             while (!stoppingToken.IsCancellationRequested)
             {
-                await Task.Delay(5000);
-                Form2? form = null;
+                await Task.Delay(5000, stoppingToken);
                 if (count < 5)
                 {
                     await _guiContext.InvokeAsync(async () =>
                     {
-                        form = await _fp.GetFormAsync<Form2>();
+                        var form = await _fp.GetFormAsync<Form2>();
                         form.Show();
                     });
                 }

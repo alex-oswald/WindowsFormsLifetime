@@ -119,7 +119,7 @@ Add more forms to the DI container.
 
 To get a form use the `IFormProvider`. The form provider fetches an instance of the form from the DI container on the GUI thread. `IFormProvider` has one method, `GetFormAsync<T>` used to fetch a form instance.
 
-Example injecting the `IFormProvider` into the main form, and using that to instantiate a new instance of `Form` new, then show the form.
+In this example, we inject `IFormProvider` into the main form, and use that to instantiate a new instance of `Form`, then show the form.
 
 ```csharp
 public partial class Form1 : Form
@@ -172,13 +172,12 @@ public class HostedService1 : BackgroundService
         int count = 0;
         while (!stoppingToken.IsCancellationRequested)
         {
-            await Task.Delay(5000);
-            Form2? form = null;
+            await Task.Delay(5000, stoppingToken);
             if (count < 5)
             {
                 await _guiContext.InvokeAsync(async () =>
                 {
-                    form = await _fp.GetFormAsync<Form2>();
+                    var form = await _fp.GetFormAsync<Form2>();
                     form.Show();
                 });
             }
@@ -205,6 +204,7 @@ while setting it to `WinExe` will not.
   <OutputType>WinExe</OutputType>
 </PropertyGroup>
 ```
+
 
 #### Credits
 

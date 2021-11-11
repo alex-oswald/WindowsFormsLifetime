@@ -1,21 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>.NET Core hosting infrastructure for Windows Forms.</Description>
-    <TargetFrameworks>net5.0-windows</TargetFrameworks>
+	<TargetFrameworks>net5.0-windows</TargetFrameworks>
+	<Nullable>disable</Nullable>
+	<PackageId>OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime</PackageId>
+	<Version>0.0.4</Version>
+	<Authors>Alex Oswald</Authors>
+	<Company>Oswald Technologies, LLC</Company>
+	<Description>.NET Core hosting infrastructure for Windows Forms.</Description>
+	<RepositoryUrl>https://github.com/alex-oswald/WindowsFormsLifetime</RepositoryUrl>
+	<RepositoryType>git</RepositoryType>
+	<RootNamespace>OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime</RootNamespace>
+	<AssemblyName>OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime</AssemblyName>
+	<PublishRepositoryUrl>true</PublishRepositoryUrl>
+	<IncludeSymbols>true</IncludeSymbols>
+	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	<PackageProjectUrl>https://github.com/alex-oswald/WindowsFormsLifetime</PackageProjectUrl>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+
+	<PackageTags>netcore;hosting;winforms</PackageTags>
     <UseWindowsForms>true</UseWindowsForms>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageTags>netcore;hosting;winforms</PackageTags>
-    <PackageId>OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime</PackageId>
-    <Version>0.0.3</Version>
-    <RepositoryUrl>https://github.com/alex-oswald/WindowsFormsLifetime</RepositoryUrl>
-    <Authors>Alex Oswald</Authors>
-    <Company>Oswald Technologies, LLC</Company>
-    <RootNamespace>OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime</RootNamespace>
-    <AssemblyName>OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime</AssemblyName>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
   <NoWarn>CS1591</NoWarn>

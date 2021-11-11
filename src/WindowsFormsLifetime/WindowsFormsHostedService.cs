@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,33 +8,36 @@ using System.Windows.Forms;
 
 namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
 {
-    public class WindowsFormsHostedService<TStartForm> : IHostedService, IDisposable
-        where TStartForm : Form
+    public class WindowsFormsHostedService : IHostedService, IDisposable
     {
         private CancellationTokenRegistration _applicationStoppingRegistration;
         private readonly WindowsFormsLifetimeOptions _options;
         private readonly IHostApplicationLifetime _hostApplicationLifetime;
         private readonly IServiceProvider _serviceProvider;
+        private readonly FormProvider _formProvider;
 
         public WindowsFormsHostedService(
             IOptions<WindowsFormsLifetimeOptions> options,
             IHostApplicationLifetime hostApplicationLifetime,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            FormProvider formProvider)
         {
             _options = options.Value;
             _hostApplicationLifetime = hostApplicationLifetime;
             _serviceProvider = serviceProvider;
+            _formProvider = formProvider;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _applicationStoppingRegistration = _hostApplicationLifetime.ApplicationStopping.Register(state =>
             {
-                ((WindowsFormsHostedService<TStartForm>)state).OnApplicationStopping();
+                ((WindowsFormsHostedService)state).OnApplicationStopping();
             },
             this);
 
-            var thread = new Thread(StartUiThread);
+            Thread thread = new(StartUiThread);
+            thread.Name = "WindowsFormsLifetime UI Thread";
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
 
@@ -56,18 +59,25 @@ namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
             Application.SetCompatibleTextRenderingDefault(_options.CompatibleTextRenderingDefault);
             Application.ApplicationExit += OnApplicationExit;
 
-            var form = _serviceProvider.GetService<TStartForm>();
+            // Don't autoinstall since we are creating our own
+            WindowsFormsSynchronizationContext.AutoInstall = false;
 
-            Application.Run(form);
+            // Create the sync context on our UI thread
+            _formProvider.SynchronizationContext = new WindowsFormsSynchronizationContext();
+            SynchronizationContext.SetSynchronizationContext(_formProvider.SynchronizationContext);
+
+            var applicationContext = _serviceProvider.GetService<ApplicationContext>();
+            Application.Run(applicationContext);
         }
 
         private void OnApplicationStopping()
         {
-            var form = _serviceProvider.GetService<TStartForm>();
+            var applicationContext = _serviceProvider.GetService<ApplicationContext>();
+            var form = applicationContext.MainForm;
 
             // If the form is closed then the handle no longer exists
             // We would get an exception trying to invoke from the control when it is already closed
-            if (form.IsHandleCreated)
+            if (form != null && form.IsHandleCreated)
             {
                 // If the host lifetime is stopped, gracefully close and dispose of forms in the service provider
                 form.Invoke(new Action(() =>

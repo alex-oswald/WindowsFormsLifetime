@@ -30,14 +30,22 @@ namespace Microsoft.Extensions.Hosting
         /// <param name="applicationContextFactory">The <see cref="ApplicationContext"/> factory.</param>
         /// <param name="configure">The delegate for configuring the <see cref="WindowsFormsLifetime"/>.</param>
         /// <returns>The same instance of the <see cref="IHostBuilder"/> for chaining.</returns>
-        public static IHostBuilder UseWindowsFormsLifetime<TAppContext>(this IHostBuilder hostBuilder, Func<TAppContext> applicationContextFactory, Action<WindowsFormsLifetimeOptions> configure = null)
+        public static IHostBuilder UseWindowsFormsLifetime<TAppContext>(this IHostBuilder hostBuilder, Func<TAppContext> applicationContextFactory = null, Action<WindowsFormsLifetimeOptions> configure = null)
             where TAppContext : ApplicationContext
             => hostBuilder.ConfigureServices((hostContext, services) =>
             {
-                services.AddSingleton<ApplicationContext>(provider =>
+                if (applicationContextFactory is not null)
                 {
-                    return applicationContextFactory();
-                });
+                    services.AddSingleton<TAppContext>(provider =>
+                    {
+                        return applicationContextFactory();
+                    });
+                }
+                else
+                {
+                    services.AddSingleton<TAppContext>();
+                }
+                services.AddSingleton<ApplicationContext>(provider => provider.GetRequiredService<TAppContext>());
                 services.AddWindowsFormsLifetime(configure);
             });
 
@@ -54,11 +62,12 @@ namespace Microsoft.Extensions.Hosting
             => hostBuilder.ConfigureServices((hostContext, services) =>
             {
                 services.AddSingleton<TStartForm>();
-                services.AddSingleton<ApplicationContext>(provider =>
+                services.AddSingleton<TAppContext>(provider =>
                 {
                     var startForm = provider.GetRequiredService<TStartForm>();
                     return applicationContextFactory(startForm);
                 });
+                services.AddSingleton<ApplicationContext>(provider => provider.GetRequiredService<TAppContext>());
                 services.AddWindowsFormsLifetime(configure);
             });
 

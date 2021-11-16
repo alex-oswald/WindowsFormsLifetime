@@ -1,33 +1,19 @@
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using SampleApp;
-using System;
-using System.Windows.Forms;
+using WindowsFormsLifetime.Sample;
 
-namespace WindowsFormsLifetime.Sample
+var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseWindowsFormsLifetime<Form1>(options =>
 {
-    static class Program
-    {
-        static void Main()
-        {
-            CreateHostBuilder().Build().Run();
-        }
+    options.HighDpiMode = HighDpiMode.SystemAware;
+    options.EnableVisualStyles = true;
+    options.CompatibleTextRenderingDefault = false;
+    options.SuppressStatusMessages = false;
+    options.EnableConsoleShutdown = false;
+});
+builder.Services.AddHostedService<HostedService1>();
+builder.Services.AddHostedService<HostedService2>();
+builder.Services.AddTransient<Form2>();
 
-        public static IHostBuilder CreateHostBuilder() =>
-            Host.CreateDefaultBuilder(Array.Empty<string>())
-                .UseWindowsFormsLifetime<Form1>(options =>
-                {
-                    options.HighDpiMode = HighDpiMode.SystemAware;
-                    options.EnableVisualStyles = true;
-                    options.CompatibleTextRenderingDefault = false;
-                    options.SuppressStatusMessages = false;
-                    options.EnableConsoleShutdown = false;
-                })
-                .ConfigureServices((hostContext, services) =>
-                {
-                    services.AddHostedService<HostedService1>();
-                    services.AddHostedService<HostedService2>();
-                    services.AddTransient<Form2>();
-                });
-    }
-}
+var app = builder.Build();
+
+app.Run();

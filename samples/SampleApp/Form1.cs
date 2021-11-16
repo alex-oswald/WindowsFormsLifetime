@@ -1,9 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
-using OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime;
+﻿using OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime;
 using SampleApp;
-using System;
-using System.Threading;
-using System.Windows.Forms;
 
 namespace WindowsFormsLifetime.Sample
 {

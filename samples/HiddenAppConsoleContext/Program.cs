@@ -1,4 +1,4 @@
-﻿using HiddenAppConsoleContext;
+﻿using HiddenContextSampleApp;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseWindowsFormsLifetimeAppContext<HiddenContext, MainForm>((startForm) =>
@@ -8,10 +8,13 @@ builder.Host.UseWindowsFormsLifetimeAppContext<HiddenContext, MainForm>((startFo
 var app = builder.Build();
 app.Run();
 
-public class HiddenContext : ApplicationContext
+namespace HiddenContextSampleApp
 {
-    public HiddenContext(Form form)
+    public class HiddenContext : ApplicationContext
     {
-        MainForm = form;
+        public HiddenContext(Form form)
+        {
+            MainForm = form;
+        }
     }
 }

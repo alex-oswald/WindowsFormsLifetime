@@ -1,4 +1,4 @@
-namespace HiddenAppConsoleContext
+namespace HiddenContextSampleApp
 {
     public class MainForm : Form
     {

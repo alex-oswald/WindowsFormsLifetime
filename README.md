@@ -1,4 +1,4 @@
-# OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
+# Windows Forms Lifetime
 
 [![Build Status](https://dev.azure.com/oswaldtechnologies/WindowsFormsLifetime/_apis/build/status/alex-oswald.WindowsFormsLifetime?branchName=main)](https://dev.azure.com/oswaldtechnologies/WindowsFormsLifetime/_build/latest?definitionId=21&branchName=main)
 [![Nuget](https://img.shields.io/nuget/v/OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime)](https://www.nuget.org/packages/OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime/)
@@ -21,6 +21,15 @@ Using the .NET CLI
 
 ```
 dotnet add package OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
+```
+
+With .NET 6, this is super simple! Start a Windows Forms app running the .NET generic host with 4 lines of code!
+
+```csharp
+var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseWindowsFormsLifetime<Form1>();
+var app = builder.Build();
+app.Run();
 ```
 
 #### Setup the `Program` class

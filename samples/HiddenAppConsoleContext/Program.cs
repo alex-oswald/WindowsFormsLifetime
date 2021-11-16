@@ -1,15 +1,17 @@
 ﻿using HiddenAppConsoleContext;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Specshell.WinForm.HiddenForm;
 
-await Host.CreateDefaultBuilder(args)
-    .ConfigureServices((context, collection) => { collection.AddSingleton<IHiddenMainForm, Main>(); })
-    .UseWindowsFormsLifetimeAppContext<HiddenContext>(options =>
+var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseWindowsFormsLifetimeAppContext<HiddenContext, MainForm>((startForm) =>
+{ 
+    return new HiddenContext(startForm);
+});
+var app = builder.Build();
+app.Run();
+
+public class HiddenContext : ApplicationContext
+{
+    public HiddenContext(Form form)
     {
-        options.EnableVisualStyles = false;
-        options.CompatibleTextRenderingDefault = false;
-        options.SuppressStatusMessages = false;
-        options.EnableConsoleShutdown = false;
-    })
-    .RunConsoleAsync();
+        MainForm = form;
+    }
+}

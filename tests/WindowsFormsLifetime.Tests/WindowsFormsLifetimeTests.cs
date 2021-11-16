@@ -42,15 +42,12 @@ namespace WindowsFormsLifetimeTests
         }
 
         [Fact]
-        public void ServicesAreAvailableWhenUsingForm()
+        public void Services_Available_With_Form()
         {
-            // given
             var hostBuilder = new HostBuilder().UseWindowsFormsLifetime<TestForm>();
 
-            // when
             using var host = hostBuilder.Build();
 
-            // then
             Assert.IsType<WindowsFormsLifetime>(host.Services.GetService<IHostLifetime>());
             Assert.IsType<WindowsFormsHostedService>(host.Services.GetService<IHostedService>());
             Assert.NotNull(host.Services.GetService<ApplicationContext>());
@@ -58,85 +55,85 @@ namespace WindowsFormsLifetimeTests
         }
 
         [Fact]
-        public void ServicesAreAvailableWhenUsingApplicationContext()
+        public void Services_Available_With_ApplicationContext()
         {
-            // given
-            var hostBuilder = new HostBuilder().UseWindowsFormsLifetimeAppContext<TestContext>();
+            var hostBuilder = new HostBuilder().UseWindowsFormsLifetime<TestContext>();
 
-            // when
             using var host = hostBuilder.Build();
 
-            // then
             Assert.IsType<WindowsFormsLifetime>(host.Services.GetService<IHostLifetime>());
             Assert.IsType<WindowsFormsHostedService>(host.Services.GetService<IHostedService>());
             Assert.NotNull(host.Services.GetService<ApplicationContext>());
             Assert.NotNull(host.Services.GetService<TestContext>());
+            Assert.Null(host.Services.GetService<TestForm>());
         }
 
         [Fact]
-        public async Task ShouldRunAndCloseForm()
+        public void Services_Available_With_ApplicationContext_Form()
         {
-            // given
+            var hostBuilder = new HostBuilder().UseWindowsFormsLifetime<TestContext, TestForm>((form) => new TestContext());
+
+            using var host = hostBuilder.Build();
+
+            Assert.IsType<WindowsFormsLifetime>(host.Services.GetService<IHostLifetime>());
+            Assert.IsType<WindowsFormsHostedService>(host.Services.GetService<IHostedService>());
+            Assert.NotNull(host.Services.GetService<ApplicationContext>());
+            Assert.NotNull(host.Services.GetService<TestContext>());
+            Assert.NotNull(host.Services.GetService<TestForm>());
+        }
+
+        [Fact]
+        public async Task Should_Run_And_Close_Form()
+        {
             using var host = new HostBuilder().UseWindowsFormsLifetime<TestForm>().Build();
 
             var form = host.Services.GetService<TestForm>();
             form.Load += (sender, args) => form.Invoke(new Action(Application.Exit));
 
-            // when
             await host.RunAsync();
 
-            // then
-            // if we are here, nothing has failed
+            // If we are here, nothing failed
         }
 
         [Fact]
-        public async Task ShouldRunAndCloseFormWhenCancelling()
+        public async Task Should_Run_And_Close_Form_When_Cancelling()
         {
-            // given
             using var host = new HostBuilder().UseWindowsFormsLifetime<TestForm>().Build();
             using var cancelToken = new CancellationTokenSource();
 
             var form = host.Services.GetService<TestForm>();
             form.Load += (sender, args) => cancelToken.Cancel();
 
-            // when
             await host.RunAsync(cancelToken.Token);
 
-            // then
-            // if we are here, nothing has failed
+            // If we are here, nothing failed
         }
 
         [Fact]
-        public async Task ShouldRunAndCloseApplicationContext()
+        public async Task Should_Run_And_Close_ApplicationContext()
         {
-            // given
             using var host = new HostBuilder()
-                .UseWindowsFormsLifetimeAppContext<TestContext>()
+                .UseWindowsFormsLifetime<TestContext>()
                 .ConfigureServices(services => services.AddSingleton<Action<TestContext>>(context => Application.Exit()))
                 .Build();
 
-            // when
             await host.RunAsync();
 
-            // then
-            // if we are here, nothing has failed
+            // If we are here, nothing failed
         }
 
         [Fact]
-        public async Task ShouldRunAndCloseApplicationContextWhenCancelling()
+        public async Task Should_Run_And_Close_ApplicationContext_When_Cancelling()
         {
-            // given
             using var cancelToken = new CancellationTokenSource();
             using var host = new HostBuilder()
-                .UseWindowsFormsLifetimeAppContext<TestContext>()
+                .UseWindowsFormsLifetime<TestContext>()
                 .ConfigureServices(services => services.AddSingleton<Action<TestContext>>(_ => cancelToken.Cancel()))
                 .Build();
 
-            // when
             await host.RunAsync(cancelToken.Token);
 
-            // then
-            // if we are here, nothing has failed
+            // If we are here, nothing failed
         }
     }
 }

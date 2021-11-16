@@ -1,8 +1,4 @@
-﻿using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime;
 
 namespace SampleApp
 {

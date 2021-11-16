@@ -4,7 +4,7 @@
 		<TargetFrameworks>net6.0-windows</TargetFrameworks>
 		<Nullable>disable</Nullable>
 		<PackageId>OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime</PackageId>
-		<Version>0.0.5</Version>
+		<Version>0.1.0</Version>
 		<Authors>Alex Oswald</Authors>
 		<Company>Oswald Technologies, LLC</Company>
 		<Description>.NET Core hosting infrastructure for Windows Forms.</Description>

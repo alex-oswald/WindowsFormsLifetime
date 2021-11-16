@@ -1,4 +1,4 @@
-namespace HiddenContextSampleApp
+namespace AppContextSampleApp
 {
     public class MainForm : Form
     {

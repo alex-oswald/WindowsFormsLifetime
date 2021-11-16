@@ -1,18 +1,18 @@
-﻿using HiddenContextSampleApp;
+﻿using AppContextSampleApp;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Host.UseWindowsFormsLifetimeAppContext<HiddenContext, MainForm>((startForm) =>
+builder.Host.UseWindowsFormsLifetime<ExampleApplicationContext, MainForm>((startForm) =>
 { 
-    return new HiddenContext(startForm);
+    return new ExampleApplicationContext(startForm);
 });
 var app = builder.Build();
 app.Run();
 
-namespace HiddenContextSampleApp
+namespace AppContextSampleApp
 {
-    public class HiddenContext : ApplicationContext
+    public class ExampleApplicationContext : ApplicationContext
     {
-        public HiddenContext(Form form)
+        public ExampleApplicationContext(Form form)
         {
             MainForm = form;
         }

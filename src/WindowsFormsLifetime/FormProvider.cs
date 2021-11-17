@@ -24,6 +24,17 @@ namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
         WindowsFormsSynchronizationContext SynchronizationContext { get; }
     }
 
+    public interface IGuiContext
+    {
+        void Invoke(Action action);
+
+        TResult Invoke<TResult>(Func<TResult> func);
+
+        Task<TResult> InvokeAsync<TResult>(Func<TResult> func);
+
+        Task<TResult> InvokeAsync<TResult, TInput>(Func<TInput, TResult> func, TInput input);
+    }
+
     public class FormProvider : IFormProvider, IGuiContext
     {
         private readonly SemaphoreSlim _semaphore = new(1, 1);
@@ -49,9 +60,9 @@ namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
             return form;
         }
 
-        public void Invoke(Action action) => action();
+        public void Invoke(Action action) => SynchronizationContext.Invoke(action);
 
-        public TResult Invoke<TResult>(Func<TResult> func) => func();
+        public TResult Invoke<TResult>(Func<TResult> func) => SynchronizationContext.Invoke(func);
 
         public async Task<TResult> InvokeAsync<TResult>(Func<TResult> func) => await SynchronizationContext.InvokeAsync(func);
 

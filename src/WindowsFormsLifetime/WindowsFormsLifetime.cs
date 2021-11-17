@@ -15,6 +15,10 @@ namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
     {
         private CancellationTokenRegistration _applicationStartedRegistration;
         private CancellationTokenRegistration _applicationStoppingRegistration;
+        private readonly WindowsFormsLifetimeOptions _options;
+        private readonly IHostEnvironment _environment;
+        private readonly IHostApplicationLifetime _applicationLifetime;
+        private readonly ILogger _logger;
 
         public WindowsFormsLifetime(
             IOptions<WindowsFormsLifetimeOptions> options,
@@ -22,37 +26,29 @@ namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
             IHostApplicationLifetime hostApplicationLifetime,
             ILoggerFactory loggerFactory)
         {
-            Options = options?.Value ?? throw new ArgumentNullException(nameof(options));
-            Environment = environment ?? throw new ArgumentNullException(nameof(environment));
-            ApplicationLifetime = hostApplicationLifetime ?? throw new ArgumentNullException(nameof(hostApplicationLifetime));
-            Logger = loggerFactory?.CreateLogger("Microsoft.Hosting.Lifetime") ?? throw new ArgumentNullException(nameof(loggerFactory));
+            _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
+            _environment = environment ?? throw new ArgumentNullException(nameof(environment));
+            _applicationLifetime = hostApplicationLifetime ?? throw new ArgumentNullException(nameof(hostApplicationLifetime));
+            _logger = loggerFactory?.CreateLogger("Microsoft.Hosting.Lifetime") ?? throw new ArgumentNullException(nameof(loggerFactory));
         }
-
-        private WindowsFormsLifetimeOptions Options { get; }
-
-        private IHostEnvironment Environment { get; }
-
-        private IHostApplicationLifetime ApplicationLifetime { get; }
-
-        private ILogger Logger { get; }
 
         public Task WaitForStartAsync(CancellationToken cancellationToken)
         {
-            if (!Options.SuppressStatusMessages)
+            if (!_options.SuppressStatusMessages)
             {
-                _applicationStartedRegistration = ApplicationLifetime.ApplicationStarted.Register(state =>
+                _applicationStartedRegistration = _applicationLifetime.ApplicationStarted.Register(state =>
                 {
                     ((WindowsFormsLifetime)state).OnApplicationStarted();
                 },
                 this);
-                _applicationStoppingRegistration = ApplicationLifetime.ApplicationStopping.Register(state =>
+                _applicationStoppingRegistration = _applicationLifetime.ApplicationStopping.Register(state =>
                 {
                     ((WindowsFormsLifetime)state).OnApplicationStopping();
                 },
                 this);
             }
 
-            if (Options.EnableConsoleShutdown)
+            if (_options.EnableConsoleShutdown)
             {
                 Console.CancelKeyPress += OnCancelKeyPress;
             }
@@ -63,20 +59,20 @@ namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
 
         private void OnApplicationStarted()
         {
-            Logger.LogInformation("Application started. Close the startup Form" + (Options.EnableConsoleShutdown ? " or press Ctrl+C" : string.Empty) + " to shut down.");
-            Logger.LogInformation("Hosting environment: {envName}", Environment.EnvironmentName);
-            Logger.LogInformation("Content root path: {contentRoot}", Environment.ContentRootPath);
+            _logger.LogInformation("Application started. Close the startup Form" + (_options.EnableConsoleShutdown ? " or press Ctrl+C" : string.Empty) + " to shut down.");
+            _logger.LogInformation("Hosting environment: {envName}", _environment.EnvironmentName);
+            _logger.LogInformation("Content root path: {contentRoot}", _environment.ContentRootPath);
         }
 
         private void OnApplicationStopping()
         {
-            Logger.LogInformation("Application is shutting down...");
+            _logger.LogInformation("Application is shutting down...");
         }
 
         private void OnCancelKeyPress(object sender, ConsoleCancelEventArgs e)
         {
             e.Cancel = true;
-            ApplicationLifetime.StopApplication();
+            _applicationLifetime.StopApplication();
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
@@ -90,7 +86,7 @@ namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
             _applicationStartedRegistration.Dispose();
             _applicationStoppingRegistration.Dispose();
 
-            if (Options.EnableConsoleShutdown)
+            if (_options.EnableConsoleShutdown)
             {
                 Console.CancelKeyPress -= OnCancelKeyPress;
             }

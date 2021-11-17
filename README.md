@@ -212,3 +212,5 @@ The layout of the `WindowsFormsLifetime` class is based on .NET Core's
 [ConsoleLifetime](https://github.com/dotnet/extensions/blob/b83b27d76439497459fe9cf7337d5128c900eb5a/src/Hosting/Hosting/src/Internal/ConsoleLifetime.cs).
 
 [Stephen's blog post on ExecutionContext vs SynchronizationContext](https://devblogs.microsoft.com/pfxteam/executioncontext-vs-synchronizationcontext/)
+
+https://devblogs.microsoft.com/pfxteam/implementing-a-synchronizationcontext-sendasync-method/

@@ -6,8 +6,6 @@ namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
 {
     public delegate TResult GuiFunc<in T, out TResult>(T arg);
 
-
-    //https://devblogs.microsoft.com/pfxteam/implementing-a-synchronizationcontext-sendasync-method/
     internal static class SynchronizationContextExtensions
     {
         public static void Invoke(this SynchronizationContext context, Action action)
@@ -60,16 +58,5 @@ namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
             }, null);
             return tcs.Task;
         }
-    }
-
-    public interface IGuiContext
-    {
-        void Invoke(Action action);
-
-        TResult Invoke<TResult>(Func<TResult> func);
-
-        Task<TResult> InvokeAsync<TResult>(Func<TResult> func);
-
-        Task<TResult> InvokeAsync<TResult, TInput>(Func<TInput, TResult> func, TInput input);
     }
 }

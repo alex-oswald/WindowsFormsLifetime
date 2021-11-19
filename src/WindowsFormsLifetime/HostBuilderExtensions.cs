@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace Microsoft.Extensions.Hosting
 {
-    public static class HostingHostBuilderExtensions
+    public static class HostBuilderExtensions
     {
         /// <summary>
         /// Enables Windows Forms support, builds and starts the host, starts the startup <see cref="Form"/>,

@@ -1,4 +1,4 @@
-﻿namespace WindowsFormsLifetime.Sample
+﻿namespace SampleApp
 {
     partial class Form1
     {

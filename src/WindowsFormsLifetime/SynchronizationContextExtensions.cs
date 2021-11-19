@@ -4,8 +4,6 @@ using System.Threading.Tasks;
 
 namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
 {
-    public delegate TResult GuiFunc<in T, out TResult>(T arg);
-
     internal static class SynchronizationContextExtensions
     {
         public static void Invoke(this SynchronizationContext context, Action action)

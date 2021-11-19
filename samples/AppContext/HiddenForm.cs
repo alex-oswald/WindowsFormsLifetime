@@ -1,12 +1,12 @@
-namespace AppContextSampleApp
+namespace AppContext
 {
-    public class MainForm : Form
+    public partial class HiddenForm : Form
     {
-        private readonly ILogger<MainForm> _logger;
+        private readonly ILogger<HiddenForm> _logger;
         private readonly IHostApplicationLifetime _hostLifetime;
 
-        public MainForm(
-            ILogger<MainForm> logger,
+        public HiddenForm(
+            ILogger<HiddenForm> logger,
             IHostApplicationLifetime hostLifetime)
         {
             _logger = logger;
@@ -22,6 +22,7 @@ namespace AppContextSampleApp
 
         private async void OnLoad(object? sender, EventArgs e)
         {
+            // Example of a hidden main form
             Visible = false;
             ShowInTaskbar = false;
             _logger.LogInformation("Form load");

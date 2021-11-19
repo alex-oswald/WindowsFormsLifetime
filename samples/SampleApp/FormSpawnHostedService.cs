@@ -2,14 +2,14 @@
 
 namespace SampleApp
 {
-    public class HostedService1 : BackgroundService
+    public class FormSpawnHostedService : BackgroundService
     {
         private readonly ILogger _logger;
         private readonly IFormProvider _fp;
         private readonly IGuiContext _guiContext;
 
-        public HostedService1(
-            ILogger<HostedService1> logger,
+        public FormSpawnHostedService(
+            ILogger<FormSpawnHostedService> logger,
             IFormProvider formProvider,
             IGuiContext guiContext)
         {
@@ -26,14 +26,14 @@ namespace SampleApp
                 await Task.Delay(5000, stoppingToken);
                 if (count < 5)
                 {
-                    await _guiContext.InvokeAsync(async () =>
-                    {
-                        var form = await _fp.GetFormAsync<Form2>();
-                        form.Show();
-                    });
+                    // Fetch the form here using IFormProvider
+                    // The form provider will get the form from the DI container on the gui thread
+                    // Then we must invoke the Show method on the gui thread as well using IGuiContext
+                    _logger.LogInformation($"GetFormAsync {Thread.CurrentThread.ManagedThreadId} {Thread.CurrentThread.Name}");
+                    var form = await _fp.GetFormAsync<Form2>();
+                    _guiContext.Invoke(() => form.Show());
                 }
                 count++;
-                _logger.LogInformation("HostedService1 Tick 1000ms");
             }
         }
     }

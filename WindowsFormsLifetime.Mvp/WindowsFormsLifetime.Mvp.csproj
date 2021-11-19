@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net6.0-windows</TargetFrameworks>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<PackageId>WindowsFormsLifetime.Mvp</PackageId>
+		<Version>0.0.1</Version>
+		<Authors>Alex Oswald</Authors>
+		<Company>Oswald Technologies, LLC</Company>
+		<Description>Model-View-Presenter extensions for WindowsFormsLifetime</Description>
+		<RepositoryUrl>https://github.com/alex-oswald/WindowsFormsLifetime</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<RootNamespace>WindowsFormsLifetime.Mvp</RootNamespace>
+		<AssemblyName>WindowsFormsLifetime.Mvp</AssemblyName>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<PackageProjectUrl>https://github.com/alex-oswald/WindowsFormsLifetime</PackageProjectUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+
+		<PackageTags>netcore;hosting;winforms;mvp</PackageTags>
+		<UseWindowsForms>true</UseWindowsForms>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<NoWarn>CS1591</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\..\README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+	  <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
+	</ItemGroup>
+
+</Project>

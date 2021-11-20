@@ -14,18 +14,18 @@ namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
         private readonly WindowsFormsLifetimeOptions _options;
         private readonly IHostApplicationLifetime _hostApplicationLifetime;
         private readonly IServiceProvider _serviceProvider;
-        private readonly FormProvider _formProvider;
+        private readonly WindowsFormsSynchronizationContextProvider _syncContextManager;
 
         public WindowsFormsHostedService(
             IOptions<WindowsFormsLifetimeOptions> options,
             IHostApplicationLifetime hostApplicationLifetime,
             IServiceProvider serviceProvider,
-            FormProvider formProvider)
+            WindowsFormsSynchronizationContextProvider syncContextManager)
         {
             _options = options.Value;
             _hostApplicationLifetime = hostApplicationLifetime;
             _serviceProvider = serviceProvider;
-            _formProvider = formProvider;
+            _syncContextManager = syncContextManager;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -63,8 +63,8 @@ namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
             WindowsFormsSynchronizationContext.AutoInstall = false;
 
             // Create the sync context on our UI thread
-            _formProvider.SynchronizationContext = new WindowsFormsSynchronizationContext();
-            SynchronizationContext.SetSynchronizationContext(_formProvider.SynchronizationContext);
+            _syncContextManager.SynchronizationContext = new WindowsFormsSynchronizationContext();
+            SynchronizationContext.SetSynchronizationContext(_syncContextManager.SynchronizationContext);
 
             var applicationContext = _serviceProvider.GetService<ApplicationContext>();
             Application.Run(applicationContext);

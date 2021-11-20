@@ -78,12 +78,20 @@ namespace Microsoft.Extensions.Hosting
             });
 
         private static IServiceCollection AddWindowsFormsLifetime(this IServiceCollection services, Action<WindowsFormsLifetimeOptions> configure)
-            => services
-                .AddSingleton<IHostLifetime, WindowsFormsLifetime>()
-                .AddSingleton<FormProvider>()
-                .AddSingleton<IFormProvider>(sp => sp.GetRequiredService<FormProvider>())
-                .AddSingleton<IGuiContext>(sp => sp.GetRequiredService<FormProvider>())
-                .AddHostedService<WindowsFormsHostedService>()
-                .Configure(configure ?? (_ => new WindowsFormsLifetimeOptions()));
+        {
+            services.AddSingleton<IHostLifetime, WindowsFormsLifetime>();
+            services.AddHostedService<WindowsFormsHostedService>();
+            services.Configure(configure ?? (_ => new WindowsFormsLifetimeOptions()));
+
+            services.AddSingleton<IFormProvider, FormProvider>();
+
+            // Synchronization context
+            services.AddSingleton<WindowsFormsSynchronizationContextProvider>();
+            services.AddSingleton<IWindowsFormsSynchronizationContextProvider>(sp => sp.GetRequiredService<WindowsFormsSynchronizationContextProvider>());
+            services.AddSingleton<IGuiContext>(sp => sp.GetRequiredService<WindowsFormsSynchronizationContextProvider>());
+
+            return services;
+        }
+
     }
 }

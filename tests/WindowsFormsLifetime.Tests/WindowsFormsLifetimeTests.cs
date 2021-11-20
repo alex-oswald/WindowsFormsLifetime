@@ -29,7 +29,7 @@ namespace WindowsFormsLifetimeTests
 
         public class TestContext : ApplicationContext
         {
-            public TestContext(Action<TestContext> onStart = null)
+            public TestContext(Action<TestContext>? onStart = null)
             {
                 // Let's invoke this after constructor has been run
                 var timer = new Timer { Interval = 1, Enabled = true };
@@ -88,7 +88,7 @@ namespace WindowsFormsLifetimeTests
             using var host = new HostBuilder().UseWindowsFormsLifetime<TestForm>().Build();
 
             var form = host.Services.GetService<TestForm>();
-            form.Load += (sender, args) => form.Invoke(new Action(Application.Exit));
+            form!.Load += (sender, args) => form.Invoke(new Action(Application.Exit));
 
             await host.RunAsync();
 
@@ -102,7 +102,7 @@ namespace WindowsFormsLifetimeTests
             using var cancelToken = new CancellationTokenSource();
 
             var form = host.Services.GetService<TestForm>();
-            form.Load += (sender, args) => cancelToken.Cancel();
+            form!.Load += (sender, args) => cancelToken.Cancel();
 
             await host.RunAsync(cancelToken.Token);
 

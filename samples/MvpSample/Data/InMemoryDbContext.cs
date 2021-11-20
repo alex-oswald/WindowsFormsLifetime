@@ -11,7 +11,7 @@ namespace MvpSample.Data
         {
         }
 
-        public DbSet<Note> Notes { get; set; }
+        public DbSet<Note>? Notes { get; set; }
 
         public static DbConnection CreateConnection()
         {

@@ -47,7 +47,7 @@ namespace MvpSample.Presenters
         private void OnRefreshList(RefreshListEvent e)
         {
             _logger.LogInformation(nameof(OnRefreshList));
-            var notes = _appDbContext.Notes.ToList();
+            var notes = _appDbContext.Notes!.ToList();
             _view.SetNotes(notes);
             if (e.SelectedNote is not null)
             {

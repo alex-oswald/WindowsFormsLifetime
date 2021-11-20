@@ -20,8 +20,8 @@ namespace MvpSample.Views
     public partial class MainForm : Form, IMainForm
     {
         private readonly IGuiContext _guiContext;
-        private INotesListView _notesListView;
-        private INoteView _noteView;
+        private INotesListView? _notesListView ;
+        private INoteView? _noteView;
 
         public MainForm(IGuiContext guiContext)
         {

@@ -77,6 +77,7 @@ namespace Microsoft.Extensions.Hosting
                 services.AddWindowsFormsLifetime(configure);
             });
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1806:Do not ignore method results", Justification = "<Pending>")]
         private static IServiceCollection AddWindowsFormsLifetime(this IServiceCollection services, Action<WindowsFormsLifetimeOptions> configure)
         {
             services.AddSingleton<IHostLifetime, WindowsFormsLifetime>();

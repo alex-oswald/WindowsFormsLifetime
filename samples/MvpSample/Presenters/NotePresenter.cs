@@ -12,7 +12,6 @@ namespace MvpSample.Presenters
         private readonly IEventService _eventService;
         private readonly InMemoryDbContext _appDbContext;
         private Note? _currentNote = null;
-        private bool _saved = false;
 
         public NotePresenter(
             ILogger<NotePresenter> logger,
@@ -30,7 +29,6 @@ namespace MvpSample.Presenters
             _eventService.Subscribe<NoteCreatedEvent>(e =>
             {
                 _logger.LogInformation(nameof(NoteCreatedEvent));
-                _saved = false;
                 _currentNote = new Note();
                 _view.SetNote(_currentNote);
             });
@@ -48,8 +46,8 @@ namespace MvpSample.Presenters
 
         private void OnSaveNoteClicked(object? sender, EventArgs e)
         {
-            _currentNote.Notes = _view.GetNoteText();
-            _appDbContext.Notes.Update(_currentNote);
+            _currentNote!.Notes = _view.GetNoteText();
+            _appDbContext.Notes!.Update(_currentNote);
             _appDbContext.SaveChanges();
             _eventService.Publish<RefreshListEvent>(new(_currentNote));
         }

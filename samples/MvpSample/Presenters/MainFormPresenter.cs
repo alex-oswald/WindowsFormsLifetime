@@ -24,7 +24,8 @@ namespace MvpSample.Presenters
             INoteView noteView)
         {
             _logger = logger;
-            _mainForm = applicationContext.MainForm as IMainForm;
+            _mainForm = applicationContext.MainForm as IMainForm
+                ?? throw new ArgumentNullException(nameof(applicationContext));
             _eventService = eventService;
             _notesListPresenter = notesListPresenter;
             _notesListView = notesListView;

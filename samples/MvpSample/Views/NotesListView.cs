@@ -48,7 +48,7 @@ namespace MvpSample.Views
             });
         }
 
-        public Note SelectedNote => NotesListBox.SelectedItem as Note;
+        public Note SelectedNote => NotesListBox!.SelectedItem as Note ?? throw new InvalidCastException(nameof(SelectedNote));
 
         public event EventHandler CreateNoteClicked
         {

@@ -93,6 +93,7 @@ namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
             _hostApplicationLifetime.StopApplication();
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA1816:Dispose methods should call SuppressFinalize", Justification = "<Pending>")]
         public void Dispose()
         {
             Application.ApplicationExit -= OnApplicationExit;

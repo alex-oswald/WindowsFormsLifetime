@@ -7,6 +7,7 @@ namespace MvpSample.Presenters
 {
     internal class NotePresenter
     {
+        private readonly ILogger<NotePresenter> _logger;
         private readonly INoteView _view;
         private readonly IEventService _eventService;
         private readonly InMemoryDbContext _appDbContext;
@@ -14,10 +15,12 @@ namespace MvpSample.Presenters
         private bool _saved = false;
 
         public NotePresenter(
+            ILogger<NotePresenter> logger,
             INoteView view,
             IEventService eventService,
             InMemoryDbContext appDbContext)
         {
+            _logger = logger;
             _view = view;
             _eventService = eventService;
             _appDbContext = appDbContext;
@@ -26,6 +29,7 @@ namespace MvpSample.Presenters
 
             _eventService.Subscribe<NoteCreatedEvent>(e =>
             {
+                _logger.LogInformation(nameof(NoteCreatedEvent));
                 _saved = false;
                 _currentNote = new Note();
                 _view.SetNote(_currentNote);
@@ -33,6 +37,7 @@ namespace MvpSample.Presenters
 
             _eventService.Subscribe<SelectedNoteChangedEvent>(e =>
             {
+                _logger.LogInformation(nameof(SelectedNoteChangedEvent));
                 _currentNote = e.SelectedNote;
                 if (_currentNote is not null)
                 {

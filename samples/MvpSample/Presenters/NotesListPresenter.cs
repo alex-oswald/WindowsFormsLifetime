@@ -39,6 +39,8 @@ namespace MvpSample.Presenters
         private void OnCreateNoteClicked(object? sender, EventArgs e)
         {
             _logger.LogInformation(nameof(OnCreateNoteClicked));
+            // Deselect note before creating
+            _view.SelectNote(-1);
             _eventService.Publish<NoteCreatedEvent>(new());
         }
 

@@ -1,6 +1,5 @@
 ﻿using MvpSample.Events;
 using MvpSample.Views;
-using OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime;
 using WindowsFormsLifetime.Mvp;
 
 namespace MvpSample.Presenters
@@ -8,27 +7,26 @@ namespace MvpSample.Presenters
     internal class MainFormPresenter
     {
         private readonly IMainForm _mainForm;
-        private readonly IFormProvider _formProvider;
+        private readonly IEventService _eventService;
         private readonly NotesListPresenter _notesListPresenter;
         private readonly INotesListView _notesListView;
         private readonly NotePresenter _notePresenter;
         private readonly INoteView _noteView;
-        private readonly IEventService _eventService;
 
         public MainFormPresenter(
             ApplicationContext applicationContext,
+            IEventService eventService,
             NotesListPresenter notesListPresenter,
             INotesListView notesListView,
             NotePresenter notePresenter,
-            INoteView noteView,
-            IEventService eventService)
+            INoteView noteView)
         {
             _mainForm = applicationContext.MainForm as IMainForm;
+            _eventService = eventService;
             _notesListPresenter = notesListPresenter;
             _notesListView = notesListView;
             _notePresenter = notePresenter;
             _noteView = noteView;
-            _eventService = eventService;
 
             _mainForm.Load += OnLoad;
 

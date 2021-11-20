@@ -16,7 +16,7 @@ builder.Services.AddSingleton<INoteView, NoteView>();
 builder.Services.AddSingleton<NotePresenter>();
 
 builder.Services.AddDbContext<InMemoryDbContext>(options =>
-    options.UseSqlite(Db.CreateInMemoryDatabase()));
+    options.UseSqlite(InMemoryDbContext.CreateConnection()));
 
 var app = builder.Build();
 

@@ -12,11 +12,8 @@ namespace MvpSample.Data
         }
 
         public DbSet<Note> Notes { get; set; }
-    }
 
-    internal static class Db
-    {
-        public static DbConnection CreateInMemoryDatabase()
+        public static DbConnection CreateConnection()
         {
             var connection = new SqliteConnection("Filename=:memory:");
 

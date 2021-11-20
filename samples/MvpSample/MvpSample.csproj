@@ -16,7 +16,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\WindowsFormsLifetime\WindowsFormsLifetime.csproj" />
-		<ProjectReference Include="..\..\WindowsFormsLifetime.Mvp\WindowsFormsLifetime.Mvp.csproj" />
+		<ProjectReference Include="..\..\src\WindowsFormsLifetime.Mvp\WindowsFormsLifetime.Mvp.csproj" />
 	</ItemGroup>
 
 </Project>

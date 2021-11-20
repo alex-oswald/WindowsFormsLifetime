@@ -13,6 +13,7 @@ namespace MvpSample.Presenters
         private readonly INotesListView _notesListView;
         private readonly NotePresenter _notePresenter;
         private readonly INoteView _noteView;
+        private readonly IEventService _eventService;
 
         public MainFormPresenter(
             ApplicationContext applicationContext,
@@ -27,10 +28,11 @@ namespace MvpSample.Presenters
             _notesListView = notesListView;
             _notePresenter = notePresenter;
             _noteView = noteView;
+            _eventService = eventService;
 
             _mainForm.Load += OnLoad;
 
-            eventService.SubscribeAsync<CreateNoteEvent>(e =>
+            eventService.Subscribe<NoteCreatedEvent>(e =>
             {
                 _mainForm.SetNoteViewVisibility(true);
             });
@@ -41,6 +43,8 @@ namespace MvpSample.Presenters
             _mainForm.SetNotesList(_notesListView);
             _mainForm.SetNoteView(_noteView);
             _mainForm.SetNoteViewVisibility(false);
+
+            _eventService.Publish<RefreshListEvent>(new());
         }
     }
 }

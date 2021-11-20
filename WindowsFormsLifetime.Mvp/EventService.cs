@@ -6,13 +6,13 @@ namespace WindowsFormsLifetime.Mvp
 
     public interface IEventService
     {
-        Task PublishAsync<T>(T message) where T : IEvent;
+        void Publish<T>(T message) where T : IEvent;
 
-        Task SubscribeAsync<T>(Action<T> action) where T : IEvent;
+        void Subscribe<T>(Action<T> action) where T : IEvent;
 
-        Task UnsubscribeAllAsync<T>() where T : IEvent;
+        void UnsubscribeAll<T>() where T : IEvent;
 
-        Task UnsubscribeAsync<T>(Action<T> action) where T : IEvent;
+        void Unsubscribe<T>(Action<T> action) where T : IEvent;
     }
 
     internal class EventService : IEventService, IDisposable
@@ -20,58 +20,52 @@ namespace WindowsFormsLifetime.Mvp
         private readonly ConcurrentDictionary<Type, List<object>> _subscriptions = new();
         private readonly SemaphoreSlim _semaphore = new(1, 1);
 
-        public async Task PublishAsync<T>(T message)
+        public void Publish<T>(T message)
             where T : IEvent
         {
-            await _semaphore.WaitAsync();
-
             if (_subscriptions.TryGetValue(typeof(T), out List<object>? subscribers))
             {
-                foreach (var subscriber in subscribers.ToArray())
+                // We are marsharling these subscribed actions to the thread pool
+                Task.Run(() =>
                 {
-                    ((Action<T>)subscriber)(message);
-                }
+                    foreach (var subscriber in subscribers.ToArray())
+                    {
+                        ((Action<T>)subscriber)(message);
+                    }
+                });
             }
-
-            _semaphore.Release();
         }
 
-        public async Task SubscribeAsync<T>(Action<T> action)
+        public void Subscribe<T>(Action<T> action)
             where T : IEvent
         {
-            await _semaphore.WaitAsync();
-
             var subscribers = _subscriptions.GetOrAdd(typeof(T), t => new List<object>());
-            subscribers.Add(action);
 
+            _semaphore.Wait();
+            subscribers.Add(action);
             _semaphore.Release();
         }
 
-        public async Task UnsubscribeAllAsync<T>()
+        public void UnsubscribeAll<T>()
             where T : IEvent
         {
-
-            await _semaphore.WaitAsync();
-
             if (_subscriptions.TryGetValue(typeof(T), out List<object>? _))
             {
+                _semaphore.Wait();
                 _subscriptions.Remove(typeof(T), out _);
+                _semaphore.Release();
             }
-
-            _semaphore.Release();
         }
 
-        public async Task UnsubscribeAsync<T>(Action<T> action)
+        public void Unsubscribe<T>(Action<T> action)
             where T : IEvent
         {
-            await _semaphore.WaitAsync();
-
             if (_subscriptions.TryGetValue(typeof(T), out List<object>? subscribers))
             {
+                _semaphore.Wait();
                 subscribers.Remove(action);
+                _semaphore.Release();
             }
-
-            _semaphore.Release();
         }
 
         public void Dispose()

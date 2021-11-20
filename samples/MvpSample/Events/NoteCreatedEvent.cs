@@ -2,7 +2,7 @@
 
 namespace MvpSample.Events
 {
-    internal class CreateNoteEvent : IEvent
+    internal record NoteCreatedEvent : IEvent
     {
     }
 }

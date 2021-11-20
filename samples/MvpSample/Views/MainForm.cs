@@ -1,3 +1,5 @@
+using OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime;
+
 namespace MvpSample.Views
 {
     public interface IMainForm
@@ -17,35 +19,46 @@ namespace MvpSample.Views
 
     public partial class MainForm : Form, IMainForm
     {
+        private readonly IGuiContext _guiContext;
         private INotesListView _notesListView;
         private INoteView _noteView;
 
-        public MainForm()
+        public MainForm(IGuiContext guiContext)
         {
             InitializeComponent();
+            _guiContext = guiContext;
         }
 
         public Form This => this;
 
         public void SetNotesList(INotesListView notesListView)
         {
-            _notesListView = notesListView;
-            _notesListView.This.Dock = DockStyle.Fill;
-            MenuPanel.Controls.Clear();
-            MenuPanel.Controls.Add(_notesListView.This);
+            _guiContext.Invoke(() =>
+            {
+                _notesListView = notesListView;
+                _notesListView.This.Dock = DockStyle.Fill;
+                MenuPanel.Controls.Clear();
+                MenuPanel.Controls.Add(_notesListView.This);
+            });
         }
 
         public void SetNoteView(INoteView noteView)
         {
-            _noteView = noteView;
-            _noteView.This.Dock = DockStyle.Fill;
-            BodyPanel.Controls.Clear();
-            BodyPanel.Controls.Add(_noteView.This);
+            _guiContext.Invoke(() =>
+            {
+                _noteView = noteView;
+                _noteView.This.Dock = DockStyle.Fill;
+                BodyPanel.Controls.Clear();
+                BodyPanel.Controls.Add(_noteView.This);
+            });
         }
 
         public void SetNoteViewVisibility(bool visible)
         {
-            BodyPanel.Visible = visible;
+            _guiContext.Invoke(() =>
+            {
+                BodyPanel.Visible = visible;
+            });
         }
     }
 }

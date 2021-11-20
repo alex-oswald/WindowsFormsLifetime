@@ -31,6 +31,7 @@
             this.NoteTextBox = new System.Windows.Forms.TextBox();
             this.SaveButton = new System.Windows.Forms.Button();
             this.CreatedOnLabel = new System.Windows.Forms.Label();
+            this.CreatedOnValueLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // NoteTextBox
@@ -62,10 +63,19 @@
             this.CreatedOnLabel.TabIndex = 2;
             this.CreatedOnLabel.Text = "Created On:";
             // 
+            // CreatedOnValueLabel
+            // 
+            this.CreatedOnValueLabel.AutoSize = true;
+            this.CreatedOnValueLabel.Location = new System.Drawing.Point(105, 317);
+            this.CreatedOnValueLabel.Name = "CreatedOnValueLabel";
+            this.CreatedOnValueLabel.Size = new System.Drawing.Size(0, 15);
+            this.CreatedOnValueLabel.TabIndex = 3;
+            // 
             // NoteView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.CreatedOnValueLabel);
             this.Controls.Add(this.CreatedOnLabel);
             this.Controls.Add(this.SaveButton);
             this.Controls.Add(this.NoteTextBox);
@@ -81,5 +91,6 @@
         private TextBox NoteTextBox;
         private Button SaveButton;
         private Label CreatedOnLabel;
+        private Label CreatedOnValueLabel;
     }
 }

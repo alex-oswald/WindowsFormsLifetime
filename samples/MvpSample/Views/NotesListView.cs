@@ -1,33 +1,65 @@
-﻿namespace MvpSample.Views
+﻿using MvpSample.Data;
+using OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime;
+
+namespace MvpSample.Views
 {
     public interface INotesListView
     {
-        void AddNote(Note note);
+        void SetNotes(List<Note> notes);
+
+        void SelectNote(int noteId);
+
+        Note SelectedNote { get; }
 
         UserControl This { get; }
 
         event EventHandler CreateNoteClicked;
+
+        event EventHandler SelectedNoteChanged;
     }
 
     public partial class NotesListView : UserControl, INotesListView
     {
-        public NotesListView()
+        private readonly IGuiContext _guiContext;
+
+        public NotesListView(IGuiContext guiContext)
         {
             InitializeComponent();
-            NotesListBox.DisplayMember = nameof(Note.Summary);
+            _guiContext = guiContext;
         }
 
         public UserControl This => this;
 
-        public void AddNote(Note note)
+        public void SetNotes(List<Note> notes)
         {
-            NotesListBox.Items.Add(note);
+            _guiContext.Invoke(() =>
+            {
+                NotesListBox.DataSource = notes;
+                NotesListBox.DisplayMember = nameof(Note.Notes);
+                NotesListBox.ValueMember = nameof(Note.Id);
+            });
         }
+
+        public void SelectNote(int noteId)
+        {
+            _guiContext.Invoke(() =>
+            {
+                NotesListBox.SelectedValue = noteId;
+            });
+        }
+
+        public Note SelectedNote => NotesListBox.SelectedItem as Note;
 
         public event EventHandler CreateNoteClicked
         {
             add => CreateButton.Click += value;
             remove => CreateButton.Click -= value;
+        }
+
+        public event EventHandler SelectedNoteChanged
+        {
+            add => NotesListBox.SelectedValueChanged += value;
+            remove => NotesListBox.SelectedValueChanged -= value;
         }
     }
 }

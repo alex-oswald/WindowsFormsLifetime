@@ -1,7 +1,11 @@
-﻿namespace MvpSample
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MvpSample.Data
 {
-    public record Note
+    public class Note
     {
+        public int Id { get; set; }
+
         public DateTime CreatedOn { get; } = DateTime.Now;
 
         public string? Notes { get; set; }

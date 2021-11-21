@@ -15,14 +15,14 @@ builder.Services.AddSingleton<NotesListPresenter>();
 builder.Services.AddSingleton<INoteView, NoteView>();
 builder.Services.AddSingleton<NotePresenter>();
 
-builder.Services.AddScoped<IRepository<Note>, EntityFrameworkRepository<Note, InMemoryDbContext>>();
-builder.Services.AddDbContext<InMemoryDbContext>(options =>
-    options.UseSqlite(InMemoryDbContext.CreateConnection()));
+builder.Services.AddScoped<IRepository<Note>, EntityFrameworkRepository<Note, SqliteDbContext>>();
+builder.Services.AddDbContext<SqliteDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("Default")));
 
 var app = builder.Build();
 
 // Create the database
-var db = app.Services.GetService<InMemoryDbContext>();
+var db = app.Services.GetService<SqliteDbContext>();
 db?.Database.EnsureCreated();
 
 // Get the main presenter to instantiate it

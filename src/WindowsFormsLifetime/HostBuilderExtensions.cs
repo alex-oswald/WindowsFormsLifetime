@@ -93,6 +93,5 @@ namespace Microsoft.Extensions.Hosting
 
             return services;
         }
-
     }
 }

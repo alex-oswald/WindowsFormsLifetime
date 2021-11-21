@@ -42,13 +42,13 @@
             this.NotesListBox.ItemHeight = 15;
             this.NotesListBox.Location = new System.Drawing.Point(0, 0);
             this.NotesListBox.Name = "NotesListBox";
-            this.NotesListBox.Size = new System.Drawing.Size(313, 422);
+            this.NotesListBox.Size = new System.Drawing.Size(300, 437);
             this.NotesListBox.TabIndex = 0;
             // 
             // CreateButton
             // 
             this.CreateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.CreateButton.Location = new System.Drawing.Point(13, 451);
+            this.CreateButton.Location = new System.Drawing.Point(13, 452);
             this.CreateButton.Name = "CreateButton";
             this.CreateButton.Size = new System.Drawing.Size(109, 35);
             this.CreateButton.TabIndex = 1;
@@ -62,7 +62,7 @@
             this.Controls.Add(this.CreateButton);
             this.Controls.Add(this.NotesListBox);
             this.Name = "NotesListView";
-            this.Size = new System.Drawing.Size(313, 499);
+            this.Size = new System.Drawing.Size(300, 500);
             this.ResumeLayout(false);
 
         }

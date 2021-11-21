@@ -6,7 +6,7 @@ namespace MvpSample.Data
     {
         public Guid Id { get; set; }
 
-        public DateTime CreatedOn { get; } = DateTime.Now;
+        public DateTime CreatedOn { get; set; } = DateTime.Now;
 
         public string? Notes { get; set; }
 

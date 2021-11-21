@@ -4,16 +4,16 @@ using System.Data.Common;
 
 namespace MvpSample.Data
 {
-    public class InMemoryDbContext : DbContext
+    public class SqliteDbContext : DbContext
     {
-        public InMemoryDbContext(DbContextOptions options)
+        public SqliteDbContext(DbContextOptions options)
             : base(options)
         {
         }
 
         public DbSet<Note>? Notes { get; set; }
 
-        public static DbConnection CreateConnection()
+        public static DbConnection CreateInMemoryConnection()
         {
             var connection = new SqliteConnection("Filename=:memory:");
 

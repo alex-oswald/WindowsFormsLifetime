@@ -15,6 +15,7 @@ builder.Services.AddSingleton<NotesListPresenter>();
 builder.Services.AddSingleton<INoteView, NoteView>();
 builder.Services.AddSingleton<NotePresenter>();
 
+builder.Services.AddScoped<IRepository<Note>, EntityFrameworkRepository<Note, InMemoryDbContext>>();
 builder.Services.AddDbContext<InMemoryDbContext>(options =>
     options.UseSqlite(InMemoryDbContext.CreateConnection()));
 

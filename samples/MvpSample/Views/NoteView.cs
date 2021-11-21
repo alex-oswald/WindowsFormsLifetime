@@ -12,6 +12,8 @@ namespace MvpSample.Views
         UserControl This { get; }
 
         event EventHandler SaveNoteClicked;
+
+        event EventHandler DeleteNoteClicked;
     }
 
     public partial class NoteView : UserControl, INoteView
@@ -22,6 +24,14 @@ namespace MvpSample.Views
         {
             InitializeComponent();
             _guiContext = guiContext;
+
+            DeleteNoteClicked += OnDeleteNoteClicked;
+        }
+
+        private void OnDeleteNoteClicked(object? sender, EventArgs e)
+        {
+            NoteTextBox.Text = null;
+            CreatedOnValueLabel.Text = null;
         }
 
         public UserControl This => this;
@@ -41,6 +51,12 @@ namespace MvpSample.Views
         {
             add => SaveButton.Click += value;
             remove => SaveButton.Click -= value;
+        }
+
+        public event EventHandler DeleteNoteClicked
+        {
+            add => DeleteButton.Click += value;
+            remove => DeleteButton.Click -= value;
         }
     }
 }

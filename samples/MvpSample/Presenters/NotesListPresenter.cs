@@ -10,18 +10,18 @@ namespace MvpSample.Presenters
         private readonly ILogger<NotesListPresenter> _logger;
         private readonly INotesListView _view;
         private readonly IEventService _eventService;
-        private readonly InMemoryDbContext _appDbContext;
+        private readonly IRepository<Note> _noteRepository;
 
         public NotesListPresenter(
             ILogger<NotesListPresenter> logger,
             INotesListView view,
             IEventService eventService,
-            InMemoryDbContext appDbContext)
+            IRepository<Note> noteRepository)
         {
             _logger = logger;
             _view = view;
             _eventService = eventService;
-            _appDbContext = appDbContext;
+            _noteRepository = noteRepository;
 
             _view.CreateNoteClicked += OnCreateNoteClicked;
             _view.SelectedNoteChanged += OnSelectedNoteChanged;
@@ -40,14 +40,14 @@ namespace MvpSample.Presenters
         {
             _logger.LogInformation(nameof(OnCreateNoteClicked));
             // Deselect note before creating
-            _view.SelectNote(-1);
+            _view.SelectNote(Guid.Empty);
             _eventService.Publish<NoteCreatedEvent>(new());
         }
 
-        private void OnRefreshList(RefreshListEvent e)
+        private async void OnRefreshList(RefreshListEvent e)
         {
             _logger.LogInformation(nameof(OnRefreshList));
-            var notes = _appDbContext.Notes!.ToList();
+            var notes = (await _noteRepository.GetAllAsync()).ToList();
             _view.SetNotes(notes);
             if (e.SelectedNote is not null)
             {

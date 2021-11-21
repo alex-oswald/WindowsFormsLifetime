@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using WindowsFormsLifetime.Mvp;
 
 namespace MvpSample.Data
 {
-    public class Note
+    public class Note : IEntity
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public DateTime CreatedOn { get; } = DateTime.Now;
 

@@ -7,7 +7,7 @@ namespace MvpSample.Views
     {
         void SetNotes(List<Note> notes);
 
-        void SelectNote(int noteId);
+        void SelectNote(Guid noteId);
 
         Note SelectedNote { get; }
 
@@ -40,7 +40,7 @@ namespace MvpSample.Views
             });
         }
 
-        public void SelectNote(int noteId)
+        public void SelectNote(Guid noteId)
         {
             _guiContext.Invoke(() =>
             {
@@ -48,7 +48,7 @@ namespace MvpSample.Views
             });
         }
 
-        public Note SelectedNote => NotesListBox!.SelectedItem as Note ?? throw new InvalidCastException(nameof(SelectedNote));
+        public Note SelectedNote => NotesListBox!.SelectedItem as Note;
 
         public event EventHandler CreateNoteClicked
         {

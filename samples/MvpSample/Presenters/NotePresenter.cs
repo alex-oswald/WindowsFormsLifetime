@@ -1,6 +1,7 @@
 ﻿using MvpSample.Data;
 using MvpSample.Events;
 using MvpSample.Views;
+using System.Text.Json;
 using WindowsFormsLifetime.Mvp;
 
 namespace MvpSample.Presenters
@@ -10,33 +11,34 @@ namespace MvpSample.Presenters
         private readonly ILogger<NotePresenter> _logger;
         private readonly INoteView _view;
         private readonly IEventService _eventService;
-        private readonly InMemoryDbContext _appDbContext;
+        private readonly IRepository<Note> _noteRepository;
         private Note? _currentNote = null;
 
         public NotePresenter(
             ILogger<NotePresenter> logger,
             INoteView view,
             IEventService eventService,
-            InMemoryDbContext appDbContext)
+            IRepository<Note> noteRepository)
         {
             _logger = logger;
             _view = view;
             _eventService = eventService;
-            _appDbContext = appDbContext;
+            _noteRepository = noteRepository;
 
             _view.SaveNoteClicked += OnSaveNoteClicked;
+            _view.DeleteNoteClicked += OnDeleteNoteClicked;
 
             _eventService.Subscribe<NoteCreatedEvent>(e =>
             {
-                _logger.LogInformation(nameof(NoteCreatedEvent));
                 _currentNote = new Note();
+                _logger.LogInformation(nameof(NoteCreatedEvent), JsonSerializer.Serialize(_currentNote));
                 _view.SetNote(_currentNote);
             });
 
             _eventService.Subscribe<SelectedNoteChangedEvent>(e =>
             {
-                _logger.LogInformation(nameof(SelectedNoteChangedEvent));
                 _currentNote = e.SelectedNote;
+                _logger.LogInformation(nameof(SelectedNoteChangedEvent), JsonSerializer.Serialize(_currentNote));
                 if (_currentNote is not null)
                 {
                     _view.SetNote(_currentNote);
@@ -44,12 +46,36 @@ namespace MvpSample.Presenters
             });
         }
 
-        private void OnSaveNoteClicked(object? sender, EventArgs e)
+        private async void OnSaveNoteClicked(object? sender, EventArgs e)
         {
-            _currentNote!.Notes = _view.GetNoteText();
-            _appDbContext.Notes!.Update(_currentNote);
-            _appDbContext.SaveChanges();
-            _eventService.Publish<RefreshListEvent>(new(_currentNote));
+            if (_currentNote is not null)
+            {
+                var current = await _noteRepository.GetAsync(_currentNote.Id);
+                // If it doesnt exist, create
+                if (current is null)
+                {
+                    _currentNote.Notes = _view.GetNoteText();
+                    await _noteRepository.InsertAsync(_currentNote);
+                }
+                else
+                {
+                    current.Notes = _view.GetNoteText();
+                    _currentNote = current;
+                    await _noteRepository.UpdateAsync(_currentNote);
+                }
+                _eventService.Publish<RefreshListEvent>(new(_currentNote));
+            }
+        }
+
+        private async void OnDeleteNoteClicked(object? sender, EventArgs e)
+        {
+            if (_currentNote is not null)
+            {
+                var current = await _noteRepository.GetAsync(_currentNote.Id);
+                await _noteRepository.DeleteAsync(current);
+                _currentNote = null;
+                _eventService.Publish<RefreshListEvent>(new());
+            }
         }
     }
 }

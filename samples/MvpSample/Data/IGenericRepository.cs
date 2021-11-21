@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace WindowsFormsLifetime.Mvp
+namespace MvpSample.Data
 {
     public interface IEntity
     {

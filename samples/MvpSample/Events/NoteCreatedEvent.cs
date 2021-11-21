@@ -1,6 +1,4 @@
-﻿using WindowsFormsLifetime.Mvp;
-
-namespace MvpSample.Events
+﻿namespace MvpSample.Events
 {
     internal record NoteCreatedEvent : IEvent
     {

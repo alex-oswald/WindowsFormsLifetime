@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using WindowsFormsLifetime.Mvp;
 
 namespace MvpSample.Data
 {

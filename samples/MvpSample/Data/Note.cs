@@ -1,6 +1,4 @@
-﻿using WindowsFormsLifetime.Mvp;
-
-namespace MvpSample.Data
+﻿namespace MvpSample.Data
 {
     public class Note : IEntity
     {

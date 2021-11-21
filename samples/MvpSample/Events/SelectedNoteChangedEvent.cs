@@ -1,5 +1,4 @@
 ﻿using MvpSample.Data;
-using WindowsFormsLifetime.Mvp;
 
 namespace MvpSample.Events
 {

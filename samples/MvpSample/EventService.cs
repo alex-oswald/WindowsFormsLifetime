@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 
-namespace WindowsFormsLifetime.Mvp
+namespace MvpSample
 {
     public interface IEvent { }
 

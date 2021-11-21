@@ -2,7 +2,6 @@
 using MvpSample.Events;
 using MvpSample.Views;
 using System.Text.Json;
-using WindowsFormsLifetime.Mvp;
 
 namespace MvpSample.Presenters
 {

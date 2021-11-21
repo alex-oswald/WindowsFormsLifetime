@@ -1,6 +1,5 @@
 ﻿using MvpSample.Events;
 using MvpSample.Views;
-using WindowsFormsLifetime.Mvp;
 
 namespace MvpSample.Presenters
 {

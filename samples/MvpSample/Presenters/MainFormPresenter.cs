@@ -37,6 +37,11 @@ namespace MvpSample.Presenters
             {
                 _mainForm.SetNoteViewVisibility(true);
             });
+
+            eventService.Subscribe<SelectedNoteChangedEvent>(e =>
+            {
+                _mainForm.SetNoteViewVisibility(e.SelectedNote is not null);
+            });
         }
 
         private void OnLoad(object? sender, EventArgs e)

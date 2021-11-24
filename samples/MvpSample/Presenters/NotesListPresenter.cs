@@ -21,7 +21,7 @@ namespace MvpSample.Presenters
             _logger = logger;
             _view = view;
             _eventService = eventService;
-            _noteRepository = noteRepository;
+            _noteRepository = noteRepository ?? throw new ArgumentNullException(nameof(noteRepository));
 
             _view.CreateNoteClicked += OnCreateNoteClicked;
             _view.SelectedNoteChanged += OnSelectedNoteChanged;
@@ -47,7 +47,7 @@ namespace MvpSample.Presenters
         private async void OnRefreshList(RefreshListEvent e)
         {
             _logger.LogInformation(nameof(OnRefreshList));
-            var notes = (await _noteRepository.GetAllAsync()).ToList();
+            var notes = (await _noteRepository.GetAllAsync())?.ToList() ?? new();
             _view.SetNotes(notes);
             if (e.SelectedNote is not null)
             {

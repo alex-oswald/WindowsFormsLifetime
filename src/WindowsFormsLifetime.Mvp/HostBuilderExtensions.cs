@@ -1,8 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime;
 
-namespace WindowsFormsLifetime.Mvp
+namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime.Mvp
 {
     public static class HostBuilderExtensions
     {

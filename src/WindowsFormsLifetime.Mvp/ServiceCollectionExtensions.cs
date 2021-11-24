@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace WindowsFormsLifetime.Mvp
+namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime.Mvp
 {
     public static class ServiceCollectionExtensions
     {

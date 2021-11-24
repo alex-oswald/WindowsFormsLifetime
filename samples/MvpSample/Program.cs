@@ -3,7 +3,7 @@ using MvpSample;
 using MvpSample.Data;
 using MvpSample.Presenters;
 using MvpSample.Views;
-using WindowsFormsLifetime.Mvp;
+using OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime.Mvp;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseWindowsFormsLifetime<MainForm, IMainForm, MainFormPresenter>();

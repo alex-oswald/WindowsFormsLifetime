@@ -7,17 +7,22 @@ namespace MvpSample.Data
         where TEntity : class, IEntity
         where TDataContext : DbContext
     {
+        private readonly ILogger<EntityFrameworkRepository<TEntity, TDataContext>> _logger;
         protected readonly TDataContext _context;
         internal DbSet<TEntity> _dbSet;
 
-        public EntityFrameworkRepository(TDataContext dataContext)
+        public EntityFrameworkRepository(
+            ILogger<EntityFrameworkRepository<TEntity, TDataContext>> logger,
+            TDataContext dataContext)
         {
+            _logger = logger;
             _context = dataContext;
             _dbSet = _context.Set<TEntity>();
         }
 
-        public virtual async Task<bool> DeleteAsync(TEntity entityToDelete)
+        public virtual async Task<bool> DeleteAsync(TEntity? entityToDelete)
         {
+            if (entityToDelete == null) return false;
             if (_context.Entry(entityToDelete).State == EntityState.Detached)
             {
                 _dbSet.Attach(entityToDelete);
@@ -28,17 +33,19 @@ namespace MvpSample.Data
 
         public virtual async Task<bool> DeleteAsync(Guid id)
         {
-            TEntity entityToDelete = await _dbSet.FindAsync(id);
+            TEntity? entityToDelete = await _dbSet.FindAsync(id);
             return await DeleteAsync(entityToDelete);
         }
 
-        public virtual async Task<IList<TEntity>> GetAllAsync(
-            Expression<Func<TEntity, bool>> filter = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+        public virtual async Task<IList<TEntity>?> GetAllAsync(
+            Expression<Func<TEntity, bool>>? filter = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
             string includeProperties = "")
         {
             try
             {
+                await Task.Delay(0);
+
                 // Get the dbSet from the Entity passed in                
                 IQueryable<TEntity> query = _dbSet;
 
@@ -67,12 +74,12 @@ namespace MvpSample.Data
             }
             catch (Exception ex)
             {
-                // msg = ex.Message;
+                _logger.LogError(ex, nameof(GetAllAsync));
                 return null;
             }
         }
 
-        public virtual async Task<TEntity> GetAsync(Guid id)
+        public virtual async Task<TEntity?> GetAsync(Guid id)
         {
             return await _dbSet.FindAsync(id);
         }

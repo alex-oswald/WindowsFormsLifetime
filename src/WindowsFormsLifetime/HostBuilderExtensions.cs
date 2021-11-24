@@ -12,7 +12,7 @@ namespace Microsoft.Extensions.Hosting
         /// then waits for the startup form to close before shutting down.
         /// </summary>
         /// <param name="hostBuilder">The <see cref="IHostBuilder" /> to configure.</param>
-        /// <param name="configure">The delegate for configuring the <see cref="WindowsFormsLifetime"/>.</param>
+        /// <param name="configure">The delegate for configuring the <see cref="WindowsFormsLifetimeOptions"/>.</param>
         /// <returns>The same instance of the <see cref="IHostBuilder"/> for chaining.</returns>
         public static IHostBuilder UseWindowsFormsLifetime<TStartForm>(
             this IHostBuilder hostBuilder, Action<WindowsFormsLifetimeOptions> configure = null)
@@ -31,7 +31,7 @@ namespace Microsoft.Extensions.Hosting
         /// </summary>
         /// <param name="hostBuilder">The <see cref="IHostBuilder" /> to configure.</param>
         /// <param name="applicationContextFactory">The <see cref="ApplicationContext"/> factory.</param>
-        /// <param name="configure">The delegate for configuring the <see cref="WindowsFormsLifetime"/>.</param>
+        /// <param name="configure">The delegate for configuring the <see cref="WindowsFormsLifetimeOptions"/>.</param>
         /// <returns>The same instance of the <see cref="IHostBuilder"/> for chaining.</returns>
         public static IHostBuilder UseWindowsFormsLifetime<TAppContext>(
             this IHostBuilder hostBuilder, Func<TAppContext> applicationContextFactory = null, Action<WindowsFormsLifetimeOptions> configure = null)
@@ -59,7 +59,7 @@ namespace Microsoft.Extensions.Hosting
         /// </summary>
         /// <param name="hostBuilder">The <see cref="IHostBuilder" /> to configure.</param>
         /// <param name="applicationContextFactory">The <see cref="ApplicationContext"/> factory.</param>
-        /// <param name="configure">The delegate for configuring the <see cref="WindowsFormsLifetime"/>.</param>
+        /// <param name="configure">The delegate for configuring the <see cref="WindowsFormsLifetimeOptions"/>.</param>
         /// <returns>The same instance of the <see cref="IHostBuilder"/> for chaining.</returns>
         public static IHostBuilder UseWindowsFormsLifetime<TAppContext, TStartForm>(
             this IHostBuilder hostBuilder, Func<TStartForm, TAppContext> applicationContextFactory, Action<WindowsFormsLifetimeOptions> configure = null)

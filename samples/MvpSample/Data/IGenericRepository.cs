@@ -25,9 +25,9 @@ namespace MvpSample.Data
         /// <returns>True if the deletion succeeded.</returns>
         Task<bool> DeleteAsync(Guid id);
 
-        Task<IList<TEntity>> GetAllAsync(
-            Expression<Func<TEntity, bool>> filter = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+        Task<IList<TEntity>?> GetAllAsync(
+            Expression<Func<TEntity, bool>>? filter = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
             string includeProperties = "");
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace MvpSample.Data
         /// </summary>
         /// <param name="id">The id of the entity to get.</param>
         /// <returns>The entity with the specified <see cref="id"/>.</returns>
-        Task<TEntity> GetAsync(Guid id);
+        Task<TEntity?> GetAsync(Guid id);
 
         /// <summary>
         /// Inserts a new entity.

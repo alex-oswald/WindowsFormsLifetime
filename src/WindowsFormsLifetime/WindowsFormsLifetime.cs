@@ -1,12 +1,8 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
-namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
+namespace WindowsFormsLifetime
 {
     /// <summary>
     /// Listens for the startup <see cref="Form"/> to close, then initiates shutdown.
@@ -57,6 +53,7 @@ namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
             return Task.CompletedTask;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2254:Template should be a static expression", Justification = "<Pending>")]
         private void OnApplicationStarted()
         {
             _logger.LogInformation("Application started. Close the startup Form" + (_options.EnableConsoleShutdown ? " or press Ctrl+C" : string.Empty) + " to shut down.");
@@ -81,6 +78,7 @@ namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
             return Task.CompletedTask;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA1816:Dispose methods should call SuppressFinalize", Justification = "<Pending>")]
         public void Dispose()
         {
             _applicationStartedRegistration.Dispose();

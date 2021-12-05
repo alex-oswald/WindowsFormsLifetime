@@ -1,10 +1,10 @@
 ﻿namespace SampleApp
 {
-    public class HostedService2 : BackgroundService
+    public class TickingHostedService : BackgroundService
     {
         private readonly ILogger _logger;
 
-        public HostedService2(ILogger<HostedService2> logger)
+        public TickingHostedService(ILogger<TickingHostedService> logger)
         {
             _logger = logger;
         }
@@ -14,7 +14,7 @@
             while (!stoppingToken.IsCancellationRequested)
             {
                 await Task.Delay(2000);
-                _logger.LogInformation("HostedService2 Tick 2000ms");
+                _logger.LogInformation($"Tick 2000ms {Thread.CurrentThread.ManagedThreadId} {Thread.CurrentThread.Name}");
             }
         }
     }

@@ -1,11 +1,5 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
+﻿namespace WindowsFormsLifetime
 {
-    public delegate TResult GuiFunc<in T, out TResult>(T arg);
-
     internal static class SynchronizationContextExtensions
     {
         public static void Invoke(this SynchronizationContext context, Action action)

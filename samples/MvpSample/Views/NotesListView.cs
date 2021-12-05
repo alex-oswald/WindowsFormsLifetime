@@ -1,5 +1,5 @@
 ﻿using MvpSample.Data;
-using OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime;
+using WindowsFormsLifetime;
 
 namespace MvpSample.Views
 {

@@ -13,5 +13,5 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\WindowsFormsLifetime\WindowsFormsLifetime.csproj" />
 	</ItemGroup>
-	
+
 </Project>

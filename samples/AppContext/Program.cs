@@ -1,4 +1,5 @@
 ﻿using AppContext;
+using WindowsFormsLifetime;
 
 var builder = WebApplication.CreateBuilder(args);
 // Pass in a factory lambda that constructs an ApplicationContext using the start form

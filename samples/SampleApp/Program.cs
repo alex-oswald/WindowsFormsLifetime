@@ -1,4 +1,5 @@
 using SampleApp;
+using WindowsFormsLifetime;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseWindowsFormsLifetime<Form1>();

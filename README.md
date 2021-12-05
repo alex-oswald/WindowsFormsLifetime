@@ -194,7 +194,7 @@ public class HostedService1 : BackgroundService
 
 ## Model-View-Presenter
 
-The MVP pattern can be a good pattern to use to develop a Windows Forms application. The `WindowsFormsLifetime.Mvp`
+The MVP pattern is a good pattern to use to develop a Windows Forms application. The `WindowsFormsLifetime.Mvp`
 library contains some extension methods and classes to assist in developing an MVP app with `WindowsFormsLifetime
 and the generic host.
 

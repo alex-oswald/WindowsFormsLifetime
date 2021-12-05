@@ -1,11 +1,8 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Windows.Forms;
+using WindowsFormsLifetime;
 using Xunit;
-using Microsoft.Extensions.DependencyInjection;
-using OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime;
 using Timer = System.Windows.Forms.Timer;
 
 namespace WindowsFormsLifetimeTests
@@ -48,7 +45,7 @@ namespace WindowsFormsLifetimeTests
 
             using var host = hostBuilder.Build();
 
-            Assert.IsType<WindowsFormsLifetime>(host.Services.GetService<IHostLifetime>());
+            Assert.IsType<WindowsFormsLifetime.WindowsFormsLifetime>(host.Services.GetService<IHostLifetime>());
             Assert.IsType<WindowsFormsHostedService>(host.Services.GetService<IHostedService>());
             Assert.NotNull(host.Services.GetService<ApplicationContext>());
             Assert.NotNull(host.Services.GetService<TestForm>());
@@ -61,7 +58,7 @@ namespace WindowsFormsLifetimeTests
 
             using var host = hostBuilder.Build();
 
-            Assert.IsType<WindowsFormsLifetime>(host.Services.GetService<IHostLifetime>());
+            Assert.IsType<WindowsFormsLifetime.WindowsFormsLifetime>(host.Services.GetService<IHostLifetime>());
             Assert.IsType<WindowsFormsHostedService>(host.Services.GetService<IHostedService>());
             Assert.NotNull(host.Services.GetService<ApplicationContext>());
             Assert.NotNull(host.Services.GetService<TestContext>());
@@ -75,7 +72,7 @@ namespace WindowsFormsLifetimeTests
 
             using var host = hostBuilder.Build();
 
-            Assert.IsType<WindowsFormsLifetime>(host.Services.GetService<IHostLifetime>());
+            Assert.IsType<WindowsFormsLifetime.WindowsFormsLifetime>(host.Services.GetService<IHostLifetime>());
             Assert.IsType<WindowsFormsHostedService>(host.Services.GetService<IHostedService>());
             Assert.NotNull(host.Services.GetService<ApplicationContext>());
             Assert.NotNull(host.Services.GetService<TestContext>());

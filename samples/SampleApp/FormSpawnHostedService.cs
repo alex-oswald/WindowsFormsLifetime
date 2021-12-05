@@ -1,4 +1,4 @@
-﻿using OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime;
+﻿using WindowsFormsLifetime;
 
 namespace SampleApp
 {

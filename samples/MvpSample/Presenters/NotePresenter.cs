@@ -1,7 +1,7 @@
 ﻿using MvpSample.Data;
 using MvpSample.Events;
 using MvpSample.Views;
-using OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime;
+using WindowsFormsLifetime;
 
 namespace MvpSample.Presenters
 {

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime;
 
 namespace WindowsFormsLifetime.Mvp
 {

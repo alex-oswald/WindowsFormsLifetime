@@ -3,6 +3,7 @@ using MvpSample.Data;
 using MvpSample.Events;
 using MvpSample.Presenters;
 using MvpSample.Views;
+using WindowsFormsLifetime;
 using WindowsFormsLifetime.Mvp;
 
 var builder = WebApplication.CreateBuilder(args);

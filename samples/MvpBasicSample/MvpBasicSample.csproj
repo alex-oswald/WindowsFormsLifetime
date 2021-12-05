@@ -10,7 +10,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\src\WindowsFormsLifetime.Mvp\WindowsFormsLifetime.Mvp.csproj" />
+		<ProjectReference Include="..\..\src\WindowsFormsLifetime.Mvp\WindowsFormsLifetime.Mvp.csproj" />
 	</ItemGroup>
 
 </Project>

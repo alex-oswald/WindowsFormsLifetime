@@ -28,7 +28,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WindowsFormsLifetime.Mvp", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WindowsFormsLifetime.Mvp.Generators", "src\WindowsFormsLifetime.Mvp.Generators\WindowsFormsLifetime.Mvp.Generators.csproj", "{CABEAC54-A2D0-43E8-8BB6-BDD6BA4FC669}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvpBasicSample", "MvpBasicSample\MvpBasicSample.csproj", "{A59AAF6E-82CA-456B-BF72-19016AD4F8FD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvpBasicSample", "samples\MvpBasicSample\MvpBasicSample.csproj", "{A59AAF6E-82CA-456B-BF72-19016AD4F8FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WindowsFormsLifetime.Mvp;
 
 namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime.Mvp
 {
@@ -9,7 +10,7 @@ namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime.Mvp
             this IHostBuilder hostBuilder, Action<WindowsFormsLifetimeOptions>? configure = null)
             where TStartForm : Form, TView
             where TView : class
-            where TPresenter : class
+            where TPresenter : BaseMainFormPresenter<TStartForm, TView>
             => hostBuilder.ConfigureServices((context, services) =>
             {
                 services.AddSingleton<TStartForm>();

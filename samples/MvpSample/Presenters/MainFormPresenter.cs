@@ -1,12 +1,12 @@
 ﻿using MvpSample.Events;
 using MvpSample.Views;
+using WindowsFormsLifetime.Mvp;
 
 namespace MvpSample.Presenters
 {
-    internal class MainFormPresenter
+    internal class MainFormPresenter : BaseMainFormPresenter<MainForm, IMainForm>
     {
         private readonly ILogger<MainFormPresenter> _logger;
-        private readonly IMainForm _mainForm;
         private readonly IEventService _eventService;
         private readonly NotesListPresenter _notesListPresenter;
         private readonly INotesListView _notesListView;
@@ -14,42 +14,41 @@ namespace MvpSample.Presenters
         private readonly INoteView _noteView;
 
         public MainFormPresenter(
-            ILogger<MainFormPresenter> logger,
             ApplicationContext applicationContext,
+            ILogger<MainFormPresenter> logger,
             IEventService eventService,
             NotesListPresenter notesListPresenter,
             INotesListView notesListView,
             NotePresenter notePresenter,
             INoteView noteView)
+            : base(applicationContext)
         {
             _logger = logger;
-            _mainForm = applicationContext.MainForm as IMainForm
-                ?? throw new ArgumentNullException(nameof(applicationContext));
             _eventService = eventService;
             _notesListPresenter = notesListPresenter;
             _notesListView = notesListView;
             _notePresenter = notePresenter;
             _noteView = noteView;
 
-            _mainForm.Load += OnLoad;
+            View.Load += OnLoad;
 
             eventService.Subscribe<NoteCreatedEvent>(e =>
             {
-                _mainForm.SetNoteViewVisibility(true);
+                View.SetNoteViewVisibility(true);
             });
 
             eventService.Subscribe<SelectedNoteChangedEvent>(e =>
             {
-                _mainForm.SetNoteViewVisibility(e.SelectedNote is not null);
+                View.SetNoteViewVisibility(e.SelectedNote is not null);
             });
         }
 
         private void OnLoad(object? sender, EventArgs e)
         {
             _logger.LogInformation(nameof(OnLoad));
-            _mainForm.SetNotesList(_notesListView);
-            _mainForm.SetNoteView(_noteView);
-            _mainForm.SetNoteViewVisibility(false);
+            View.SetNotesList(_notesListView);
+            View.SetNoteView(_noteView);
+            View.SetNoteViewVisibility(false);
 
             _eventService.Publish<RefreshListEvent>(new());
         }

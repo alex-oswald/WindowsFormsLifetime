@@ -9,7 +9,7 @@ namespace MvpSample.Views
 
         void SelectNote(Guid noteId);
 
-        Note SelectedNote { get; }
+        Note? SelectedNote { get; }
 
         UserControl This { get; }
 
@@ -48,7 +48,7 @@ namespace MvpSample.Views
             });
         }
 
-        public Note SelectedNote => NotesListBox!.SelectedItem as Note;
+        public Note? SelectedNote => NotesListBox.SelectedItem as Note;
 
         public event EventHandler CreateNoteClicked
         {

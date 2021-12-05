@@ -42,18 +42,20 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.NoteTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.NoteTextBox.Location = new System.Drawing.Point(0, 0);
+            this.NoteTextBox.Margin = new System.Windows.Forms.Padding(6);
             this.NoteTextBox.Multiline = true;
             this.NoteTextBox.Name = "NoteTextBox";
             this.NoteTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.NoteTextBox.Size = new System.Drawing.Size(600, 437);
+            this.NoteTextBox.Size = new System.Drawing.Size(1113, 930);
             this.NoteTextBox.TabIndex = 0;
             // 
             // SaveButton
             // 
             this.SaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.SaveButton.Location = new System.Drawing.Point(15, 450);
+            this.SaveButton.Location = new System.Drawing.Point(28, 960);
+            this.SaveButton.Margin = new System.Windows.Forms.Padding(6);
             this.SaveButton.Name = "SaveButton";
-            this.SaveButton.Size = new System.Drawing.Size(109, 35);
+            this.SaveButton.Size = new System.Drawing.Size(202, 75);
             this.SaveButton.TabIndex = 1;
             this.SaveButton.Text = "Save Note";
             this.SaveButton.UseVisualStyleBackColor = true;
@@ -62,9 +64,10 @@
             // 
             this.CreatedOnLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.CreatedOnLabel.AutoSize = true;
-            this.CreatedOnLabel.Location = new System.Drawing.Point(295, 460);
+            this.CreatedOnLabel.Location = new System.Drawing.Point(548, 981);
+            this.CreatedOnLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.CreatedOnLabel.Name = "CreatedOnLabel";
-            this.CreatedOnLabel.Size = new System.Drawing.Size(70, 15);
+            this.CreatedOnLabel.Size = new System.Drawing.Size(141, 32);
             this.CreatedOnLabel.TabIndex = 2;
             this.CreatedOnLabel.Text = "Created On:";
             // 
@@ -72,32 +75,35 @@
             // 
             this.CreatedOnValueLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.CreatedOnValueLabel.AutoSize = true;
-            this.CreatedOnValueLabel.Location = new System.Drawing.Point(371, 460);
+            this.CreatedOnValueLabel.Location = new System.Drawing.Point(689, 981);
+            this.CreatedOnValueLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.CreatedOnValueLabel.Name = "CreatedOnValueLabel";
-            this.CreatedOnValueLabel.Size = new System.Drawing.Size(0, 15);
+            this.CreatedOnValueLabel.Size = new System.Drawing.Size(0, 32);
             this.CreatedOnValueLabel.TabIndex = 3;
             // 
             // DeleteButton
             // 
             this.DeleteButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.DeleteButton.Location = new System.Drawing.Point(130, 450);
+            this.DeleteButton.Location = new System.Drawing.Point(241, 960);
+            this.DeleteButton.Margin = new System.Windows.Forms.Padding(6);
             this.DeleteButton.Name = "DeleteButton";
-            this.DeleteButton.Size = new System.Drawing.Size(109, 35);
+            this.DeleteButton.Size = new System.Drawing.Size(202, 75);
             this.DeleteButton.TabIndex = 2;
             this.DeleteButton.Text = "Delete Note";
             this.DeleteButton.UseVisualStyleBackColor = true;
             // 
             // NoteView
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 32F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.DeleteButton);
             this.Controls.Add(this.CreatedOnValueLabel);
             this.Controls.Add(this.CreatedOnLabel);
             this.Controls.Add(this.SaveButton);
             this.Controls.Add(this.NoteTextBox);
+            this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "NoteView";
-            this.Size = new System.Drawing.Size(600, 500);
+            this.Size = new System.Drawing.Size(1114, 1067);
             this.ResumeLayout(false);
             this.PerformLayout();
 

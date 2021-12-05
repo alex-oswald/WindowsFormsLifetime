@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using MvpSample;
 using MvpSample.Data;
+using MvpSample.Events;
 using MvpSample.Presenters;
 using MvpSample.Views;
 using OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime.Mvp;

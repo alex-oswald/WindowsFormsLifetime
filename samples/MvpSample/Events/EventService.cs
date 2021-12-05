@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 
-namespace MvpSample
+namespace MvpSample.Events
 {
     public interface IEvent { }
 

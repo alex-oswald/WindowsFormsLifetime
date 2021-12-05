@@ -1,7 +1,7 @@
 ﻿using MvpSample.Data;
 using MvpSample.Events;
 using MvpSample.Views;
-using WindowsFormsLifetime.Mvp;
+using OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime;
 
 namespace MvpSample.Presenters
 {
@@ -11,17 +11,20 @@ namespace MvpSample.Presenters
         private readonly INotesListView _view;
         private readonly IEventService _eventService;
         private readonly IRepository<Note> _noteRepository;
+        private readonly IGuiContext _guiContext;
 
         public NotesListPresenter(
             ILogger<NotesListPresenter> logger,
             INotesListView view,
             IEventService eventService,
-            IRepository<Note> noteRepository)
+            IRepository<Note> noteRepository,
+            IGuiContext guiContext)
         {
             _logger = logger;
             _view = view;
             _eventService = eventService;
             _noteRepository = noteRepository ?? throw new ArgumentNullException(nameof(noteRepository));
+            _guiContext = guiContext;
 
             _view.CreateNoteClicked += OnCreateNoteClicked;
             _view.SelectedNoteChanged += OnSelectedNoteChanged;
@@ -39,9 +42,17 @@ namespace MvpSample.Presenters
         private void OnCreateNoteClicked(object? sender, EventArgs e)
         {
             _logger.LogInformation(nameof(OnCreateNoteClicked));
-            // Deselect note before creating
-            _view.SelectNote(Guid.Empty);
-            _eventService.Publish<NoteCreatedEvent>(new());
+
+            _guiContext.Invoke(() =>
+            {
+                var result = MessageBox.Show("Create a new note?", "Create Note", MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
+                {
+                    // Deselect note before creating
+                    _view.SelectNote(Guid.Empty);
+                    _eventService.Publish<NoteCreatedEvent>(new());
+                }
+            });
         }
 
         private async void OnRefreshList(RefreshListEvent e)

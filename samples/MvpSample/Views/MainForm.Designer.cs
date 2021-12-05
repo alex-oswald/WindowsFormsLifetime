@@ -36,27 +36,30 @@
             // 
             this.MenuPanel.Dock = System.Windows.Forms.DockStyle.Left;
             this.MenuPanel.Location = new System.Drawing.Point(0, 0);
+            this.MenuPanel.Margin = new System.Windows.Forms.Padding(6);
             this.MenuPanel.Name = "MenuPanel";
-            this.MenuPanel.Size = new System.Drawing.Size(200, 523);
+            this.MenuPanel.Size = new System.Drawing.Size(371, 915);
             this.MenuPanel.TabIndex = 0;
             // 
             // BodyPanel
             // 
             this.BodyPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.BodyPanel.Location = new System.Drawing.Point(200, 0);
+            this.BodyPanel.Location = new System.Drawing.Point(371, 0);
+            this.BodyPanel.Margin = new System.Windows.Forms.Padding(6);
             this.BodyPanel.Name = "BodyPanel";
-            this.BodyPanel.Size = new System.Drawing.Size(627, 523);
+            this.BodyPanel.Size = new System.Drawing.Size(1066, 915);
             this.BodyPanel.TabIndex = 1;
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 32F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(827, 523);
+            this.ClientSize = new System.Drawing.Size(1437, 915);
             this.Controls.Add(this.BodyPanel);
             this.Controls.Add(this.MenuPanel);
             this.DoubleBuffered = true;
-            this.MinimumSize = new System.Drawing.Size(800, 500);
+            this.Margin = new System.Windows.Forms.Padding(6);
+            this.MinimumSize = new System.Drawing.Size(1463, 986);
             this.Name = "MainForm";
             this.Text = "Form1";
             this.ResumeLayout(false);

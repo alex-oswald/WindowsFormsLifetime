@@ -8,6 +8,7 @@ namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime.Mvp
         public static IHostBuilder UseWindowsFormsLifetime<TStartForm, TView, TPresenter>(
             this IHostBuilder hostBuilder, Action<WindowsFormsLifetimeOptions>? configure = null)
             where TStartForm : Form, TView
+            where TView : class
             where TPresenter : class
             => hostBuilder.ConfigureServices((context, services) =>
             {

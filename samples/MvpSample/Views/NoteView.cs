@@ -9,6 +9,10 @@ namespace MvpSample.Views
 
         string GetNoteText();
 
+        bool SaveButtonEnabled { get; set; }
+
+        bool DeleteButtonEnabled { get; set; }
+
         UserControl This { get; }
 
         event EventHandler SaveNoteClicked;
@@ -24,14 +28,6 @@ namespace MvpSample.Views
         {
             InitializeComponent();
             _guiContext = guiContext;
-
-            DeleteNoteClicked += OnDeleteNoteClicked;
-        }
-
-        private void OnDeleteNoteClicked(object? sender, EventArgs e)
-        {
-            NoteTextBox.Text = null;
-            CreatedOnValueLabel.Text = null;
         }
 
         public UserControl This => this;
@@ -43,6 +39,18 @@ namespace MvpSample.Views
                 NoteTextBox.Text = note.Notes;
                 CreatedOnValueLabel.Text = note.CreatedOn.ToString("G");
             });
+        }
+
+        public bool SaveButtonEnabled
+        {
+            get => SaveButton.Enabled;
+            set => _guiContext.Invoke(() => SaveButton.Enabled == value);
+        }
+
+        public bool DeleteButtonEnabled
+        {
+            get => DeleteButton.Enabled;
+            set => _guiContext.Invoke(() => DeleteButton.Enabled == value);
         }
 
         public string GetNoteText() => NoteTextBox.Text;

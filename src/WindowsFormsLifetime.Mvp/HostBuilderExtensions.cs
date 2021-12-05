@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using WindowsFormsLifetime.Mvp;
+using OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime;
 
-namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime.Mvp
+namespace WindowsFormsLifetime.Mvp
 {
     public static class HostBuilderExtensions
     {
@@ -10,13 +10,18 @@ namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime.Mvp
             this IHostBuilder hostBuilder, Action<WindowsFormsLifetimeOptions>? configure = null)
             where TStartForm : Form, TView
             where TView : class
-            where TPresenter : BaseMainFormPresenter<TStartForm, TView>
+            where TPresenter : BaseMainFormPresenter<TView>
             => hostBuilder.ConfigureServices((context, services) =>
             {
                 services.AddSingleton<TStartForm>();
                 services.AddSingleton(provider => new ApplicationContext(provider.GetRequiredService<TStartForm>()));
                 services.AddSingleton<TPresenter>();
-                services.AddWindowsFormsLifetime(configure);
+                services.AddWindowsFormsLifetime(configure, services =>
+                {
+                    // Instantiate the presenter before running the application
+                    // If we don't do this, a presenter won't exist, and your form won't work
+                    var presenter = services.GetRequiredService<TPresenter>();
+                });
             });
     }
 }

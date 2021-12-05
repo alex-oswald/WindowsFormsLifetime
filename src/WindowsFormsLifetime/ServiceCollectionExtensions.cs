@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using System;
 
 namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
@@ -7,10 +8,16 @@ namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
     public static class ServiceCollectionExtensions
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1806:Do not ignore method results", Justification = "<Pending>")]
-        public static IServiceCollection AddWindowsFormsLifetime(this IServiceCollection services, Action<WindowsFormsLifetimeOptions> configure)
+        public static IServiceCollection AddWindowsFormsLifetime(this IServiceCollection services, Action<WindowsFormsLifetimeOptions> configure, Action<IServiceProvider> preApplicationRunAction = null)
         {
             services.AddSingleton<IHostLifetime, WindowsFormsLifetime>();
-            services.AddHostedService<WindowsFormsHostedService>();
+            services.AddHostedService(sp =>
+            {
+                var options = sp.GetRequiredService<IOptions<WindowsFormsLifetimeOptions>>();
+                var life = sp.GetRequiredService<IHostApplicationLifetime>();
+                var sync = sp.GetRequiredService<WindowsFormsSynchronizationContextProvider>();
+                return new WindowsFormsHostedService(options, life, sp, sync, preApplicationRunAction);
+            });
             services.Configure(configure ?? (_ => new WindowsFormsLifetimeOptions()));
 
             services.AddSingleton<IFormProvider, FormProvider>();

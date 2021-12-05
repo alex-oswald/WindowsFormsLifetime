@@ -1,7 +1,6 @@
 ﻿namespace WindowsFormsLifetime.Mvp
 {
-    public abstract class BaseMainFormPresenter<TStartForm, TView>
-        where TStartForm : Form, TView
+    public abstract class BaseMainFormPresenter<TView>
         where TView : class
     {
         public BaseMainFormPresenter(ApplicationContext applicationContext)

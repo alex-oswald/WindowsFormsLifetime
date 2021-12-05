@@ -4,7 +4,7 @@ using WindowsFormsLifetime.Mvp;
 
 namespace MvpSample.Presenters
 {
-    internal class MainFormPresenter : BaseMainFormPresenter<MainForm, IMainForm>
+    internal class MainFormPresenter : BaseMainFormPresenter<IMainForm>
     {
         private readonly ILogger<MainFormPresenter> _logger;
         private readonly IEventService _eventService;

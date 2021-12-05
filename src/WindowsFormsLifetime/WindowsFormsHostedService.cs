@@ -20,13 +20,17 @@ namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
             IOptions<WindowsFormsLifetimeOptions> options,
             IHostApplicationLifetime hostApplicationLifetime,
             IServiceProvider serviceProvider,
-            WindowsFormsSynchronizationContextProvider syncContextManager)
+            WindowsFormsSynchronizationContextProvider syncContextManager,
+            Action<IServiceProvider> preApplicationRunAction)
         {
             _options = options.Value;
             _hostApplicationLifetime = hostApplicationLifetime;
             _serviceProvider = serviceProvider;
             _syncContextManager = syncContextManager;
+            PreApplicationRunAction = preApplicationRunAction;
         }
+
+        public Action<IServiceProvider> PreApplicationRunAction { get; private set; }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
@@ -67,6 +71,7 @@ namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
             SynchronizationContext.SetSynchronizationContext(_syncContextManager.SynchronizationContext);
 
             var applicationContext = _serviceProvider.GetService<ApplicationContext>();
+            PreApplicationRunAction?.Invoke(_serviceProvider);
             Application.Run(applicationContext);
         }
 

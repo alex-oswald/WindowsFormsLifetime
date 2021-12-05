@@ -2,17 +2,17 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net6.0-windows</TargetFrameworks>
-		<Nullable>disable</Nullable>
+		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<PackageId>OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime</PackageId>
-		<Version>1.0.0</Version>
+		<PackageId>WindowsFormsLifetime.Mvp</PackageId>
+		<Version>0.1.0</Version>
 		<Authors>Alex Oswald</Authors>
 		<Company>Oswald Technologies, LLC</Company>
-		<Description>.NET Core hosting infrastructure for Windows Forms.</Description>
+		<Description>Model-View-Presenter extensions for WindowsFormsLifetime</Description>
 		<RepositoryUrl>https://github.com/alex-oswald/WindowsFormsLifetime</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<RootNamespace>WindowsFormsLifetime</RootNamespace>
-		<AssemblyName>WindowsFormsLifetime</AssemblyName>
+		<RootNamespace>WindowsFormsLifetime.Mvp</RootNamespace>
+		<AssemblyName>WindowsFormsLifetime.Mvp</AssemblyName>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<IncludeSymbols>true</IncludeSymbols>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
@@ -20,7 +20,7 @@
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 
-		<PackageTags>netcore;hosting;winforms</PackageTags>
+		<PackageTags>netcore;hosting;winforms;mvp</PackageTags>
 		<UseWindowsForms>true</UseWindowsForms>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
@@ -33,11 +33,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
+	  <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\WindowsFormsLifetime\WindowsFormsLifetime.csproj" />
 	</ItemGroup>
 
 </Project>

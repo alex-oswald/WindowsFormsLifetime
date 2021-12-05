@@ -1,12 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
-namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
+namespace WindowsFormsLifetime
 {
-    public interface IFormProvider : IWindowsFormsSynchronizationContext
+    public interface IFormProvider
     {
         /// <summary>
         /// Gets the requested form type and ensures it is created on the UI thread.
@@ -14,27 +10,26 @@ namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
         /// <typeparam name="T">The form type to get.</typeparam>
         /// <returns>An instance of the form, asynchronously.</returns>
         Task<T> GetFormAsync<T>() where T : Form;
+
+        Task<Form> GetMainFormAsync();
     }
 
-    public interface IWindowsFormsSynchronizationContext
-    {
-        /// <summary>
-        /// Gets the <see cref="WindowsFormsSynchronizationContext"/> for the UI thread.
-        /// </summary>
-        WindowsFormsSynchronizationContext SynchronizationContext { get; }
-    }
-
-    public class FormProvider : IFormProvider, IGuiContext
+    public class FormProvider : IFormProvider
     {
         private readonly SemaphoreSlim _semaphore = new(1, 1);
         private readonly IServiceProvider _serviceProvider;
+        private readonly ApplicationContext _applicationContext;
+        private readonly IWindowsFormsSynchronizationContextProvider _syncContextManager;
 
-        public FormProvider(IServiceProvider serviceProvider)
+        public FormProvider(
+            IServiceProvider serviceProvider,
+            ApplicationContext applicationContext,
+            IWindowsFormsSynchronizationContextProvider syncContextManager)
         {
             _serviceProvider = serviceProvider;
+            _applicationContext = applicationContext;
+            _syncContextManager = syncContextManager;
         }
-
-        public WindowsFormsSynchronizationContext SynchronizationContext { get; internal set; }
 
         public async Task<T> GetFormAsync<T>()
             where T : Form
@@ -42,19 +37,13 @@ namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
             // We are throttling this because there is only one gui thread
             await _semaphore.WaitAsync();
 
-            var form = await SynchronizationContext.InvokeAsync(() => _serviceProvider.GetService<T>());
+            var form = await _syncContextManager.SynchronizationContext.InvokeAsync(() => _serviceProvider.GetService<T>());
 
             _semaphore.Release();
 
             return form;
         }
 
-        public void Invoke(Action action) => action();
-
-        public TResult Invoke<TResult>(Func<TResult> func) => func();
-
-        public async Task<TResult> InvokeAsync<TResult>(Func<TResult> func) => await SynchronizationContext.InvokeAsync(func);
-
-        public async Task<TResult> InvokeAsync<TResult, TInput>(Func<TInput, TResult> func, TInput input) => await SynchronizationContext.InvokeAsync(func, input);
+        public Task<Form> GetMainFormAsync() => Task.FromResult(_applicationContext.MainForm);
     }
 }

@@ -1,7 +1,6 @@
-﻿using OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime;
-using SampleApp;
+﻿using WindowsFormsLifetime;
 
-namespace WindowsFormsLifetime.Sample
+namespace SampleApp
 {
     public partial class Form1 : Form
     {
@@ -17,17 +16,16 @@ namespace WindowsFormsLifetime.Sample
             ThreadLabel.Text = $"{Thread.CurrentThread.ManagedThreadId} {Thread.CurrentThread.Name}";
         }
 
-
         private async void button1_Click(object sender, EventArgs e)
         {
-            _logger.LogInformation("Show Form2");
+            _logger.LogInformation("Show");
             var form = await _formProvider.GetFormAsync<Form2>();
             form.Show();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            _logger.LogInformation("Close Form1");
+            _logger.LogInformation("Close");
             this.Close();
         }
     }

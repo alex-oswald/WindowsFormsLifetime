@@ -1,12 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
-namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
+namespace WindowsFormsLifetime
 {
     public class WindowsFormsHostedService : IHostedService, IDisposable
     {
@@ -14,19 +10,23 @@ namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
         private readonly WindowsFormsLifetimeOptions _options;
         private readonly IHostApplicationLifetime _hostApplicationLifetime;
         private readonly IServiceProvider _serviceProvider;
-        private readonly FormProvider _formProvider;
+        private readonly WindowsFormsSynchronizationContextProvider _syncContextManager;
 
         public WindowsFormsHostedService(
             IOptions<WindowsFormsLifetimeOptions> options,
             IHostApplicationLifetime hostApplicationLifetime,
             IServiceProvider serviceProvider,
-            FormProvider formProvider)
+            WindowsFormsSynchronizationContextProvider syncContextManager,
+            Action<IServiceProvider> preApplicationRunAction)
         {
             _options = options.Value;
             _hostApplicationLifetime = hostApplicationLifetime;
             _serviceProvider = serviceProvider;
-            _formProvider = formProvider;
+            _syncContextManager = syncContextManager;
+            PreApplicationRunAction = preApplicationRunAction;
         }
+
+        public Action<IServiceProvider> PreApplicationRunAction { get; private set; }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
@@ -63,10 +63,11 @@ namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
             WindowsFormsSynchronizationContext.AutoInstall = false;
 
             // Create the sync context on our UI thread
-            _formProvider.SynchronizationContext = new WindowsFormsSynchronizationContext();
-            SynchronizationContext.SetSynchronizationContext(_formProvider.SynchronizationContext);
+            _syncContextManager.SynchronizationContext = new WindowsFormsSynchronizationContext();
+            SynchronizationContext.SetSynchronizationContext(_syncContextManager.SynchronizationContext);
 
             var applicationContext = _serviceProvider.GetService<ApplicationContext>();
+            PreApplicationRunAction?.Invoke(_serviceProvider);
             Application.Run(applicationContext);
         }
 
@@ -93,6 +94,7 @@ namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
             _hostApplicationLifetime.StopApplication();
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA1816:Dispose methods should call SuppressFinalize", Justification = "<Pending>")]
         public void Dispose()
         {
             Application.ApplicationExit -= OnApplicationExit;

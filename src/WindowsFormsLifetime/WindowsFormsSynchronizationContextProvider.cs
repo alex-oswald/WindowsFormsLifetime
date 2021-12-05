@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
+﻿namespace WindowsFormsLifetime
 {
     public interface IGuiContext
     {

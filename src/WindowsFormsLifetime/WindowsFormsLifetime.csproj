@@ -3,15 +3,16 @@
 	<PropertyGroup>
 		<TargetFrameworks>net6.0-windows</TargetFrameworks>
 		<Nullable>disable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
 		<PackageId>OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime</PackageId>
-		<Version>0.1.0</Version>
+		<Version>1.0.0</Version>
 		<Authors>Alex Oswald</Authors>
 		<Company>Oswald Technologies, LLC</Company>
 		<Description>.NET Core hosting infrastructure for Windows Forms.</Description>
 		<RepositoryUrl>https://github.com/alex-oswald/WindowsFormsLifetime</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<RootNamespace>OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime</RootNamespace>
-		<AssemblyName>OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime</AssemblyName>
+		<RootNamespace>WindowsFormsLifetime</RootNamespace>
+		<AssemblyName>WindowsFormsLifetime</AssemblyName>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<IncludeSymbols>true</IncludeSymbols>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>

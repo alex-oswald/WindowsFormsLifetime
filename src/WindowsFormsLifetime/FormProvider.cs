@@ -1,10 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
-namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
+namespace WindowsFormsLifetime
 {
     public interface IFormProvider
     {

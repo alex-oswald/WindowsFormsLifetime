@@ -1,12 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
-namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
+namespace WindowsFormsLifetime
 {
     public class WindowsFormsHostedService : IHostedService, IDisposable
     {

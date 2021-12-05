@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using System;
 
-namespace OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
+namespace WindowsFormsLifetime
 {
     public static class ServiceCollectionExtensions
     {

@@ -11,7 +11,6 @@ pool:
 variables:
   buildConfiguration: 'Release'
   solution: '**/*.sln'
-  buildProjects: '**/*.csproj;!**/*.Tests.csproj'
   testProjects: '**/*Tests/*.csproj'
 
 steps:
@@ -21,17 +20,20 @@ steps:
     version: 6.x
 
 - task: DotNetCoreCLI@2
+  displayName: 'Restore Solution'
   inputs:
     command: restore
     projects: '$(solution)'
 
 - task: DotNetCoreCLI@2
+  displayName: 'Build Projects'
   inputs:
     command: build
     arguments: '--configuration $(buildConfiguration)'
-    projects: '$(buildProjects)'
+    projects: '$(solution)'
 
 - task: DotNetCoreCLI@2
+  displayName: 'Run Tests'
   inputs:
     command: test
     projects: '$(testProjects)'

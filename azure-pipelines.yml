@@ -10,6 +10,9 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
+  solution: '**/*.sln'
+  buildProjects: '**/*.csproj;!**/*.Tests.csproj'
+  testProjects: '**/*Tests/*.csproj'
 
 steps:
 - task: UseDotNet@2
@@ -20,19 +23,19 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: restore
-    projects: '**/*.sln'
+    projects: '$(solution)'
 
 - task: DotNetCoreCLI@2
   inputs:
     command: build
     arguments: '--configuration $(buildConfiguration)'
-    projects: 'src/WindowsFormsLifetime/WindowsFormsLifetime.csproj'
+    projects: '$(buildProjects)'
 
 - task: DotNetCoreCLI@2
   inputs:
     command: test
-    projects: '**/*[Tt]ests/*.csproj'
-    arguments: '--configuration $(BuildConfiguration)'
+    projects: '$(testProjects)'
+    arguments: '--configuration $(buildConfiguration)'
 
 - task: PublishBuildArtifacts@1
   inputs:

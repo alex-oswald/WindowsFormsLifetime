@@ -7,11 +7,15 @@
 A Windows Forms hosting extension for .NET Core's generic host. Enables you to configure the generic host to use the lifetime of Windows Forms.
 When configured, the generic host will start an `IHostedService` that runs Windows Forms in a separate thread.
 
-## Getting Started
+- The Generic Host will use Windows Forms as it's lifetime (when the main form closes, the host shuts down)
+- All the benefits of .NET and the Generic Host, dependency injection, configuration, logging...
+- Easier multi-threading in Windows Forms
+
+## Quick Start
 
 Install the `OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime` package from NuGet.
 
-Using powershell
+Using Powershell
 
 ```powershell
 Install-Package OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
@@ -21,11 +25,64 @@ Using the .NET CLI
 
 ```
 dotnet add package OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
-```
+``` 
 
-With .NET 6, this is super simple! Start a Windows Forms app running the .NET generic host with 4 lines of code!
+Create a new **Windows Forms App**.
+
+Replace the contents of `Program.cs` with the following.
 
 ```csharp
+namespace WinFormsApp1
+{
+    internal static class Program
+    {
+        static void Main()
+        {
+            CreateHostBuilder().Build().Run();
+        }
+
+        public static IHostBuilder CreateHostBuilder() =>
+            Host.CreateDefaultBuilder(Array.Empty<string>())
+                .UseWindowsFormsLifetime<Form1>()
+                .ConfigureServices((hostContext, services) =>
+                {
+
+                });
+    }
+}
+```
+
+**Run the app!**
+
+**Your Windows Forms app is now running on the Generic Host!**
+
+
+### Use the Minimal API
+
+Change the projects sdk to `Microsoft.NET.Sdk.Web` so we can use the `WebApplication` class.
+
+Add `NoDefaultLaunchSettingsFile` to the `csproj` so a `launchSettings.json` file isn't created automatically for us.
+
+```xml
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net6.0-windows</TargetFramework>
+		<Nullable>enable</Nullable>
+		<UseWindowsForms>true</UseWindowsForms>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
+	</PropertyGroup>
+
+</Project>
+```
+
+Replace the contents of `Program.cs` with the following.
+
+```csharp
+using WinFormsApp1;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseWindowsFormsLifetime<Form1>();
 var app = builder.Build();
@@ -33,99 +90,44 @@ app.Run();
 ```
 
 
-#### Setup the `Program` class
-
-When creating a new Windows Forms .NET Core project your `Program` class will look like the following:
-
-```csharp
-static class Program
-{
-    /// <summary>
-    ///  The main entry point for the application.
-    /// </summary>
-    [STAThread]
-    static void Main()
-    {
-        Application.SetHighDpiMode(HighDpiMode.SystemAware);
-        Application.EnableVisualStyles();
-        Application.SetCompatibleTextRenderingDefault(false);
-        Application.Run(new Form1());
-    }
-}
-```
-
-We will transform this to look very similar to an ASP.NET Core Web Application's `Program` class. We then chain the
-`UseWindowsFormsLifeTime<TStartForm>` extension method onto the `IHostBuilder`. Replace `TStartForm` with your startup `Form`.
-The below is an example of an updated `Program` class using the default builder.
-
-```csharp
-static class Program
-{
-    static void Main()
-    {
-        CreateHostBuilder().Build().Run();
-    }
-
-    public static IHostBuilder CreateHostBuilder() =>
-        Host.CreateDefaultBuilder(Array.Empty<string>())
-            .UseWindowsFormsLifetime<Form1>()
-            .ConfigureServices((hostContext, services) =>
-            {
-                    
-            });
-}
-```
-
-If you choose not to use the default builder, here is an example with only the Windows Forms lifetime configured.
-
-```csharp
-static class Program
-{
-    static void Main()
-    {
-        new HostBuilder().UseWindowsFormsLifetime<Form1>().Build().Run();
-    }
-}
-```
-
 ### Passing options
 
 You can further configure the Windows Forms lifetime by passing `Action<WindowsFormsLifeTimeOptions>`. For example,
 with the default options:
 
 ```csharp
-static class Program
-{
-    static void Main()
-    {
-        CreateHostBuilder().Build().Run();
-    }
+using WinFormsApp1;
 
-    public static IHostBuilder CreateHostBuilder() =>
-        Host.CreateDefaultBuilder(Array.Empty<string>())
-            .UseWindowsFormsLifetime<Form1>(options =>
-            {
-                options.HighDpiMode = HighDpiMode.SystemAware;
-                options.EnableVisualStyles = true;
-                options.CompatibleTextRenderingDefault = false;
-                options.SuppressStatusMessages = false;
-                options.EnableConsoleShutdown = true;
-            })
-            .ConfigureServices((hostContext, services) =>
-            {
-                    
-            });
-}
+var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseWindowsFormsLifetime<Form1>(options =>
+{
+    options.HighDpiMode = HighDpiMode.SystemAware;
+    options.EnableVisualStyles = true;
+    options.CompatibleTextRenderingDefault = false;
+    options.SuppressStatusMessages = false;
+    options.EnableConsoleShutdown = true;
+});
+var app = builder.Build();
+app.Run();
 ```
 
 `EnableConsoleShutdown`
 Allows the use of Ctrl+C to shutdown the host while the console is being used.
 
 
-
 ### Instantiating and Showing Forms
 
 Add more forms to the DI container.
+
+```csharp
+using WinFormsApp1;
+
+var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseWindowsFormsLifetime<Form1>();
+builder.Services.AddTransient<Form2>();
+var app = builder.Build();
+app.Run();
+```
 
 To get a form use the `IFormProvider`. The form provider fetches an instance of the form from the DI container on the GUI thread. `IFormProvider` has one
 method, `GetFormAsync<T>` used to fetch a form instance.

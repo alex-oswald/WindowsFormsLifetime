@@ -14,14 +14,14 @@ namespace MvpSample.Presenters
         private readonly INoteView _noteView;
 
         public MainFormPresenter(
-            ApplicationContext applicationContext,
+            IMainForm view,
             ILogger<MainFormPresenter> logger,
             IEventService eventService,
             NotesListPresenter notesListPresenter,
             INotesListView notesListView,
             NotePresenter notePresenter,
             INoteView noteView)
-            : base(applicationContext)
+            : base(view)
         {
             _logger = logger;
             _eventService = eventService;

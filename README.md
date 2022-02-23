@@ -1,8 +1,15 @@
-# Windows Forms Lifetime
+# WindowsFormsLifetime
 
 [![Build Status](https://dev.azure.com/oswaldtechnologies/WindowsFormsLifetime/_apis/build/status/alex-oswald.WindowsFormsLifetime?branchName=main)](https://dev.azure.com/oswaldtechnologies/WindowsFormsLifetime/_build/latest?definitionId=21&branchName=main)
 [![Nuget](https://img.shields.io/nuget/v/OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime)](https://www.nuget.org/packages/OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime/)
+
+**WindowsFormsLifetime**
+
 [![Nuget](https://img.shields.io/nuget/dt/OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime)](https://www.nuget.org/packages/OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime/)
+
+**WindowsFormsLifetime.Mvp**
+
+[![Nuget](https://img.shields.io/nuget/dt/WindowsFormsLifetime.Mvp)](https://www.nuget.org/packages/WindowsFormsLifetime.Mvp/)
 
 A Windows Forms hosting extension for .NET Core's generic host. Enables you to configure the generic host to use the lifetime of Windows Forms.
 When configured, the generic host will start an `IHostedService` that runs Windows Forms in a separate thread.
@@ -10,6 +17,7 @@ When configured, the generic host will start an `IHostedService` that runs Windo
 - The Generic Host will use Windows Forms as it's lifetime (when the main form closes, the host shuts down)
 - All the benefits of .NET and the Generic Host, dependency injection, configuration, logging...
 - Easier multi-threading in Windows Forms
+
 
 ## Quick Start
 
@@ -65,16 +73,14 @@ Add `NoDefaultLaunchSettingsFile` to the `csproj` so a `launchSettings.json` fil
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk.Web">
-
-	<PropertyGroup>
-		<OutputType>WinExe</OutputType>
-		<TargetFramework>net6.0-windows</TargetFramework>
-		<Nullable>enable</Nullable>
-		<UseWindowsForms>true</UseWindowsForms>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
-	</PropertyGroup>
-
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
+    </PropertyGroup>
 </Project>
 ```
 

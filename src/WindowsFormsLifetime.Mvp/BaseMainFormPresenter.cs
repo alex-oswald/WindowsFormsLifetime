@@ -3,10 +3,9 @@
     public abstract class BaseMainFormPresenter<TView>
         where TView : class
     {
-        public BaseMainFormPresenter(ApplicationContext applicationContext)
+        protected BaseMainFormPresenter(TView view)
         {
-            View = applicationContext.MainForm as TView
-                ?? throw new ArgumentNullException(nameof(applicationContext));
+            View = view ?? throw new ArgumentNullException(nameof(view));
         }
 
         public TView View { get; }

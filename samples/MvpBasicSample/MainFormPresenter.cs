@@ -4,8 +4,8 @@ namespace MvpBasicSample
 {
     internal class MainFormPresenter : BaseMainFormPresenter<IMainView>
     {
-        public MainFormPresenter(ApplicationContext applicationContext)
-            : base(applicationContext)
+        public MainFormPresenter(IMainView view)
+            : base(view)
         {
             View.OnIncrementClicked += OnIncrementClicked;
             View.Count = 0;

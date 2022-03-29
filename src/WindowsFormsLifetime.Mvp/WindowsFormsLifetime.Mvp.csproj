@@ -5,7 +5,7 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<PackageId>WindowsFormsLifetime.Mvp</PackageId>
-		<Version>1.0.0</Version>
+		<Version>1.0.1</Version>
 		<Authors>Alex Oswald</Authors>
 		<Company>Oswald Technologies, LLC</Company>
 		<Description>Model-View-Presenter extensions for WindowsFormsLifetime</Description>

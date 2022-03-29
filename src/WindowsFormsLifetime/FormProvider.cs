@@ -18,16 +18,13 @@ namespace WindowsFormsLifetime
     {
         private readonly SemaphoreSlim _semaphore = new(1, 1);
         private readonly IServiceProvider _serviceProvider;
-        private readonly ApplicationContext _applicationContext;
         private readonly IWindowsFormsSynchronizationContextProvider _syncContextManager;
 
         public FormProvider(
             IServiceProvider serviceProvider,
-            ApplicationContext applicationContext,
             IWindowsFormsSynchronizationContextProvider syncContextManager)
         {
             _serviceProvider = serviceProvider;
-            _applicationContext = applicationContext;
             _syncContextManager = syncContextManager;
         }
 
@@ -44,6 +41,10 @@ namespace WindowsFormsLifetime
             return form;
         }
 
-        public Task<Form> GetMainFormAsync() => Task.FromResult(_applicationContext.MainForm);
+        public Task<Form> GetMainFormAsync()
+        {
+            var applicationContext = _serviceProvider.GetService<ApplicationContext>();
+            return Task.FromResult(applicationContext.MainForm);
+        }
     }
 }

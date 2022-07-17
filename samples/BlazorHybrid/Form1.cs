@@ -1,19 +1,16 @@
 using Microsoft.AspNetCore.Components.WebView.WindowsForms;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace BlazorHybrid
 {
     public partial class Form1 : Form
     {
-        public Form1()
+        public Form1(IServiceProvider sp)
         {
             InitializeComponent();
 
-            var services = new ServiceCollection();
-            services.AddWindowsFormsBlazorWebView();
             blazorWebView1.HostPage = "wwwroot\\index.html";
-            blazorWebView1.Services = services.BuildServiceProvider();
-            blazorWebView1.RootComponents.Add<Counter>("#app");
+            blazorWebView1.Services = sp;
+            blazorWebView1.RootComponents.Add<MainLayout>("#app");
         }
     }
 }

@@ -26,11 +26,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MvpSample", "samples\MvpSam
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WindowsFormsLifetime.Mvp", "src\WindowsFormsLifetime.Mvp\WindowsFormsLifetime.Mvp.csproj", "{DF027FC0-0D5B-417E-AC69-00610A7A2694}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WindowsFormsLifetime.Mvp.Generators", "src\WindowsFormsLifetime.Mvp.Generators\WindowsFormsLifetime.Mvp.Generators.csproj", "{CABEAC54-A2D0-43E8-8BB6-BDD6BA4FC669}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MvpBasicSample", "samples\MvpBasicSample\MvpBasicSample.csproj", "{A59AAF6E-82CA-456B-BF72-19016AD4F8FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorHybrid", "samples\BlazorHybrid\BlazorHybrid.csproj", "{48CA1844-DC99-4C9D-9CEE-EA99B60F8587}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorHybrid", "samples\BlazorHybrid\BlazorHybrid.csproj", "{48CA1844-DC99-4C9D-9CEE-EA99B60F8587}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -62,10 +60,6 @@ Global
 		{DF027FC0-0D5B-417E-AC69-00610A7A2694}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF027FC0-0D5B-417E-AC69-00610A7A2694}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF027FC0-0D5B-417E-AC69-00610A7A2694}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CABEAC54-A2D0-43E8-8BB6-BDD6BA4FC669}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CABEAC54-A2D0-43E8-8BB6-BDD6BA4FC669}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CABEAC54-A2D0-43E8-8BB6-BDD6BA4FC669}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CABEAC54-A2D0-43E8-8BB6-BDD6BA4FC669}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A59AAF6E-82CA-456B-BF72-19016AD4F8FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A59AAF6E-82CA-456B-BF72-19016AD4F8FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A59AAF6E-82CA-456B-BF72-19016AD4F8FD}.Release|Any CPU.ActiveCfg = Release|Any CPU

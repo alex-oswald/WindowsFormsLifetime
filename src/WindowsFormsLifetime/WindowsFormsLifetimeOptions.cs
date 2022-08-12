@@ -2,11 +2,13 @@
 {
     public class WindowsFormsLifetimeOptions
     {
+#if NETCOREAPP
         /// <summary>
         /// Indicates the <see cref="HighDpiMode"/>.
         /// The default is <see cref="HighDpiMode.SystemAware"/>.
         /// </summary>
         public HighDpiMode HighDpiMode { get; set; } = HighDpiMode.SystemAware;
+#endif
 
         /// <summary>
         /// Indicates if visual styles are enabled.

@@ -51,7 +51,9 @@ namespace WindowsFormsLifetime
 
         private void StartUiThread()
         {
+#if NETCOREAPP
             Application.SetHighDpiMode(_options.HighDpiMode);
+#endif
             if (_options.EnableVisualStyles)
             {
                 Application.EnableVisualStyles();

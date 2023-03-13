@@ -36,14 +36,15 @@ namespace WindowsFormsLifetime
 		/// </summary>
 		/// <param name="services">The <see cref="IServiceCollection" /> to register the required services to.</param>
 		/// <param name="configure">The delegate for configuring the <see cref="WindowsFormsLifetimeOptions"/>.</param>
+		/// <param name="preApplicationRunAction">The delegate to execute before the application starts running.</param>
 		/// <returns>The same instance of the <see cref="IServiceCollection"/> for chaining.</returns>
 		public static IServiceCollection AddWindowsFormsLifetime<TStartForm>(
-			this IServiceCollection services, Action<WindowsFormsLifetimeOptions> configure = null)
+			this IServiceCollection services, Action<WindowsFormsLifetimeOptions> configure = null, Action<IServiceProvider> preApplicationRunAction = null)
 			where TStartForm : Form
 			=> services
 				.AddSingleton<TStartForm>()
 				.AddSingleton(provider => new ApplicationContext(provider.GetRequiredService<TStartForm>()))
-				.AddWindowsFormsLifetime(configure);
+				.AddWindowsFormsLifetime(configure, preApplicationRunAction);
 
 		/// <summary>
 		/// Enables Windows Forms support, builds and starts the host, starts the startup <see cref="ApplicationContext"/>,
@@ -52,9 +53,10 @@ namespace WindowsFormsLifetime
 		/// <param name="services">The <see cref="IServiceCollection" /> to register the required services to.</param>
 		/// <param name="applicationContextFactory">The <see cref="ApplicationContext"/> factory.</param>
 		/// <param name="configure">The delegate for configuring the <see cref="WindowsFormsLifetimeOptions"/>.</param>
+		/// <param name="preApplicationRunAction">The delegate to execute before the application starts running.</param>
 		/// <returns>The same instance of the <see cref="IServiceCollection"/> for chaining.</returns>
 		public static IServiceCollection AddWindowsFormsLifetime<TAppContext>(
-			this IServiceCollection services, Func<TAppContext> applicationContextFactory = null, Action<WindowsFormsLifetimeOptions> configure = null)
+			this IServiceCollection services, Func<TAppContext> applicationContextFactory = null, Action<WindowsFormsLifetimeOptions> configure = null, Action<IServiceProvider> preApplicationRunAction = null)
 			where TAppContext : ApplicationContext
 		{
 			services = applicationContextFactory is null
@@ -62,7 +64,7 @@ namespace WindowsFormsLifetime
 				: services.AddSingleton<TAppContext>(provider => applicationContextFactory());
 
 			services.AddSingleton<ApplicationContext, TAppContext>();
-			services.AddWindowsFormsLifetime(configure);
+			services.AddWindowsFormsLifetime(configure, preApplicationRunAction);
 
 			return services;
 		}
@@ -74,9 +76,10 @@ namespace WindowsFormsLifetime
 		/// <param name="services">The <see cref="IServiceCollection" /> to register the required services to.</param>
 		/// <param name="applicationContextFactory">The <see cref="ApplicationContext"/> factory.</param>
 		/// <param name="configure">The delegate for configuring the <see cref="WindowsFormsLifetimeOptions"/>.</param>
+		/// <param name="preApplicationRunAction">The delegate to execute before the application starts running.</param>
 		/// <returns>The same instance of the <see cref="IServiceCollection"/> for chaining.</returns>
 		public static IServiceCollection AddWindowsFormsLifetime<TAppContext, TStartForm>(
-			this IServiceCollection services, Func<TStartForm, TAppContext> applicationContextFactory, Action<WindowsFormsLifetimeOptions> configure = null)
+			this IServiceCollection services, Func<TStartForm, TAppContext> applicationContextFactory, Action<WindowsFormsLifetimeOptions> configure = null, Action<IServiceProvider> preApplicationRunAction = null)
 			where TAppContext : ApplicationContext
 			where TStartForm : Form
 		{
@@ -87,7 +90,7 @@ namespace WindowsFormsLifetime
 				return applicationContextFactory(startForm);
 			});
 			services.AddSingleton<ApplicationContext, TAppContext>();
-			services.AddWindowsFormsLifetime(configure);
+			services.AddWindowsFormsLifetime(configure, preApplicationRunAction);
 
 			return services;
 		}

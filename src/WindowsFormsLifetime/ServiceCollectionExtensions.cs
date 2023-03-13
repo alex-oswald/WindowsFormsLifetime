@@ -95,4 +95,34 @@ namespace WindowsFormsLifetime
 			return services;
 		}
 
+		public static IServiceCollection AddFormsFromAssembliesContainingTypes(this IServiceCollection services, params Type[] markerTypes)
+			=> services.AddFormsFromAssembliesContainingTypes(markerTypes.AsEnumerable());
+
+		public static IServiceCollection AddFormsFromAssembliesContainingTypes(this IServiceCollection services, IEnumerable<Type> markerTypes)
+		{
+			foreach (var markerType in markerTypes)
+			{
+				services.AddFormsFromAssemblyContainingType(markerType);
+			}
+
+			return services;
+		}
+
+		public static IServiceCollection AddFormsFromAssemblyContainingType<TMarker>(this IServiceCollection services)
+			=> services.AddFormsFromAssemblyContainingType(typeof(TMarker));
+
+		public static IServiceCollection AddFormsFromAssemblyContainingType(this IServiceCollection services, Type markerType)
+		{
+			var formTypes = markerType.Assembly
+				.DefinedTypes
+				.Where(t => t.IsAssignableTo(typeof(Form)));
+
+			foreach (var formType in formTypes)
+			{
+				services.TryAddTransient(formType);
+			}
+
+			return services;
+		}
+	}
 }

@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
 
 namespace WindowsFormsLifetime
 {
@@ -15,13 +14,7 @@ namespace WindowsFormsLifetime
         public static IHostBuilder UseWindowsFormsLifetime<TStartForm>(
             this IHostBuilder hostBuilder, Action<WindowsFormsLifetimeOptions> configure = null)
             where TStartForm : Form
-            => hostBuilder.ConfigureServices((hostContext, services) =>
-            {
-                services
-                    .AddSingleton<TStartForm>()
-                    .AddSingleton(provider => new ApplicationContext(provider.GetRequiredService<TStartForm>()))
-                    .AddWindowsFormsLifetime(configure);
-            });
+            => hostBuilder.ConfigureServices(services => services.AddWindowsFormsLifetime<TStartForm>(configure));
 
         /// <summary>
         /// Enables Windows Forms support, builds and starts the host, starts the startup <see cref="ApplicationContext"/>,
@@ -34,22 +27,7 @@ namespace WindowsFormsLifetime
         public static IHostBuilder UseWindowsFormsLifetime<TAppContext>(
             this IHostBuilder hostBuilder, Func<TAppContext> applicationContextFactory = null, Action<WindowsFormsLifetimeOptions> configure = null)
             where TAppContext : ApplicationContext
-            => hostBuilder.ConfigureServices((hostContext, services) =>
-            {
-                if (applicationContextFactory is not null)
-                {
-                    services.AddSingleton<TAppContext>(provider =>
-                    {
-                        return applicationContextFactory();
-                    });
-                }
-                else
-                {
-                    services.AddSingleton<TAppContext>();
-                }
-                services.AddSingleton<ApplicationContext>(provider => provider.GetRequiredService<TAppContext>());
-                services.AddWindowsFormsLifetime(configure);
-            });
+            => hostBuilder.ConfigureServices(services => services.AddWindowsFormsLifetime(applicationContextFactory, configure));
 
         /// <summary>
         /// Enables Windows Forms support, builds and starts the host, starts the startup <see cref="ApplicationContext"/>,
@@ -63,16 +41,6 @@ namespace WindowsFormsLifetime
             this IHostBuilder hostBuilder, Func<TStartForm, TAppContext> applicationContextFactory, Action<WindowsFormsLifetimeOptions> configure = null)
             where TAppContext : ApplicationContext
             where TStartForm : Form
-            => hostBuilder.ConfigureServices((hostContext, services) =>
-            {
-                services.AddSingleton<TStartForm>();
-                services.AddSingleton<TAppContext>(provider =>
-                {
-                    var startForm = provider.GetRequiredService<TStartForm>();
-                    return applicationContextFactory(startForm);
-                });
-                services.AddSingleton<ApplicationContext>(provider => provider.GetRequiredService<TAppContext>());
-                services.AddWindowsFormsLifetime(configure);
-            });
+            => hostBuilder.ConfigureServices(services => services.AddWindowsFormsLifetime(applicationContextFactory, configure));
     }
 }

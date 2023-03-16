@@ -14,7 +14,7 @@ namespace WindowsFormsLifetime
         Task<Form> GetMainFormAsync();
     }
 
-    public class FormProvider : IFormProvider
+    public class FormProvider : IFormProvider, IDisposable
     {
         private readonly SemaphoreSlim _semaphore = new(1, 1);
         private readonly IServiceProvider _serviceProvider;
@@ -46,5 +46,8 @@ namespace WindowsFormsLifetime
             var applicationContext = _serviceProvider.GetService<ApplicationContext>();
             return Task.FromResult(applicationContext.MainForm);
         }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA1816:Dispose methods should call SuppressFinalize", Justification = "<Pending>")]
+        public void Dispose() => _semaphore?.Dispose();
     }
 }

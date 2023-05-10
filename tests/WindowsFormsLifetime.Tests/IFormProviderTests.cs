@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Microsoft.Extensions.Hosting;
-using Xunit;
-using WindowsFormsLifetime;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using WindowsFormsLifetime;
+using Xunit;
 
 namespace WindowsFormsLifetimeTests
 {
@@ -104,8 +104,6 @@ namespace WindowsFormsLifetimeTests
         [Fact]
         public void Dependencies_Not_Disposed_Without_A_Scope()
         {
-            //using IHost host = CreateHost();
-
             ScopedDependency? scopedDep = null;
             SingletonDependency? singletonDep = null;
             TransientDependency? transientDep = null;
@@ -134,8 +132,6 @@ namespace WindowsFormsLifetimeTests
         [Fact]
         public void Dependencies_Disposed_With_Scope()
         {
-            //using IHost host = CreateHost();
-
             ScopedDependency? scopedDep = null;
             SingletonDependency? singletonDep = null;
             TransientDependency? transientDep = null;
@@ -164,15 +160,6 @@ namespace WindowsFormsLifetimeTests
         [Fact]
         public async Task Dependencies_Not_Disposed_Without_A_Scope_Async()
         {
-            //using IHost host = CreateHost();
-
-            //CancellationTokenSource tokenSource = new();
-
-            //Task hostTask = host.RunAsync(tokenSource.Token);
-
-            // Somewhat hacky, wait for the UI thread to start
-            //await Task.Delay(2000);
-
             ScopedDependency? scopedDep = null;
             SingletonDependency? singletonDep = null;
             TransientDependency? transientDep = null;
@@ -196,20 +183,11 @@ namespace WindowsFormsLifetimeTests
             Assert.False(transientDep.IsDisposed, "TransientDependency is disposed, but should not be disposed.");
 
             Assert.False(singletonDep.IsDisposed, "SingletonDependency is disposed, but should not be disposed.");
-
-            //tokenSource.Cancel();
-
-            //await hostTask;
         }
 
         [Fact]
         public async Task Dependencies_Disposed_With_Scope_Async()
         {
-            //(var host, var tokenSource, var hostTask) = BeginStartHost();
-
-            // Somewhat hacky, wait for the UI thread to start
-            //await Task.Delay(2000);
-
             ScopedDependency? scopedDep = null;
             SingletonDependency? singletonDep = null;
             TransientDependency? transientDep = null;
@@ -233,10 +211,6 @@ namespace WindowsFormsLifetimeTests
             Assert.True(transientDep.IsDisposed, "TransientDependency is not disposed, but should be disposed.");
 
             Assert.False(singletonDep.IsDisposed, "SingletonDependency is disposed, but should not be disposed.");
-
-            //tokenSource.Cancel();
-
-            //await hostTask;
         }
 
         [Fact]

@@ -21,11 +21,27 @@ namespace WindowsFormsLifetime
         Task<T> GetScopedFormAsync<T>() where T : Form;
 
         /// <summary>
+        /// Gets the requested form type and ensures it is created on the UI thread. Creates the form in the given scope.
+        /// </summary>
+        /// <typeparam name="T">The form type to get.</typeparam>
+        /// <param name="scope">The scope in which the form should be created.</param>
+        /// <returns>An instance of the form, asynchronously.</returns>
+        Task<T> GetScopedFormAsync<T>(IServiceScope scope) where T : Form;
+
+        /// <summary>
         /// Gets the requested form type on the current thread. Should only be called on the UI thread. All scoped and transient dependencies will be disposed when the form is disposed.
         /// </summary>
         /// <typeparam name="T">The form type to get.</typeparam>
         /// <returns>An instance of the form.</returns>
         T GetScopedForm<T>() where T : Form;
+
+        /// <summary>
+        /// Gets the requested form type on the current thread. Should only be called on the UI thread.  Creates the form in the given scope.
+        /// </summary>
+        /// <typeparam name="T">The form type to get.</typeparam>
+        /// <param name="scope">The scope in which the form should be created.</param>
+        /// <returns>An instance of the form.</returns>
+        T GetScopedForm<T>(IServiceScope scope) where T : Form;
     }
 
     public class FormProvider : IFormProvider
@@ -89,12 +105,29 @@ namespace WindowsFormsLifetime
             return form;
         }
 
+        public T GetScopedForm<T>(IServiceScope scope) where T : Form
+        {
+            return scope.ServiceProvider.GetService<T>();
+        }
+
         public async Task<T> GetScopedFormAsync<T>() where T : Form
         {
             // We are throttling this because there is only one gui thread
             await _semaphore.WaitAsync();
 
             var form = await _syncContextManager.SynchronizationContext.InvokeAsync(GetScopedForm<T>);
+
+            _semaphore.Release();
+
+            return form;
+        }
+
+        public async Task<T> GetScopedFormAsync<T>(IServiceScope scope) where T : Form
+        {
+            // We are throttling this because there is only one gui thread
+            await _semaphore.WaitAsync();
+
+            var form = await _syncContextManager.SynchronizationContext.InvokeAsync(GetScopedForm<T>, scope);
 
             _semaphore.Release();
 

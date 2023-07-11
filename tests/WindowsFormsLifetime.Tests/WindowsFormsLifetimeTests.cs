@@ -7,6 +7,9 @@ using Timer = System.Windows.Forms.Timer;
 
 namespace WindowsFormsLifetimeTests
 {
+    // Put both test classes into the same collection so that their tests are not run in parallel.
+    // Otherwise tests fail if both tests run a Host concurrently.
+    [Collection("Host tests")]
     public class WindowsFormsLifetimeTests
     {
         public class TestForm : Form
@@ -49,6 +52,7 @@ namespace WindowsFormsLifetimeTests
             Assert.IsType<WindowsFormsHostedService>(host.Services.GetService<IHostedService>());
             Assert.NotNull(host.Services.GetService<ApplicationContext>());
             Assert.NotNull(host.Services.GetService<TestForm>());
+            Assert.NotNull(host.Services.GetService<IFormProvider>());
         }
 
         [Fact]
@@ -62,6 +66,7 @@ namespace WindowsFormsLifetimeTests
             Assert.IsType<WindowsFormsHostedService>(host.Services.GetService<IHostedService>());
             Assert.NotNull(host.Services.GetService<ApplicationContext>());
             Assert.NotNull(host.Services.GetService<TestContext>());
+            Assert.NotNull(host.Services.GetService<IFormProvider>());
             Assert.Null(host.Services.GetService<TestForm>());
         }
 
@@ -77,6 +82,7 @@ namespace WindowsFormsLifetimeTests
             Assert.NotNull(host.Services.GetService<ApplicationContext>());
             Assert.NotNull(host.Services.GetService<TestContext>());
             Assert.NotNull(host.Services.GetService<TestForm>());
+            Assert.NotNull(host.Services.GetService<IFormProvider>());
         }
 
         [Fact]

@@ -93,7 +93,7 @@ namespace WindowsFormsLifetime
                 }
                 else
                 {
-                    form.Disposed += delegate { scope.Dispose(); };
+                    form.Disposed += (s, e) => scope.Dispose();
                 }
             }
             catch
@@ -106,9 +106,7 @@ namespace WindowsFormsLifetime
         }
 
         public T GetScopedForm<T>(IServiceScope scope) where T : Form
-        {
-            return scope.ServiceProvider.GetService<T>();
-        }
+            => scope.ServiceProvider.GetService<T>();
 
         public async Task<T> GetScopedFormAsync<T>() where T : Form
         {

@@ -1,4 +1,5 @@
-﻿using MvpSample.Events;
+﻿using Microsoft.Extensions.Logging;
+using MvpSample.Events;
 using MvpSample.Views;
 using WindowsFormsLifetime.Mvp;
 

@@ -1,9 +1,9 @@
 ﻿using AppContext;
 using WindowsFormsLifetime;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = Host.CreateApplicationBuilder(args);
 // Pass in a factory lambda that constructs an ApplicationContext using the start form
-builder.Host.UseWindowsFormsLifetime<ExampleApplicationContext, HiddenForm>(
+builder.Services.AddWindowsFormsLifetime<ExampleApplicationContext, HiddenForm>(
     startForm => new ExampleApplicationContext(startForm));
 
 var app = builder.Build();

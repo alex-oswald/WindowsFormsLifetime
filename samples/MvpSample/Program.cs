@@ -1,12 +1,15 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using MvpSample.Data;
 using MvpSample.Events;
 using MvpSample.Presenters;
 using MvpSample.Views;
 using WindowsFormsLifetime.Mvp;
 
-var builder = WebApplication.CreateBuilder(args);
-builder.Host.UseWindowsFormsLifetime<MainForm, IMainForm, MainFormPresenter>();
+var builder = Host.CreateApplicationBuilder(args);
+builder.Services.AddWindowsFormsLifetime<MainForm, IMainForm, MainFormPresenter>();
 
 builder.Services.AddPresenterWithView<INoteView, NoteView, NotePresenter>();
 builder.Services.AddPresenterWithView<INotesListView, NotesListView, NotesListPresenter>();

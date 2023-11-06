@@ -1,21 +1,9 @@
 using Microsoft.Extensions.Hosting;
+using MvpBasicSample;
 using WindowsFormsLifetime.Mvp;
 
-namespace MvpBasicSample
-{
-    internal static class Program
-    {
-        static void Main()
-        {
-            CreateHostBuilder().Build().Run();
-        }
+var builder = Host.CreateApplicationBuilder(args);
+builder.Services.AddWindowsFormsLifetime<MainForm, IMainView, MainFormPresenter>();
 
-        public static IHostBuilder CreateHostBuilder() =>
-            Host.CreateDefaultBuilder(Array.Empty<string>())
-                .UseWindowsFormsLifetime<MainForm, IMainView, MainFormPresenter>()
-                .ConfigureServices((hostContext, services) =>
-                {
-
-                });
-    }
-}
+var app = builder.Build();
+app.Run();

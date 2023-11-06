@@ -1,8 +1,7 @@
-﻿namespace AppContext
+﻿namespace AppContext;
+
+public class ExampleApplicationContext : ApplicationContext
 {
-    public class ExampleApplicationContext : ApplicationContext
-    {
-        public ExampleApplicationContext(Form mainForm)
-            : base(mainForm) { }
-    }
+    public ExampleApplicationContext(Form mainForm)
+        : base(mainForm) { }
 }

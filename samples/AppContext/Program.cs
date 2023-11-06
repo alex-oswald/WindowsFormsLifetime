@@ -1,4 +1,5 @@
 ﻿using AppContext;
+using Microsoft.Extensions.Hosting;
 using WindowsFormsLifetime;
 
 var builder = Host.CreateApplicationBuilder(args);

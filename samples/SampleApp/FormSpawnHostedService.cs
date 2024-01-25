@@ -1,4 +1,6 @@
-﻿using WindowsFormsLifetime;
+﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using WindowsFormsLifetime;
 
 namespace SampleApp;
 

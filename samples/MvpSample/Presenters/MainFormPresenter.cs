@@ -2,55 +2,54 @@
 using MvpSample.Views;
 using WindowsFormsLifetime.Mvp;
 
-namespace MvpSample.Presenters
+namespace MvpSample.Presenters;
+
+internal class MainFormPresenter : BaseMainFormPresenter<IMainForm>
 {
-    internal class MainFormPresenter : BaseMainFormPresenter<IMainForm>
+    private readonly ILogger<MainFormPresenter> _logger;
+    private readonly IEventService _eventService;
+    private readonly NotesListPresenter _notesListPresenter;
+    private readonly INotesListView _notesListView;
+    private readonly NotePresenter _notePresenter;
+    private readonly INoteView _noteView;
+
+    public MainFormPresenter(
+        IMainForm view,
+        ILogger<MainFormPresenter> logger,
+        IEventService eventService,
+        NotesListPresenter notesListPresenter,
+        INotesListView notesListView,
+        NotePresenter notePresenter,
+        INoteView noteView)
+        : base(view)
     {
-        private readonly ILogger<MainFormPresenter> _logger;
-        private readonly IEventService _eventService;
-        private readonly NotesListPresenter _notesListPresenter;
-        private readonly INotesListView _notesListView;
-        private readonly NotePresenter _notePresenter;
-        private readonly INoteView _noteView;
+        _logger = logger;
+        _eventService = eventService;
+        _notesListPresenter = notesListPresenter;
+        _notesListView = notesListView;
+        _notePresenter = notePresenter;
+        _noteView = noteView;
 
-        public MainFormPresenter(
-            IMainForm view,
-            ILogger<MainFormPresenter> logger,
-            IEventService eventService,
-            NotesListPresenter notesListPresenter,
-            INotesListView notesListView,
-            NotePresenter notePresenter,
-            INoteView noteView)
-            : base(view)
+        View.Load += OnLoad;
+
+        eventService.Subscribe<NoteCreatedEvent>(e =>
         {
-            _logger = logger;
-            _eventService = eventService;
-            _notesListPresenter = notesListPresenter;
-            _notesListView = notesListView;
-            _notePresenter = notePresenter;
-            _noteView = noteView;
+            View.SetNoteViewVisibility(true);
+        });
 
-            View.Load += OnLoad;
-
-            eventService.Subscribe<NoteCreatedEvent>(e =>
-            {
-                View.SetNoteViewVisibility(true);
-            });
-
-            eventService.Subscribe<SelectedNoteChangedEvent>(e =>
-            {
-                View.SetNoteViewVisibility(e.SelectedNote is not null);
-            });
-        }
-
-        private void OnLoad(object? sender, EventArgs e)
+        eventService.Subscribe<SelectedNoteChangedEvent>(e =>
         {
-            _logger.LogInformation(nameof(OnLoad));
-            View.SetNotesList(_notesListView);
-            View.SetNoteView(_noteView);
-            View.SetNoteViewVisibility(false);
+            View.SetNoteViewVisibility(e.SelectedNote is not null);
+        });
+    }
 
-            _eventService.Publish<RefreshListEvent>(new());
-        }
+    private void OnLoad(object? sender, EventArgs e)
+    {
+        _logger.LogInformation(nameof(OnLoad));
+        View.SetNotesList(_notesListView);
+        View.SetNoteView(_noteView);
+        View.SetNoteViewVisibility(false);
+
+        _eventService.Publish<RefreshListEvent>(new());
     }
 }

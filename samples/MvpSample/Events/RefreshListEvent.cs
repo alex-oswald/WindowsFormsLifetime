@@ -1,8 +1,7 @@
 ﻿using MvpSample.Data;
 
-namespace MvpSample.Events
+namespace MvpSample.Events;
+
+internal record RefreshListEvent(Note? SelectedNote = null) : IEvent
 {
-    internal record RefreshListEvent(Note? SelectedNote = null) : IEvent
-    {
-    }
 }

@@ -1,8 +1,7 @@
 ﻿using MvpSample.Data;
 
-namespace MvpSample.Events
+namespace MvpSample.Events;
+
+internal record SelectedNoteChangedEvent(Note SelectedNote): IEvent
 {
-    internal record SelectedNoteChangedEvent(Note SelectedNote): IEvent
-    {
-    }
 }

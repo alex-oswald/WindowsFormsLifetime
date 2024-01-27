@@ -85,8 +85,12 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<TStartForm>();
         services.AddSingleton<TAppContext>(provider =>
         {
-            var startForm = provider.GetRequiredService<TStartForm>();
-            return applicationContextFactory(startForm);
+            var guidContext = provider.GetRequiredService<IGuiContext>();
+            return guidContext.Invoke(() =>
+            {
+                var startForm = provider.GetRequiredService<TStartForm>();
+                return applicationContextFactory(startForm);
+            });
         });
         services.AddSingleton<ApplicationContext, TAppContext>();
         services.AddWindowsFormsLifetime(configure, preApplicationRunAction);

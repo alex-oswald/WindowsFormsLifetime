@@ -66,7 +66,7 @@ public class WindowsFormsHostedService : IHostedService, IDisposable
         _syncContextManager.SynchronizationContext = new WindowsFormsSynchronizationContext();
         SynchronizationContext.SetSynchronizationContext(_syncContextManager.SynchronizationContext);
 
-        var applicationContext = _serviceProvider.GetService<ApplicationContext>();
+        var applicationContext = _serviceProvider.GetRequiredService<ApplicationContext>();
         PreApplicationRunAction?.Invoke(_serviceProvider);
         Application.Run(applicationContext);
     }

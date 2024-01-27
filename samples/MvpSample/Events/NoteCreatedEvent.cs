@@ -1,6 +1,5 @@
-﻿namespace MvpSample.Events
+﻿namespace MvpSample.Events;
+
+internal record NoteCreatedEvent : IEvent
 {
-    internal record NoteCreatedEvent : IEvent
-    {
-    }
 }

@@ -1,21 +1,20 @@
-﻿namespace SampleApp
+﻿namespace SampleApp;
+
+public class TickingHostedService : BackgroundService
 {
-    public class TickingHostedService : BackgroundService
+    private readonly ILogger _logger;
+
+    public TickingHostedService(ILogger<TickingHostedService> logger)
     {
-        private readonly ILogger _logger;
+        _logger = logger;
+    }
 
-        public TickingHostedService(ILogger<TickingHostedService> logger)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        while (!stoppingToken.IsCancellationRequested)
         {
-            _logger = logger;
-        }
-
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-        {
-            while (!stoppingToken.IsCancellationRequested)
-            {
-                await Task.Delay(2000);
-                _logger.LogInformation($"Tick 2000ms {Thread.CurrentThread.ManagedThreadId} {Thread.CurrentThread.Name}");
-            }
+            await Task.Delay(2000);
+            _logger.LogInformation($"Tick 2000ms {Thread.CurrentThread.ManagedThreadId} {Thread.CurrentThread.Name}");
         }
     }
 }

@@ -5,7 +5,7 @@ using WindowsFormsLifetime;
 using Xunit;
 using Timer = System.Windows.Forms.Timer;
 
-namespace WindowsFormsLifetimeTests;;
+namespace WindowsFormsLifetimeTests;
 
 public class WindowsFormsLifetimeTests
 {

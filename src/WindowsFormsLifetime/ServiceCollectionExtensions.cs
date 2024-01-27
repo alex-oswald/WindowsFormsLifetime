@@ -92,7 +92,10 @@ public static class ServiceCollectionExtensions
                 return applicationContextFactory(startForm);
             });
         });
-        services.AddSingleton<ApplicationContext, TAppContext>();
+        services.AddSingleton<ApplicationContext, TAppContext>(provider =>
+        {
+            return provider.GetRequiredService<TAppContext>();
+        });
         services.AddWindowsFormsLifetime(configure, preApplicationRunAction);
 
         return services;

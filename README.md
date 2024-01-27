@@ -7,10 +7,6 @@
 
 [![Nuget](https://img.shields.io/nuget/dt/OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime)](https://www.nuget.org/packages/OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime/)
 
-**WindowsFormsLifetime.Mvp**
-
-[![Nuget](https://img.shields.io/nuget/dt/WindowsFormsLifetime.Mvp)](https://www.nuget.org/packages/WindowsFormsLifetime.Mvp/)
-
 A Windows Forms hosting extension for .NET Core's generic host. Enables you to configure the generic host to use the lifetime of Windows Forms.
 When configured, the generic host will start an `IHostedService` that runs Windows Forms in a separate thread.
 
@@ -208,92 +204,6 @@ public class HostedService1 : BackgroundService
     }
 }
 ```
-
-
-## Model-View-Presenter
-
-The MVP pattern is a good pattern to use to develop a Windows Forms application. The `WindowsFormsLifetime.Mvp`
-library contains some extension methods and classes to assist in developing an MVP app with `WindowsFormsLifetime
-and the generic host.
-
->See the **MvpBasicSample** sample app
-
-Create a new Windows Forms application. Add a button and label to the form. Edit the form and add a view interface.
-Hook up some controls to the view interface. In this example, I've hooked up a button click to an `EventHandler`
-and a labels value to an `int`. Let the `Form` inherit from the view interface.
-
-```csharp
-namespace MvpBasicSample
-{
-    public interface IMainView
-    {
-        int Count { get; set; }
-
-        event EventHandler OnIncrementClicked;
-    }
-
-    public partial class MainForm : Form, IMainView
-    {
-        public MainForm()
-        {
-            InitializeComponent();
-        }
-
-        public int Count
-        {
-            get => Convert.ToInt32(CountLabel.Text);
-            set => CountLabel.Text = $"{value}";
-        }
-
-        public event EventHandler OnIncrementClicked
-        {
-            add => IncrementButton.Click += value;
-            remove => IncrementButton.Click -= value;
-        }
-    }
-}
-```
-
-Next we create the views presenter. The main forms presenter should inherit from `BaseMainFormPresenter`.
-Then we can add the forms logic to the presenter. Initialize the count to 0. Hook up an event handler method to
-increment the count.
-
-```csharp
-using WindowsFormsLifetime.Mvp;
-
-namespace MvpBasicSample
-{
-    internal class MainFormPresenter : BaseMainFormPresenter<IMainView>
-    {
-        public MainFormPresenter(ApplicationContext applicationContext)
-            : base(applicationContext)
-        {
-            View.OnIncrementClicked += OnIncrementClicked;
-            View.Count = 0;
-        }
-
-        private void OnIncrementClicked(object? sender, EventArgs e)
-        {
-            View.Count++;
-        }
-    }
-}
-```
-
-With those created, we can update `Program.cs`. Wipe out what the template created.
-To use the Minimal API update the sdk in your `csproj` to `Microsoft.NET.Sdk.Web`.
-
-```csharp
-using MvpBasicSample;
-using WindowsFormsLifetime.Mvp;
-
-var builder = WebApplication.CreateBuilder(args);
-builder.Host.UseWindowsFormsLifetime<MainForm, IMainView, MainFormPresenter>();
-var app = builder.Build();
-app.Run();
-```
-
-Pretty simple!
 
 
 ## Only use the Console while debugging

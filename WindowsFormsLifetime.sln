@@ -24,6 +24,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{D6D4
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorHybrid", "samples\BlazorHybrid\BlazorHybrid.csproj", "{48CA1844-DC99-4C9D-9CEE-EA99B60F8587}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotifyIconApp", "samples\NotifyIconApp\NotifyIconApp.csproj", "{DBA8F5EA-A961-4666-9615-0469BC8956AE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,10 @@ Global
 		{48CA1844-DC99-4C9D-9CEE-EA99B60F8587}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48CA1844-DC99-4C9D-9CEE-EA99B60F8587}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48CA1844-DC99-4C9D-9CEE-EA99B60F8587}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBA8F5EA-A961-4666-9615-0469BC8956AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBA8F5EA-A961-4666-9615-0469BC8956AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBA8F5EA-A961-4666-9615-0469BC8956AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBA8F5EA-A961-4666-9615-0469BC8956AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -58,6 +64,7 @@ Global
 		{1C35BE2C-2DD6-4A14-BFCE-0F5AE5CFE66A} = {D6D44276-9DBE-4C4C-9C21-1AD507CE2002}
 		{94297776-27CB-458B-9545-4C28423F8FE2} = {D6D44276-9DBE-4C4C-9C21-1AD507CE2002}
 		{48CA1844-DC99-4C9D-9CEE-EA99B60F8587} = {D6D44276-9DBE-4C4C-9C21-1AD507CE2002}
+		{DBA8F5EA-A961-4666-9615-0469BC8956AE} = {D6D44276-9DBE-4C4C-9C21-1AD507CE2002}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A00619E4-0417-4284-A108-BCE3A2FEBBC1}

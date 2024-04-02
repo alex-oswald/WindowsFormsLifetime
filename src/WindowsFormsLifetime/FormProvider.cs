@@ -131,4 +131,7 @@ public class FormProvider : IFormProvider
 
         return form;
     }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA1816:Dispose methods should call SuppressFinalize", Justification = "<Pending>")]
+    public void Dispose() => _semaphore?.Dispose();
 }

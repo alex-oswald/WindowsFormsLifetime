@@ -88,7 +88,7 @@ public class FormProvider : IFormProvider
     public T GetForm<T>() where T : Form
     {
         T form = null;
-        IServiceScope scope = _serviceScopeFactory.CreateScope();
+        var scope = _serviceScopeFactory.CreateScope();
         try
         {
             form = scope.ServiceProvider.GetService<T>();
@@ -113,6 +113,5 @@ public class FormProvider : IFormProvider
     public T GetForm<T>(IServiceScope scope) where T : Form
         => scope.ServiceProvider.GetService<T>();
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA1816:Dispose methods should call SuppressFinalize", Justification = "<Pending>")]
     public void Dispose() => _semaphore?.Dispose();
 }

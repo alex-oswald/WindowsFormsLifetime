@@ -42,8 +42,8 @@ public static class HostBuilderExtensions
         where TAppContext : ApplicationContext
         where TStartForm : Form
         => hostBuilder.ConfigureServices(services => services.AddWindowsFormsLifetime(applicationContextFactory, configure));
-#if NET7_0_OR_GREATER
 
+#if NET7_0_OR_GREATER
     /// <summary>
     /// Enables Windows Forms support, builds and starts the host, starts the startup <see cref="Form"/>,
     /// then waits for the startup form to close before shutting down.
@@ -96,8 +96,8 @@ public static class HostBuilderExtensions
         return hostAppBuilder;
     }
 #endif
-#if NET8_0_OR_GREATER
 
+#if NET8_0_OR_GREATER
     /// <summary>
     /// Enables Windows Forms support, builds and starts the host, starts the startup <see cref="Form"/>,
     /// then waits for the startup form to close before shutting down.

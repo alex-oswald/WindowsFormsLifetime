@@ -11,29 +11,22 @@ public interface IFormProvider
     /// <returns>An instance of the form, asynchronously.</returns>
     Task<T> GetFormAsync<T>() where T : Form;
 
-    Task<Form> GetMainFormAsync();
-
-    /// <summary>
-    /// Gets the requested form type and ensures it is created on the UI thread. All scoped and transient dependencies will be disposed when the form is disposed.
-    /// </summary>
-    /// <typeparam name="T">The form type to get.</typeparam>
-    /// <returns>An instance of the form, asynchronously.</returns>
-    Task<T> GetScopedFormAsync<T>() where T : Form;
-
     /// <summary>
     /// Gets the requested form type and ensures it is created on the UI thread. Creates the form in the given scope.
     /// </summary>
     /// <typeparam name="T">The form type to get.</typeparam>
     /// <param name="scope">The scope in which the form should be created.</param>
     /// <returns>An instance of the form, asynchronously.</returns>
-    Task<T> GetScopedFormAsync<T>(IServiceScope scope) where T : Form;
+    Task<T> GetFormAsync<T>(IServiceScope scope) where T : Form;
+
+    Task<Form> GetMainFormAsync();
 
     /// <summary>
     /// Gets the requested form type on the current thread. Should only be called on the UI thread. All scoped and transient dependencies will be disposed when the form is disposed.
     /// </summary>
     /// <typeparam name="T">The form type to get.</typeparam>
     /// <returns>An instance of the form.</returns>
-    T GetScopedForm<T>() where T : Form;
+    T GetForm<T>() where T : Form;
 
     /// <summary>
     /// Gets the requested form type on the current thread. Should only be called on the UI thread.  Creates the form in the given scope.
@@ -41,7 +34,7 @@ public interface IFormProvider
     /// <typeparam name="T">The form type to get.</typeparam>
     /// <param name="scope">The scope in which the form should be created.</param>
     /// <returns>An instance of the form.</returns>
-    T GetScopedForm<T>(IServiceScope scope) where T : Form;
+    T GetForm<T>(IServiceScope scope) where T : Form;
 }
 
 public class FormProvider : IFormProvider
@@ -67,7 +60,19 @@ public class FormProvider : IFormProvider
         // We are throttling this because there is only one gui thread
         await _semaphore.WaitAsync();
 
-        var form = await _syncContextManager.SynchronizationContext.InvokeAsync(() => _serviceProvider.GetService<T>());
+        var form = await _syncContextManager.SynchronizationContext.InvokeAsync(GetForm<T>);
+
+        _semaphore.Release();
+
+        return form;
+    }
+
+    public async Task<T> GetFormAsync<T>(IServiceScope scope) where T : Form
+    {
+        // We are throttling this because there is only one gui thread
+        await _semaphore.WaitAsync();
+
+        var form = await _syncContextManager.SynchronizationContext.InvokeAsync(() => scope.ServiceProvider.GetService<T>());
 
         _semaphore.Release();
 
@@ -80,7 +85,7 @@ public class FormProvider : IFormProvider
         return Task.FromResult(applicationContext.MainForm);
     }
 
-    public T GetScopedForm<T>() where T : Form
+    public T GetForm<T>() where T : Form
     {
         T form = null;
         IServiceScope scope = _serviceScopeFactory.CreateScope();
@@ -105,32 +110,8 @@ public class FormProvider : IFormProvider
         return form;
     }
 
-    public T GetScopedForm<T>(IServiceScope scope) where T : Form
+    public T GetForm<T>(IServiceScope scope) where T : Form
         => scope.ServiceProvider.GetService<T>();
-
-    public async Task<T> GetScopedFormAsync<T>() where T : Form
-    {
-        // We are throttling this because there is only one gui thread
-        await _semaphore.WaitAsync();
-
-        var form = await _syncContextManager.SynchronizationContext.InvokeAsync(GetScopedForm<T>);
-
-        _semaphore.Release();
-
-        return form;
-    }
-
-    public async Task<T> GetScopedFormAsync<T>(IServiceScope scope) where T : Form
-    {
-        // We are throttling this because there is only one gui thread
-        await _semaphore.WaitAsync();
-
-        var form = await _syncContextManager.SynchronizationContext.InvokeAsync(GetScopedForm<T>, scope);
-
-        _semaphore.Release();
-
-        return form;
-    }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA1816:Dispose methods should call SuppressFinalize", Justification = "<Pending>")]
     public void Dispose() => _semaphore?.Dispose();

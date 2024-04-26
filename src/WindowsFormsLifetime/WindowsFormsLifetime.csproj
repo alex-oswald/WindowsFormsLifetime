@@ -19,7 +19,6 @@
 		<PackageProjectUrl>https://github.com/alex-oswald/WindowsFormsLifetime</PackageProjectUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-
 		<PackageTags>netcore;hosting;winforms</PackageTags>
 		<UseWindowsForms>true</UseWindowsForms>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -33,7 +32,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>

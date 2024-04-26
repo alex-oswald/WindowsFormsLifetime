@@ -1,4 +1,7 @@
-﻿namespace SampleApp;
+﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+
+namespace SampleApp;
 
 public class TickingHostedService : BackgroundService
 {

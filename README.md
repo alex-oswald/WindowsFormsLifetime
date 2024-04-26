@@ -63,30 +63,15 @@ namespace WinFormsApp1
 
 ### Use the Minimal API
 
-Change the projects sdk to `Microsoft.NET.Sdk.Web` so we can use the `WebApplication` class.
-
-Add `NoDefaultLaunchSettingsFile` to the `csproj` so a `launchSettings.json` file isn't created automatically for us.
-
-```xml
-<Project Sdk="Microsoft.NET.Sdk.Web">
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
-    <UseWindowsForms>true</UseWindowsForms>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
-    </PropertyGroup>
-</Project>
-```
-
 Replace the contents of `Program.cs` with the following.
 
 ```csharp
+using Microsoft.Extensions.Hosting;
 using WinFormsApp1;
+using WindowsFormsLifetime;
 
-var builder = WebApplication.CreateBuilder(args);
-builder.Host.UseWindowsFormsLifetime<Form1>();
+var builder = WebApplication.CreateApplicationBuilder(args);
+builder.UseWindowsFormsLifetime<Form1>();
 var app = builder.Build();
 app.Run();
 ```

@@ -12,6 +12,7 @@ variables:
   buildConfiguration: 'Release'
   solution: '**/*.sln'
   testProjects: '**/*Tests/*.csproj'
+  libraryName: 'WindowsFormsLifetime'
 
 steps:
 - task: UseDotNet@2
@@ -32,14 +33,23 @@ steps:
     arguments: '--configuration $(buildConfiguration)'
     projects: '$(solution)'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Run Tests'
-  inputs:
-    command: test
-    projects: '$(testProjects)'
-    arguments: '--configuration $(buildConfiguration)'
+- pwsh: |
+    dotnet test "$(Build.SourcesDirectory)/tests/$(libraryName).Tests/$(libraryName)Tests.csproj" `
+      --configuration $(buildConfiguration) `
+      --results-directory "$(Build.ArtifactStagingDirectory)" `
+      --collect:"XPlat Code Coverage" `
+      --logger "trx;LogFileName=$(libraryName).TestResult.xml"
+  displayName: "Run Tests"
 
-- task: PublishBuildArtifacts@1
+- task: PublishTestResults@2
+  displayName: "Publish Tests"
   inputs:
-    pathtoPublish: '$(System.DefaultWorkingDirectory)'
-    artifactName: Build_Package
+    testResultsFormat: "VSTest"
+    testResultsFiles: "$(Build.ArtifactStagingDirectory)/$(libraryName).TestResult.xml"
+    failTaskOnFailedTests: true
+
+- task: PublishCodeCoverageResults@2
+  displayName: "Publish Code Coverage"
+  inputs:
+    summaryFileLocation: "$(Build.ArtifactStagingDirectory)/**/coverage.cobertura.xml"
+    failIfCoverageEmpty: true

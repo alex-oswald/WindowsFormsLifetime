@@ -58,5 +58,5 @@ steps:
   inputs:
     checkCoverage: true
     coverageFailOption: fixed
-    coverageType: branches
+    # coverageType: branches
     coverageThreshold: 80

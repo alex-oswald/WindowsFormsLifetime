@@ -40,18 +40,18 @@ steps:
       --logger "trx;LogFileName=$(libraryName).TestResult.xml"
   displayName: "Run Tests"
 
+- task: PublishCodeCoverageResults@2
+  displayName: "Publish Code Coverage"
+  inputs:
+    summaryFileLocation: "$(Build.ArtifactStagingDirectory)/**/coverage.cobertura.xml"
+    failIfCoverageEmpty: true
+
 - task: PublishTestResults@2
   displayName: "Publish Tests"
   inputs:
     testResultsFormat: "VSTest"
     testResultsFiles: "$(Build.ArtifactStagingDirectory)/$(libraryName).TestResult.xml"
     failTaskOnFailedTests: true
-
-- task: PublishCodeCoverageResults@2
-  displayName: "Publish Code Coverage"
-  inputs:
-    summaryFileLocation: "$(Build.ArtifactStagingDirectory)/**/coverage.cobertura.xml"
-    failIfCoverageEmpty: true
 
 - task: BuildQualityChecks@9
   displayName: 'Check Code Coverage'

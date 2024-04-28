@@ -1,0 +1,67 @@
+trigger:
+  branches:
+    include:
+    - main
+  tags:
+    include: ['*']
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  buildConfiguration: 'Release'
+  solution: '**/*.sln'
+  libraryName: 'WindowsFormsLifetime'
+
+steps:
+- task: UseDotNet@2
+  displayName: 'Use .NET 8.x SDK'
+  inputs:
+    version: 8.x
+
+- task: DotNetCoreCLI@2
+  displayName: 'Restore Solution'
+  inputs:
+    command: restore
+    projects: '$(solution)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Build Projects'
+  inputs:
+    command: build
+    arguments: '--configuration $(buildConfiguration)'
+    projects: '$(solution)'
+
+- pwsh: |
+    dotnet test "$(Build.SourcesDirectory)/tests/$(libraryName).Tests/$(libraryName)Tests.csproj" `
+      --configuration $(buildConfiguration) `
+      --results-directory "$(Build.ArtifactStagingDirectory)" `
+      --collect:"XPlat Code Coverage" `
+      --logger "trx;LogFileName=$(libraryName).TestResult.xml"
+  displayName: "Run Tests"
+
+- task: PublishCodeCoverageResults@2
+  displayName: "Publish Code Coverage"
+  inputs:
+    summaryFileLocation: "$(Build.ArtifactStagingDirectory)/**/coverage.cobertura.xml"
+    failIfCoverageEmpty: true
+
+- task: PublishTestResults@2
+  displayName: "Publish Tests"
+  inputs:
+    testResultsFormat: "VSTest"
+    testResultsFiles: "$(Build.ArtifactStagingDirectory)/$(libraryName).TestResult.xml"
+    failTaskOnFailedTests: true
+
+# - task: BuildQualityChecks@9
+#   displayName: 'Check Code Coverage'
+#   inputs:
+#     checkCoverage: true
+#     coverageFailOption: fixed
+#     coverageType: branches
+#     coverageThreshold: 70
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathtoPublish: '$(System.DefaultWorkingDirectory)'
+    artifactName: BuildPackage

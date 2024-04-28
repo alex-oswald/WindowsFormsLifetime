@@ -1,4 +1,5 @@
-﻿using WindowsFormsLifetime;
+﻿using Microsoft.Extensions.Logging;
+using WindowsFormsLifetime;
 
 namespace SampleApp;
 

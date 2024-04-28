@@ -53,7 +53,6 @@ public class WindowsFormsLifetime : IHostLifetime, IDisposable
         return Task.CompletedTask;
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2254:Template should be a static expression", Justification = "<Pending>")]
     private void OnApplicationStarted()
     {
         _logger.LogInformation("Application started. Close the startup Form" + (_options.EnableConsoleShutdown ? " or press Ctrl+C" : string.Empty) + " to shut down.");

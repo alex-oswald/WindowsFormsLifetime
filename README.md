@@ -2,18 +2,15 @@
 
 [![Build Status](https://dev.azure.com/oswaldtechnologies/WindowsFormsLifetime/_apis/build/status/alex-oswald.WindowsFormsLifetime?branchName=main)](https://dev.azure.com/oswaldtechnologies/WindowsFormsLifetime/_build/latest?definitionId=21&branchName=main)
 [![Nuget](https://img.shields.io/nuget/v/OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime)](https://www.nuget.org/packages/OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime/)
-
-**WindowsFormsLifetime**
-
 [![Nuget](https://img.shields.io/nuget/dt/OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime)](https://www.nuget.org/packages/OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime/)
 
-A Windows Forms hosting extension for .NET Core's generic host. Enables you to configure the generic host to use the lifetime of Windows Forms.
-When configured, the generic host will start an `IHostedService` that runs Windows Forms in a separate thread.
+A Windows Forms hosting extension for the [.NET Generic Host](https://learn.microsoft.com/en-us/dotnet/core/extensions/generic-host).
+This library enables you to configure the generic host to use the lifetime of Windows Forms. When configured,
+the generic host will start an `IHostedService` that runs Windows Forms in a separate UI specific thread.
 
 - The Generic Host will use Windows Forms as it's lifetime (when the main form closes, the host shuts down)
 - All the benefits of .NET and the Generic Host, dependency injection, configuration, logging...
 - Easier multi-threading in Windows Forms
-
 
 ## Quick Start
 
@@ -36,72 +33,28 @@ Create a new **Windows Forms App**.
 Replace the contents of `Program.cs` with the following.
 
 ```csharp
-namespace WinFormsApp1
-{
-    internal static class Program
-    {
-        static void Main()
-        {
-            CreateHostBuilder().Build().Run();
-        }
-
-        public static IHostBuilder CreateHostBuilder() =>
-            Host.CreateDefaultBuilder(Array.Empty<string>())
-                .UseWindowsFormsLifetime<Form1>()
-                .ConfigureServices((hostContext, services) =>
-                {
-
-                });
-    }
-}
-```
-
-**Run the app!**
-
-**Your Windows Forms app is now running on the Generic Host!**
-
-
-### Use the Minimal API
-
-Change the projects sdk to `Microsoft.NET.Sdk.Web` so we can use the `WebApplication` class.
-
-Add `NoDefaultLaunchSettingsFile` to the `csproj` so a `launchSettings.json` file isn't created automatically for us.
-
-```xml
-<Project Sdk="Microsoft.NET.Sdk.Web">
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
-    <UseWindowsForms>true</UseWindowsForms>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
-    </PropertyGroup>
-</Project>
-```
-
-Replace the contents of `Program.cs` with the following.
-
-```csharp
+using Microsoft.Extensions.Hosting;
 using WinFormsApp1;
+using WindowsFormsLifetime;
 
-var builder = WebApplication.CreateBuilder(args);
-builder.Host.UseWindowsFormsLifetime<Form1>();
+var builder = Host.CreateApplicationBuilder(args);
+builder.UseWindowsFormsLifetime<Form1>();
+
 var app = builder.Build();
 app.Run();
 ```
 
+**Run the app!**
+
+**Your Windows Forms app is now running with the Generic Host!**
 
 ### Passing options
 
-You can further configure the Windows Forms lifetime by passing `Action<WindowsFormsLifeTimeOptions>`. For example,
-with the default options:
+You can further configure the Windows Forms lifetime by passing `Action<WindowsFormsLifeTimeOptions>`.
+For example, with the default options:
 
 ```csharp
-using WinFormsApp1;
-
-var builder = WebApplication.CreateBuilder(args);
-builder.Host.UseWindowsFormsLifetime<Form1>(options =>
+builder.UseWindowsFormsLifetime<Form1>(options =>
 {
     options.HighDpiMode = HighDpiMode.SystemAware;
     options.EnableVisualStyles = true;
@@ -109,32 +62,29 @@ builder.Host.UseWindowsFormsLifetime<Form1>(options =>
     options.SuppressStatusMessages = false;
     options.EnableConsoleShutdown = true;
 });
-var app = builder.Build();
-app.Run();
 ```
 
 `EnableConsoleShutdown`
 Allows the use of Ctrl+C to shutdown the host while the console is being used.
-
 
 ### Instantiating and Showing Forms
 
 Add more forms to the DI container.
 
 ```csharp
-using WinFormsApp1;
-
-var builder = WebApplication.CreateBuilder(args);
-builder.Host.UseWindowsFormsLifetime<Form1>();
+var builder = Host.CreateApplicationBuilder(args);
+builder.UseWindowsFormsLifetime<Form1>();
 builder.Services.AddTransient<Form2>();
 var app = builder.Build();
 app.Run();
 ```
 
-To get a form use the `IFormProvider`. The form provider fetches an instance of the form from the DI container on the GUI thread. `IFormProvider` has one
-method, `GetFormAsync<T>` used to fetch a form instance.
+To get a form, use the `IFormProvider`. The form provider fetches an instance of the form from the DI
+container on the GUI thread. `IFormProvider` has the method, `GetFormAsync<T>`, used to fetch a form
+instance.
 
-In this example, we inject `IFormProvider` into the main form, and use that to instantiate a new instance of `Form`, then show the form.
+In this example, we inject `IFormProvider` into the main form, and use that to instantiate a new
+instance of `Form2`, then show the form.
 
 ```csharp
 public partial class Form1 : Form
@@ -158,14 +108,13 @@ public partial class Form1 : Form
 }
 ```
 
-
 ### Invoking on the GUI thread
 
-Sometimes you need to invoke an action on the GUI thread. Say you want to spawn a form from a background service. Use the `IGuiContext` to invoke
-actions on the GUI thread.
+Sometimes you need to invoke an action on the GUI thread. Say you want to spawn a form from a background
+service. Use the `IGuiContext` to invoke actions on the GUI thread.
 
-In this example, a form is fetched and shown, in an action that is invoked on the GUI thread. Then a second form is shown. This example shows how
-the GUI does not lock up during this process.
+In this example, a form is fetched and shown, in an action that is invoked on the GUI thread. Then a second
+form is shown. This example shows how the GUI does not lock up during this process.
 
 ```csharp
 public class HostedService1 : BackgroundService
@@ -205,12 +154,11 @@ public class HostedService1 : BackgroundService
 }
 ```
 
-
 ## Only use the Console while debugging
 
-I like to configure my `csproj` so that the `Console` runs only while my configuration is set to `Debug`, and doesn't
-run when set to `Release`. Here is an example of how to do this. Setting the `OutputType` to `Exe` will run the console,
-while setting it to `WinExe` will not.
+I like to configure my `csproj` so that the `Console` runs only while my configuration is set to `Debug`,
+and doesn't run when set to `Release`. Here is an example of how to do this. Setting the `OutputType` to
+`Exe` will run the console, while setting it to `WinExe` will not.
 
 ```xml
 <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -222,12 +170,11 @@ while setting it to `WinExe` will not.
 </PropertyGroup>
 ```
 
-
 ## Credits
 
 The layout of the `WindowsFormsLifetime` class is based on .NET Core's
 [ConsoleLifetime](https://github.com/dotnet/extensions/blob/b83b27d76439497459fe9cf7337d5128c900eb5a/src/Hosting/Hosting/src/Internal/ConsoleLifetime.cs).
 
-[Stephen's blog post on ExecutionContext vs SynchronizationContext](https://devblogs.microsoft.com/pfxteam/executioncontext-vs-synchronizationcontext/)
+[ExecutionContext vs SynchronizationContext](https://devblogs.microsoft.com/pfxteam/executioncontext-vs-synchronizationcontext/)
 
-https://devblogs.microsoft.com/pfxteam/implementing-a-synchronizationcontext-sendasync-method/
+[Implementing a SynchronizationContext.SendAsync method](https://devblogs.microsoft.com/pfxteam/implementing-a-synchronizationcontext-sendasync-method/)

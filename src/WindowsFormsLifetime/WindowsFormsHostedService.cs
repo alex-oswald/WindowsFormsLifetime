@@ -36,8 +36,10 @@ public class WindowsFormsHostedService : IHostedService, IDisposable
         },
         this);
 
-        Thread thread = new(StartUiThread);
-        thread.Name = "WindowsFormsLifetime UI Thread";
+        Thread thread = new(StartUiThread)
+        {
+            Name = "WindowsFormsLifetime UI Thread"
+        };
         thread.SetApartmentState(ApartmentState.STA);
         thread.Start();
 

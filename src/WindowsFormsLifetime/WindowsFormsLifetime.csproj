@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-    <TargetFrameworks>net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
+		<TargetFrameworks>net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
 		<Nullable>disable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<PackageId>OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime</PackageId>
-		<Version>1.0.2</Version>
+		<Version>1.1.0</Version>
 		<Authors>Alex Oswald</Authors>
 		<Company>Oswald Technologies, LLC</Company>
 		<Description>.NET Core hosting infrastructure for Windows Forms.</Description>
@@ -38,16 +38,16 @@
 		</PackageReference>
 	</ItemGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)' == 'net6.0-windows'">
-        <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
-    </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-windows'">
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
+	</ItemGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)' == 'net7.0-windows'">
-        <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
-    </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0-windows'">
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
+	</ItemGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)' == 'net8.0-windows'">
-        <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
-    </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-windows'">
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+	</ItemGroup>
 
 </Project>

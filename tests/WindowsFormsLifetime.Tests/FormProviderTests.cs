@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Windows.Forms;
 using WindowsFormsLifetime;
 using Xunit;
 
@@ -14,8 +9,10 @@ namespace WindowsFormsLifetimeTests;
 // Put both test classes into the same collection so that their tests are not run in parallel.
 // Otherwise tests fail if both tests run a Host concurrently.
 [Collection("Host tests")]
-public class IFormProviderTests : IClassFixture<IFormProviderTests.HostFixture>
+public class FormProviderTests(FormProviderTests.HostFixture host) : IClassFixture<FormProviderTests.HostFixture>
 {
+    private readonly HostFixture _host = host;
+
     public class HostFixture : IDisposable
     {
         public IHost Host { get; init; }
@@ -25,14 +22,14 @@ public class IFormProviderTests : IClassFixture<IFormProviderTests.HostFixture>
         public HostFixture()
         {
             var hostBuilder = new HostBuilder()
-                                          .UseWindowsFormsLifetime<WindowsFormsLifetimeTests.TestForm>()
-                                          .ConfigureServices(services =>
-                                          {
-                                              services.AddScoped<ScopedDependency>();
-                                              services.AddSingleton<SingletonDependency>();
-                                              services.AddTransient<TransientDependency>();
-                                              services.AddTransient<TestFormWithDependencies>();
-                                          });
+                .UseWindowsFormsLifetime<WindowsFormsLifetimeTests.TestForm>()
+                .ConfigureServices(services =>
+                {
+                    services.AddScoped<ScopedDependency>();
+                    services.AddSingleton<SingletonDependency>();
+                    services.AddTransient<TransientDependency>();
+                    services.AddTransient<TestFormWithDependencies>();
+                });
             Host = hostBuilder.Build();
 
             TokenSource = new();
@@ -41,6 +38,7 @@ public class IFormProviderTests : IClassFixture<IFormProviderTests.HostFixture>
             Thread.Sleep(2000);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA1816:Dispose methods should call SuppressFinalize", Justification = "<Pending>")]
         public void Dispose()
         {
             TokenSource.Cancel();
@@ -51,6 +49,7 @@ public class IFormProviderTests : IClassFixture<IFormProviderTests.HostFixture>
     {
         public bool IsDisposed { get; private set; }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA1816:Dispose methods should call SuppressFinalize", Justification = "<Pending>")]
         public void Dispose() => IsDisposed = true;
     }
 
@@ -66,20 +65,16 @@ public class IFormProviderTests : IClassFixture<IFormProviderTests.HostFixture>
     {
     }
 
-    public class TestFormWithDependencies : Form
+    public class TestFormWithDependencies(
+        ScopedDependency scopedDependency,
+        SingletonDependency singletonDependency,
+        TransientDependency transientDependency) : Form
     {
-        public TestFormWithDependencies(ScopedDependency scopedDependency, SingletonDependency singletonDependency, TransientDependency transientDependency)
-        {
-            ScopedDependency = scopedDependency;
-            SingletonDependency = singletonDependency;
-            TransientDependency = transientDependency;
-        }
+        public ScopedDependency ScopedDependency { get; init; } = scopedDependency;
 
-        public ScopedDependency ScopedDependency { get; init; }
+        public SingletonDependency SingletonDependency { get; init; } = singletonDependency;
 
-        public SingletonDependency SingletonDependency { get; init; }
-
-        public TransientDependency TransientDependency { get; init; }
+        public TransientDependency TransientDependency { get; init; } = transientDependency;
 
         protected override void SetVisibleCore(bool value)
         {
@@ -92,13 +87,6 @@ public class IFormProviderTests : IClassFixture<IFormProviderTests.HostFixture>
                 OnLoad(EventArgs.Empty);
             }
         }
-    }
-
-    private readonly HostFixture _host;
-
-    public IFormProviderTests(HostFixture host)
-    {
-        _host = host;
     }
 
     [Fact]

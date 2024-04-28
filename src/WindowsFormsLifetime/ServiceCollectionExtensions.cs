@@ -1,15 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using System.Reflection;
 
 namespace WindowsFormsLifetime;
 
 public static class ServiceCollectionExtensions
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1806:Do not ignore method results", Justification = "<Pending>")]
-    public static IServiceCollection AddWindowsFormsLifetime(this IServiceCollection services, Action<WindowsFormsLifetimeOptions> configure, Action<IServiceProvider> preApplicationRunAction = null)
+    public static IServiceCollection AddWindowsFormsLifetime(
+        this IServiceCollection services, Action<WindowsFormsLifetimeOptions> configure, Action<IServiceProvider> preApplicationRunAction = null)
     {
         services.AddSingleton<IHostLifetime, WindowsFormsLifetime>();
         services.AddHostedService(sp =>
@@ -92,58 +90,6 @@ public static class ServiceCollectionExtensions
         });
         services.AddSingleton<ApplicationContext, TAppContext>();
         services.AddWindowsFormsLifetime(configure, preApplicationRunAction);
-
-        return services;
-    }
-
-    /// <inheritdoc cref="AddFormsFromAssembliesContainingTypes(IServiceCollection, IEnumerable{Type})"/>
-    public static IServiceCollection AddFormsFromAssembliesContainingTypes(this IServiceCollection services, params Type[] markerTypes)
-        => services.AddFormsFromAssembliesContainingTypes(markerTypes.AsEnumerable());
-
-    /// <summary>
-    /// Scans the <see cref="Assembly"/> containing the given <paramref name="markerTypes"/>
-    /// and tries to add all <see cref="Type"/>s that derive from <see cref="Form"/> to <paramref name="services"/>.
-    /// </summary>
-    /// <param name="services">The <see cref="IServiceCollection" /> to add the <see cref="Form"/>s to.</param>
-    /// <param name="markerTypes">The <see cref="Type"/>s whose <see cref="Assembly"/>s should be scanned.</param>
-    /// <returns>The same instance of the <see cref="IServiceCollection"/> for chaining.</returns>
-    public static IServiceCollection AddFormsFromAssembliesContainingTypes(this IServiceCollection services, IEnumerable<Type> markerTypes)
-    {
-        foreach (var markerType in markerTypes)
-        {
-            services.AddFormsFromAssemblyContainingType(markerType);
-        }
-
-        return services;
-    }
-
-    /// <summary>
-    /// Scans the <see cref="Assembly"/> containing <typeparamref name="TMarker"/>
-    /// and tries to add all <see cref="Type"/>s that derive from <see cref="Form"/> to <paramref name="services"/>.
-    /// </summary>
-    /// <typeparam name="TMarker">The <see cref="Type"/> whose <see cref="Assembly"/> should be scanned.</typeparam>
-    /// <param name="services">The <see cref="IServiceCollection" /> to add the <see cref="Form"/>s to.</param>
-    /// <returns>The same instance of the <see cref="IServiceCollection"/> for chaining.</returns>
-    public static IServiceCollection AddFormsFromAssemblyContainingType<TMarker>(this IServiceCollection services)
-        => services.AddFormsFromAssemblyContainingType(typeof(TMarker));
-
-    /// <summary>
-    /// Scans the <see cref="Assembly"/> containing the given <paramref name="markerType"/>
-    /// and tries to add all <see cref="Type"/>s that derive from <see cref="Form"/> to <paramref name="services"/>.
-    /// </summary>
-    /// <param name="services">The <see cref="IServiceCollection" /> to add the <see cref="Form"/>s to.</param>
-    /// <param name="markerType">The <see cref="Type"/> whose <see cref="Assembly"/> should be scanned.</param>
-    /// <returns>The same instance of the <see cref="IServiceCollection"/> for chaining.</returns>
-    public static IServiceCollection AddFormsFromAssemblyContainingType(this IServiceCollection services, Type markerType)
-    {
-        var formTypes = markerType.Assembly
-            .DefinedTypes
-            .Where(t => t.IsAssignableTo(typeof(Form)));
-
-        foreach (var formType in formTypes)
-        {
-            services.TryAddTransient(formType);
-        }
 
         return services;
     }

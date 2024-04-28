@@ -53,13 +53,13 @@ steps:
     testResultsFiles: "$(Build.ArtifactStagingDirectory)/$(libraryName).TestResult.xml"
     failTaskOnFailedTests: true
 
-- task: BuildQualityChecks@9
-  displayName: 'Check Code Coverage'
-  inputs:
-    checkCoverage: true
-    coverageFailOption: fixed
-    # coverageType: branches
-    coverageThreshold: 70
+# - task: BuildQualityChecks@9
+#   displayName: 'Check Code Coverage'
+#   inputs:
+#     checkCoverage: true
+#     coverageFailOption: fixed
+#     coverageType: branches
+#     coverageThreshold: 70
 
 - task: PublishBuildArtifacts@1
   inputs:

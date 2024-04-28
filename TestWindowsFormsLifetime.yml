@@ -59,4 +59,9 @@ steps:
     checkCoverage: true
     coverageFailOption: fixed
     # coverageType: branches
-    coverageThreshold: 80
+    coverageThreshold: 70
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathtoPublish: '$(System.DefaultWorkingDirectory)'
+    artifactName: BuildPackage

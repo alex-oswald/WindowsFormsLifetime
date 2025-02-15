@@ -27,8 +27,9 @@ public partial class Form2 : Form
         Task.Run(() =>
         {
             _logger.LogInformation($"Task.Run Thread {Thread.CurrentThread.ManagedThreadId}  {Thread.CurrentThread.Name}");
-            _guiContext.Invoke(new Action(() =>
+            _guiContext.Invoke(new Action(async () =>
             {
+                await Task.Delay(1000);
                 _logger.LogInformation($"GuiContext Thread {Thread.CurrentThread.ManagedThreadId}  {Thread.CurrentThread.Name}");
                 button1.Text = new Random().Next(1, 10).ToString();
             }));

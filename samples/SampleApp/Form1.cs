@@ -8,13 +8,23 @@ public partial class Form1 : Form
     private readonly ILogger<Form1> _logger;
     private readonly IFormProvider _formProvider;
 
-    public Form1(ILogger<Form1> logger, IFormProvider formProvider)
+    public Form1(
+        ILogger<Form1> logger,
+        IFormProvider formProvider,
+        TickBag tickBag)
     {
         InitializeComponent();
         _logger = logger;
         _formProvider = formProvider;
+        tickBag.OnTick += TickBag_OnTick;
 
-        ThreadLabel.Text = $"{Thread.CurrentThread.ManagedThreadId} {Thread.CurrentThread.Name}";
+        ThreadLabel.Text = $"Thread id = {Environment.CurrentManagedThreadId}, Thread name = {Thread.CurrentThread.Name}";
+        TickLabel.Text = $"Tick = {tickBag.CurrentTick}";
+    }
+
+    private void TickBag_OnTick(object? sender, int e)
+    {
+        TickLabel.Text = $"Tick: {e}";
     }
 
     private async void button1_Click(object sender, EventArgs e)

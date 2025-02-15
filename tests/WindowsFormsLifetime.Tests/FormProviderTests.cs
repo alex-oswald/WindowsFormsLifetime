@@ -3,6 +3,7 @@ using Microsoft.Extensions.Hosting;
 using System.Windows.Forms;
 using WindowsFormsLifetime;
 using Xunit;
+using System.ComponentModel;
 
 namespace WindowsFormsLifetimeTests;
 
@@ -70,10 +71,13 @@ public class FormProviderTests(FormProviderTests.HostFixture host) : IClassFixtu
         SingletonDependency singletonDependency,
         TransientDependency transientDependency) : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ScopedDependency ScopedDependency { get; init; } = scopedDependency;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public SingletonDependency SingletonDependency { get; init; } = singletonDependency;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public TransientDependency TransientDependency { get; init; } = transientDependency;
 
         protected override void SetVisibleCore(bool value)

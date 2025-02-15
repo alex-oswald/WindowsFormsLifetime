@@ -15,9 +15,9 @@ variables:
 
 steps:
 - task: UseDotNet@2
-  displayName: 'Use .NET 8.x SDK'
+  displayName: 'Use .NET 9.x SDK'
   inputs:
-    version: 8.x
+    version: 9.x
 
 - task: DotNetCoreCLI@2
   displayName: 'Restore Solution'

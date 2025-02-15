@@ -26,7 +26,7 @@ public class FormSpawnHostedService : BackgroundService
         while (!stoppingToken.IsCancellationRequested)
         {
             await Task.Delay(5000, stoppingToken);
-            if (count < 5)
+            if (count < 2)
             {
                 // Fetch the form here using IFormProvider
                 // The form provider will get the form from the DI container on the gui thread

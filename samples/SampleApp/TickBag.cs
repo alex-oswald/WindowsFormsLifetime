@@ -1,5 +1,4 @@
-﻿namespace SampleApp;
-
+namespace SampleApp;
 public class TickBag
 {
     private int _currentTick = 0;

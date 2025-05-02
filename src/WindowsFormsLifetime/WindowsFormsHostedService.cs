@@ -53,33 +53,27 @@ public class WindowsFormsHostedService : IHostedService, IDisposable
 
     private void StartUiThread()
     {
-        try{
-            Application.SetHighDpiMode(_options.HighDpiMode);
-            if (_options.EnableVisualStyles)
-            {
-                Application.EnableVisualStyles();
-            }
-            Application.SetCompatibleTextRenderingDefault(_options.CompatibleTextRenderingDefault);
-            Application.ApplicationExit += OnApplicationExit;
-
-            // Don't autoinstall since we are creating our own
-            WindowsFormsSynchronizationContext.AutoInstall = false;
-
-            // Create the sync context on our UI thread
-            _syncContextManager.SynchronizationContext = new WindowsFormsSynchronizationContext();
-            SynchronizationContext.SetSynchronizationContext(_syncContextManager.SynchronizationContext);
-
-            var applicationContext = _serviceProvider.GetService<ApplicationContext>();
-            PreApplicationRunAction?.Invoke(_serviceProvider);
-            Application.Run(applicationContext);
-        } catch(Exception ex){
-            if(!true){
-                throw;
-            }else{
-                _options.ExcetiionAction(ex);
-            }
-                    
+        Application.SetHighDpiMode(_options.HighDpiMode);
+        if (_options.EnableVisualStyles)
+        {
+            Application.EnableVisualStyles();
         }
+        Application.SetCompatibleTextRenderingDefault(_options.CompatibleTextRenderingDefault);
+        Application.ApplicationExit += OnApplicationExit;
+        if (_options.OnThreadException != null){
+            Application.ThreadException += (_, e) = _options.OnThreadException(e.Exception);
+        }
+
+        // Don't autoinstall since we are creating our own
+        WindowsFormsSynchronizationContext.AutoInstall = false;
+
+        // Create the sync context on our UI thread
+        _syncContextManager.SynchronizationContext = new WindowsFormsSynchronizationContext();
+        SynchronizationContext.SetSynchronizationContext(_syncContextManager.SynchronizationContext);
+
+        var applicationContext = _serviceProvider.GetService<ApplicationContext>();
+        PreApplicationRunAction?.Invoke(_serviceProvider);
+        Application.Run(applicationContext);
     }
 
     private void OnApplicationStopping()

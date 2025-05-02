@@ -32,9 +32,9 @@ public class WindowsFormsLifetimeOptions
     /// </summary>
     public bool EnableConsoleShutdown { get; set; }
 
-        /// <summary>
-    /// Enables listening for Ctrl+C to additionally initiate shutdown.
-    /// The default is false.
+    /// <summary>
+    /// Enable and handle untrapped thread exeptions.
+    /// The default is null.
     /// </summary>
-    public Action<Exception> ExcetiionAction { get; set; }
+    public Action<Exception> OnThreadException { get; set; }
 }

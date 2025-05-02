@@ -77,7 +77,7 @@ public class WindowsFormsHostedService : IHostedService, IDisposable
     }
 
     private void Application_ThreadException(object sender, ThreadExceptionEventArgs e) {
-        _options.OnThreadException(e.Exception)
+        _options.OnThreadException(e.Exception);
     }
 
     private void OnApplicationStopping()

@@ -86,6 +86,21 @@ public class WindowsFormsLifetimeTests
     }
 
     [Fact]
+    public void Services_Available_With_ApplicationContext_With_ServiceProvider()
+    {
+        var hostBuilder = new HostBuilder().UseWindowsFormsLifetime<TestContext>(static provider => new());
+
+        using var host = hostBuilder.Build();
+
+        Assert.IsType<WindowsFormsLifetime.WindowsFormsLifetime>(host.Services.GetService<IHostLifetime>());
+        Assert.IsType<WindowsFormsHostedService>(host.Services.GetService<IHostedService>());
+        Assert.NotNull(host.Services.GetService<ApplicationContext>());
+        Assert.NotNull(host.Services.GetService<TestContext>());
+        Assert.NotNull(host.Services.GetService<IFormProvider>());
+        Assert.Null(host.Services.GetService<TestForm>());
+    }
+
+    [Fact]
     public async Task Should_Run_And_Close_Form()
     {
         using var host = new HostBuilder().UseWindowsFormsLifetime<TestForm>().Build();

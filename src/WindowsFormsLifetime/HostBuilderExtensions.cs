@@ -5,6 +5,17 @@ namespace WindowsFormsLifetime;
 public static class HostBuilderExtensions
 {
     /// <summary>
+    /// Enables Windows Forms support, builds and starts the host, starts the startup <see cref="Form"/>, 
+    /// then waits for the startup form to close before shutting down.
+    /// </summary>
+    /// <typeparam name="TStartForm">The type of the startup form.</typeparam>
+    /// <param name="hostBuilder">The <see cref="IHostBuilder" /> to configure.</param>
+    /// <returns>The same instance of the <see cref="IHostBuilder"/> for chaining.</returns>
+    public static IHostBuilder UseWindowsFormsLifetime<TStartForm>(this IHostBuilder hostBuilder)
+        where TStartForm : Form
+        => hostBuilder.ConfigureServices(services => services.AddWindowsFormsLifetime<TStartForm>((Action<WindowsFormsLifetimeOptions>)null));
+
+    /// <summary>
     /// Enables Windows Forms support, builds and starts the host, starts the startup <see cref="Form"/>,
     /// then waits for the startup form to close before shutting down.
     /// </summary>

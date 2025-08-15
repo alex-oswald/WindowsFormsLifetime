@@ -5,7 +5,7 @@
 		<Nullable>disable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<PackageId>OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime</PackageId>
-		<Version>1.2.1-beta.1</Version>
+		<Version>1.2.1-beta.2</Version>
 		<Authors>Alex Oswald</Authors>
 		<Company>Oswald Technologies, LLC</Company>
 		<Description>.NET Core hosting infrastructure for Windows Forms.</Description>
@@ -25,6 +25,7 @@
 		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
 		<NoWarn>CS1591</NoWarn>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<ItemGroup>

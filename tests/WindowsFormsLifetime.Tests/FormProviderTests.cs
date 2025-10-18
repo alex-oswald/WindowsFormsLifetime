@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Windows.Forms;
 using WindowsFormsLifetime;
@@ -79,6 +79,73 @@ public class FormProviderTests(FormProviderTests.HostFixture host) : IClassFixtu
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public TransientDependency TransientDependency { get; init; } = transientDependency;
+
+        protected override void SetVisibleCore(bool value)
+        {
+            // Don't flash window when running unit tests
+            base.SetVisibleCore(false);
+
+            if (!IsHandleCreated)
+            {
+                CreateHandle();
+                OnLoad(EventArgs.Empty);
+            }
+        }
+    }
+
+    // New form types for parameterized async creation
+    public class TestFormWithOneParam(
+        ScopedDependency scopedDependency,
+        SingletonDependency singletonDependency,
+        TransientDependency transientDependency,
+        string title) : Form
+    {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public ScopedDependency ScopedDependency { get; init; } = scopedDependency;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public SingletonDependency SingletonDependency { get; init; } = singletonDependency;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public TransientDependency TransientDependency { get; init; } = transientDependency;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public string Title { get; init; } = title;
+
+        protected override void SetVisibleCore(bool value)
+        {
+            // Don't flash window when running unit tests
+            base.SetVisibleCore(false);
+
+            if (!IsHandleCreated)
+            {
+                CreateHandle();
+                OnLoad(EventArgs.Empty);
+            }
+        }
+    }
+
+    public class TestFormWithTwoParams(
+        ScopedDependency scopedDependency,
+        SingletonDependency singletonDependency,
+        TransientDependency transientDependency,
+        string title,
+        int count) : Form
+    {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public ScopedDependency ScopedDependency { get; init; } = scopedDependency;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public SingletonDependency SingletonDependency { get; init; } = singletonDependency;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public TransientDependency TransientDependency { get; init; } = transientDependency;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public string Title { get; init; } = title;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public int Count { get; init; } = count;
 
         protected override void SetVisibleCore(bool value)
         {
@@ -285,5 +352,73 @@ public class FormProviderTests(FormProviderTests.HostFixture host) : IClassFixtu
         Assert.True(transientDep.IsDisposed, "TransientDependency is not disposed, but should be disposed.");
 
         Assert.False(singletonDep.IsDisposed, "SingletonDependency is disposed, but should not be disposed.");
+    }
+
+    [Fact]
+    public async Task GetFormAsync_With_One_Parameter_Constructs_And_Disposes_Dependencies()
+    {
+        // Arrange
+        var provider = _host.Host.Services.GetRequiredService<IFormProvider>();
+        var expectedTitle = "Hello Async One Param";
+
+        ScopedDependency? scopedDep = null;
+        SingletonDependency? singletonDep = null;
+        TransientDependency? transientDep = null;
+
+        // Act
+        using (var form = await provider.GetFormAsync<TestFormWithOneParam, string>(expectedTitle))
+        {
+            // Assert
+            Assert.NotNull(form);
+            Assert.Equal(expectedTitle, form.Title);
+
+            scopedDep = form.ScopedDependency;
+            singletonDep = form.SingletonDependency;
+            transientDep = form.TransientDependency;
+
+            Assert.False(scopedDep.IsDisposed);
+            Assert.False(singletonDep.IsDisposed);
+            Assert.False(transientDep.IsDisposed);
+        }
+
+        // Assert disposal after form disposed
+        Assert.True(scopedDep!.IsDisposed);
+        Assert.True(transientDep!.IsDisposed);
+        Assert.False(singletonDep!.IsDisposed);
+    }
+
+    [Fact]
+    public async Task GetFormAsync_With_Two_Parameters_Constructs_And_Disposes_Dependencies()
+    {
+        // Arrange
+        var provider = _host.Host.Services.GetRequiredService<IFormProvider>();
+        var expectedTitle = "Hello Async Two Params";
+        var expectedCount = 42;
+
+        ScopedDependency? scopedDep = null;
+        SingletonDependency? singletonDep = null;
+        TransientDependency? transientDep = null;
+
+        // Act
+        using (var form = await provider.GetFormAsync<TestFormWithTwoParams, string, int>(expectedTitle, expectedCount))
+        {
+            // Assert
+            Assert.NotNull(form);
+            Assert.Equal(expectedTitle, form.Title);
+            Assert.Equal(expectedCount, form.Count);
+
+            scopedDep = form.ScopedDependency;
+            singletonDep = form.SingletonDependency;
+            transientDep = form.TransientDependency;
+
+            Assert.False(scopedDep.IsDisposed);
+            Assert.False(singletonDep.IsDisposed);
+            Assert.False(transientDep.IsDisposed);
+        }
+
+        // Assert disposal after form disposed
+        Assert.True(scopedDep!.IsDisposed);
+        Assert.True(transientDep!.IsDisposed);
+        Assert.False(singletonDep!.IsDisposed);
     }
 }

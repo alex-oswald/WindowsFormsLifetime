@@ -60,8 +60,9 @@ public class WindowsFormsHostedService : IHostedService, IDisposable
         }
         Application.SetCompatibleTextRenderingDefault(_options.CompatibleTextRenderingDefault);
         Application.ApplicationExit += OnApplicationExit;
-        if (_options.OnThreadException != null){
-            Application.ThreadException += Application_ThreadException;
+        if (_options.OnThreadException != null)
+        {
+            Application.ThreadException += OnApplicationThreadException;
         }
 
         // Don't autoinstall since we are creating our own

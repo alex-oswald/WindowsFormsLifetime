@@ -138,4 +138,39 @@ public class WindowsFormsLifetimeTests
 
         // If we are here, nothing failed
     }
+
+    [Fact]
+    public async Task Invokes_ThreadException_Handler()
+    {
+        var expectedException = new InvalidOperationException();
+        var exceptionHandled = new TaskCompletionSource<Exception>(TaskCreationOptions.RunContinuationsAsynchronously);
+        using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+        using var host = new HostBuilder()
+            .UseWindowsFormsLifetime<TestContext>(
+                configure: options => options.OnThreadException = exception =>
+                {
+                    exceptionHandled.TrySetResult(exception);
+                    Application.Exit();
+                })
+            .ConfigureServices(services => services.AddSingleton<Action<TestContext>>(
+                new Action<TestContext>(_ => throw expectedException)))
+            .Build();
+
+        var hostTask = host.RunAsync(cancellationTokenSource.Token);
+        var completedTask = await Task.WhenAny(
+            exceptionHandled.Task,
+            hostTask,
+            Task.Delay(TimeSpan.FromSeconds(10)));
+        if (completedTask == hostTask)
+        {
+            await hostTask;
+        }
+
+        Assert.Same(exceptionHandled.Task, completedTask);
+
+        var actualException = await exceptionHandled.Task;
+        await hostTask.WaitAsync(TimeSpan.FromSeconds(10));
+
+        Assert.Same(expectedException, actualException);
+    }
 }

@@ -31,4 +31,11 @@ public class WindowsFormsLifetimeOptions
     /// The default is false.
     /// </summary>
     public bool EnableConsoleShutdown { get; set; }
+
+    /// <summary>
+    /// Gets or sets the callback for unhandled exceptions on the Windows Forms UI thread.
+    /// When set, the UI thread is configured to route unhandled exceptions to this callback.
+    /// The default is null.
+    /// </summary>
+    public Action<Exception> OnThreadException { get; set; }
 }

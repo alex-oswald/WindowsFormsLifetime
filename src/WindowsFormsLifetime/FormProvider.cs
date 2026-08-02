@@ -60,7 +60,7 @@ public class FormProvider : IFormProvider
         // We are throttling this because there is only one gui thread
         await _semaphore.WaitAsync();
 
-        var form = await _syncContextManager.SynchronizationContext.InvokeAsync(GetForm<T>);
+        T form = await _syncContextManager.SynchronizationContext.InvokeAsync(GetForm<T>);
 
         _semaphore.Release();
 
@@ -72,7 +72,7 @@ public class FormProvider : IFormProvider
         // We are throttling this because there is only one gui thread
         await _semaphore.WaitAsync();
 
-        var form = await _syncContextManager.SynchronizationContext.InvokeAsync(() => scope.ServiceProvider.GetService<T>());
+        T form = await _syncContextManager.SynchronizationContext.InvokeAsync(() => scope.ServiceProvider.GetService<T>());
 
         _semaphore.Release();
 
@@ -81,14 +81,14 @@ public class FormProvider : IFormProvider
 
     public Task<Form> GetMainFormAsync()
     {
-        var applicationContext = _serviceProvider.GetService<ApplicationContext>();
+        ApplicationContext applicationContext = _serviceProvider.GetService<ApplicationContext>();
         return Task.FromResult(applicationContext.MainForm);
     }
 
     public T GetForm<T>() where T : Form
     {
         T form = null;
-        var scope = _serviceScopeFactory.CreateScope();
+        IServiceScope scope = _serviceScopeFactory.CreateScope();
         try
         {
             form = scope.ServiceProvider.GetService<T>();

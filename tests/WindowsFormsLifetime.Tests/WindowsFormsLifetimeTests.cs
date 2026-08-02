@@ -1,5 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using System.Reflection;
+using System.Threading;
 using System.Windows.Forms;
 using WindowsFormsLifetime;
 using Xunit;
@@ -38,6 +41,17 @@ public class WindowsFormsLifetimeTests
                 timer.Enabled = false;
                 onStart?.Invoke(this);
             };
+        }
+    }
+
+    private sealed class TestHostApplicationLifetime : IHostApplicationLifetime
+    {
+        public CancellationToken ApplicationStarted => CancellationToken.None;
+        public CancellationToken ApplicationStopping => CancellationToken.None;
+        public CancellationToken ApplicationStopped => CancellationToken.None;
+
+        public void StopApplication()
+        {
         }
     }
 
@@ -137,5 +151,55 @@ public class WindowsFormsLifetimeTests
         await host.RunAsync(cancelToken.Token);
 
         // If we are here, nothing failed
+    }
+
+    [Fact]
+    public void Should_Invoke_OnThreadException_Callback()
+    {
+        Exception? callbackException = null;
+        var expected = new InvalidOperationException("boom");
+        var options = new WindowsFormsLifetimeOptions
+        {
+            OnThreadException = ex => callbackException = ex
+        };
+        using var service = new WindowsFormsHostedService(
+            Options.Create(options),
+            new TestHostApplicationLifetime(),
+            new ServiceCollection().BuildServiceProvider(),
+            new WindowsFormsSynchronizationContextProvider(),
+            _ => { });
+
+        InvokeThreadExceptionHandler(service, expected);
+
+        Assert.Same(expected, callbackException);
+    }
+
+    [Fact]
+    public void Should_Not_Throw_When_OnThreadException_Is_Null()
+    {
+        var options = new WindowsFormsLifetimeOptions
+        {
+            OnThreadException = _ => { }
+        };
+        using var service = new WindowsFormsHostedService(
+            Options.Create(options),
+            new TestHostApplicationLifetime(),
+            new ServiceCollection().BuildServiceProvider(),
+            new WindowsFormsSynchronizationContextProvider(),
+            _ => { });
+
+        options.OnThreadException = null;
+
+        var exception = Record.Exception(() => InvokeThreadExceptionHandler(service, new InvalidOperationException("boom")));
+
+        Assert.Null(exception);
+    }
+
+    private static void InvokeThreadExceptionHandler(WindowsFormsHostedService service, Exception exception)
+    {
+        var method = typeof(WindowsFormsHostedService).GetMethod("OnApplicationThreadException", BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+
+        method.Invoke(service, [null, new ThreadExceptionEventArgs(exception)]);
     }
 }

@@ -31,4 +31,10 @@ public class WindowsFormsLifetimeOptions
     /// The default is false.
     /// </summary>
     public bool EnableConsoleShutdown { get; set; }
+
+    /// <summary>
+    /// Enables handling unhandled thread exceptions.
+    /// The default is null.
+    /// </summary>
+    public Action<Exception> OnThreadException { get; set; }
 }

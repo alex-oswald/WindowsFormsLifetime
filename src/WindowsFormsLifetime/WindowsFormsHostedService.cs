@@ -60,6 +60,10 @@ public class WindowsFormsHostedService : IHostedService, IDisposable
         }
         Application.SetCompatibleTextRenderingDefault(_options.CompatibleTextRenderingDefault);
         Application.ApplicationExit += OnApplicationExit;
+        if (_options.OnThreadException != null)
+        {
+            Application.ThreadException += OnApplicationThreadException;
+        }
 
         // Don't autoinstall since we are creating our own
         WindowsFormsSynchronizationContext.AutoInstall = false;
@@ -71,6 +75,11 @@ public class WindowsFormsHostedService : IHostedService, IDisposable
         var applicationContext = _serviceProvider.GetService<ApplicationContext>();
         PreApplicationRunAction?.Invoke(_serviceProvider);
         Application.Run(applicationContext);
+    }
+
+    private void OnApplicationThreadException(object sender, ThreadExceptionEventArgs e)
+    {
+        _options.OnThreadException?.Invoke(e.Exception);
     }
 
     private void OnApplicationStopping()
@@ -100,6 +109,7 @@ public class WindowsFormsHostedService : IHostedService, IDisposable
     public void Dispose()
     {
         Application.ApplicationExit -= OnApplicationExit;
+        Application.ThreadException -= OnApplicationThreadException;
         _applicationStoppingRegistration.Dispose();
     }
 }

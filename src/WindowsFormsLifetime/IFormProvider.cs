@@ -210,6 +210,9 @@ public interface IFormProvider
     /// </summary>
     /// <typeparam name="T">The form type to get.</typeparam>
     /// <returns>An instance of the form.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when called from a non-UI thread or when the UI thread is not available.
+    /// </exception>
     T GetForm<T>() where T : Form;
 
     /// <summary>
@@ -426,5 +429,8 @@ public interface IFormProvider
     /// <typeparam name="T">The form type to get.</typeparam>
     /// <param name="scope">The scope in which the form should be created.</param>
     /// <returns>An instance of the form.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when called from a non-UI thread or when the UI thread is not available.
+    /// </exception>
     T GetForm<T>(IServiceScope scope) where T : Form;
 }

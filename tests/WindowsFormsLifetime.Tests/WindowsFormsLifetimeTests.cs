@@ -32,7 +32,7 @@ public class WindowsFormsLifetimeTests
         public TestContext(Action<TestContext>? onStart = null)
         {
             // Let's invoke this after constructor has been run
-            var timer = new Timer { Interval = 1, Enabled = true };
+            Timer timer = new() { Interval = 1, Enabled = true };
             timer.Tick += (sender, args) =>
             {
                 timer.Enabled = false;
@@ -58,9 +58,9 @@ public class WindowsFormsLifetimeTests
     [Fact]
     public void Services_Available_With_Form()
     {
-        var hostBuilder = new HostBuilder().UseWindowsFormsLifetime<TestForm>();
+        IHostBuilder hostBuilder = new HostBuilder().UseWindowsFormsLifetime<TestForm>();
 
-        using var host = hostBuilder.Build();
+        using IHost host = hostBuilder.Build();
 
         Assert.IsType<WindowsFormsLifetime.WindowsFormsLifetime>(host.Services.GetService<IHostLifetime>());
         Assert.IsType<WindowsFormsHostedService>(host.Services.GetService<IHostedService>());
@@ -72,14 +72,14 @@ public class WindowsFormsLifetimeTests
     [Fact]
     public void Services_Available_With_ApplicationContext()
     {
-        var hostBuilder = new HostBuilder().UseWindowsFormsLifetime<TestContext>();
+        IHostBuilder hostBuilder = new HostBuilder().UseWindowsFormsLifetime<TestContext>();
 
-        using var host = hostBuilder.Build();
+        using IHost host = hostBuilder.Build();
 
         Assert.IsType<WindowsFormsLifetime.WindowsFormsLifetime>(host.Services.GetService<IHostLifetime>());
         Assert.IsType<WindowsFormsHostedService>(host.Services.GetService<IHostedService>());
-        var applicationContext = host.Services.GetRequiredService<ApplicationContext>();
-        var testContext = host.Services.GetRequiredService<TestContext>();
+        ApplicationContext applicationContext = host.Services.GetRequiredService<ApplicationContext>();
+        TestContext testContext = host.Services.GetRequiredService<TestContext>();
 
         Assert.Same(testContext, applicationContext);
         Assert.NotNull(host.Services.GetService<IFormProvider>());
@@ -89,14 +89,14 @@ public class WindowsFormsLifetimeTests
     [Fact]
     public void Services_Available_With_ApplicationContext_Form()
     {
-        var hostBuilder = new HostBuilder().UseWindowsFormsLifetime<TestContext, TestForm>((form) => new TestContext());
+        IHostBuilder hostBuilder = new HostBuilder().UseWindowsFormsLifetime<TestContext, TestForm>((form) => new TestContext());
 
-        using var host = hostBuilder.Build();
+        using IHost host = hostBuilder.Build();
 
         Assert.IsType<WindowsFormsLifetime.WindowsFormsLifetime>(host.Services.GetService<IHostLifetime>());
         Assert.IsType<WindowsFormsHostedService>(host.Services.GetService<IHostedService>());
-        var applicationContext = host.Services.GetRequiredService<ApplicationContext>();
-        var testContext = host.Services.GetRequiredService<TestContext>();
+        ApplicationContext applicationContext = host.Services.GetRequiredService<ApplicationContext>();
+        TestContext testContext = host.Services.GetRequiredService<TestContext>();
 
         Assert.Same(testContext, applicationContext);
         Assert.NotNull(host.Services.GetService<TestForm>());
@@ -106,18 +106,18 @@ public class WindowsFormsLifetimeTests
     [Fact]
     public void Services_Available_With_ApplicationContext_With_ServiceProvider()
     {
-        var dependency = new TestDependency();
-        var hostBuilder = new HostBuilder()
+        TestDependency dependency = new();
+        IHostBuilder hostBuilder = new HostBuilder()
             .ConfigureServices(services => services.AddSingleton<TestDependency>(dependency))
             .UseWindowsFormsLifetime<ServiceProviderTestContext>(
                 static provider => new(provider.GetRequiredService<TestDependency>()));
 
-        using var host = hostBuilder.Build();
+        using IHost host = hostBuilder.Build();
 
         Assert.IsType<WindowsFormsLifetime.WindowsFormsLifetime>(host.Services.GetService<IHostLifetime>());
         Assert.IsType<WindowsFormsHostedService>(host.Services.GetService<IHostedService>());
-        var applicationContext = host.Services.GetRequiredService<ApplicationContext>();
-        var testContext = host.Services.GetRequiredService<ServiceProviderTestContext>();
+        ApplicationContext applicationContext = host.Services.GetRequiredService<ApplicationContext>();
+        ServiceProviderTestContext testContext = host.Services.GetRequiredService<ServiceProviderTestContext>();
 
         Assert.Same(testContext, applicationContext);
         Assert.Same(dependency, testContext.Dependency);
@@ -128,19 +128,19 @@ public class WindowsFormsLifetimeTests
     [Fact]
     public void Services_Available_With_ApplicationContext_With_ServiceProvider_On_HostApplicationBuilder()
     {
-        var dependency = new TestDependency();
-        var hostBuilder = Host.CreateApplicationBuilder();
+        TestDependency dependency = new();
+        HostApplicationBuilder hostBuilder = Host.CreateApplicationBuilder();
         hostBuilder.Services.AddSingleton<TestDependency>(dependency);
 
-        var returnedBuilder = hostBuilder.UseWindowsFormsLifetime<ServiceProviderTestContext>(
+        IHostApplicationBuilder returnedBuilder = hostBuilder.UseWindowsFormsLifetime<ServiceProviderTestContext>(
             static provider => new(provider.GetRequiredService<TestDependency>()));
 
         Assert.Same(hostBuilder, returnedBuilder);
 
-        using var host = hostBuilder.Build();
+        using IHost host = hostBuilder.Build();
 
-        var applicationContext = host.Services.GetRequiredService<ApplicationContext>();
-        var testContext = host.Services.GetRequiredService<ServiceProviderTestContext>();
+        ApplicationContext applicationContext = host.Services.GetRequiredService<ApplicationContext>();
+        ServiceProviderTestContext testContext = host.Services.GetRequiredService<ServiceProviderTestContext>();
 
         Assert.Same(testContext, applicationContext);
         Assert.Same(dependency, testContext.Dependency);
@@ -149,13 +149,13 @@ public class WindowsFormsLifetimeTests
     [Fact]
     public void Services_Available_With_ApplicationContext_Without_Factory_From_ServiceCollection()
     {
-        var services = new ServiceCollection();
+        ServiceCollection services = new();
         services.AddWindowsFormsLifetime<TestContext>();
 
-        using var serviceProvider = services.BuildServiceProvider();
+        using ServiceProvider serviceProvider = services.BuildServiceProvider();
 
-        var applicationContext = serviceProvider.GetRequiredService<ApplicationContext>();
-        var testContext = serviceProvider.GetRequiredService<TestContext>();
+        ApplicationContext applicationContext = serviceProvider.GetRequiredService<ApplicationContext>();
+        TestContext testContext = serviceProvider.GetRequiredService<TestContext>();
 
         Assert.Same(testContext, applicationContext);
     }
@@ -163,9 +163,9 @@ public class WindowsFormsLifetimeTests
     [Fact]
     public async Task Should_Run_And_Close_Form()
     {
-        using var host = new HostBuilder().UseWindowsFormsLifetime<TestForm>().Build();
+        using IHost host = new HostBuilder().UseWindowsFormsLifetime<TestForm>().Build();
 
-        var form = host.Services.GetService<TestForm>();
+        TestForm? form = host.Services.GetService<TestForm>();
         form!.Load += (sender, args) => form.Invoke(new Action(Application.Exit));
 
         await host.RunAsync();
@@ -176,10 +176,10 @@ public class WindowsFormsLifetimeTests
     [Fact]
     public async Task Should_Run_And_Close_Form_When_Cancelling()
     {
-        using var host = new HostBuilder().UseWindowsFormsLifetime<TestForm>().Build();
-        using var cancelToken = new CancellationTokenSource();
+        using IHost host = new HostBuilder().UseWindowsFormsLifetime<TestForm>().Build();
+        using CancellationTokenSource cancelToken = new();
 
-        var form = host.Services.GetService<TestForm>();
+        TestForm? form = host.Services.GetService<TestForm>();
         form!.Load += (sender, args) => cancelToken.Cancel();
 
         await host.RunAsync(cancelToken.Token);
@@ -190,7 +190,7 @@ public class WindowsFormsLifetimeTests
     [Fact]
     public async Task Should_Run_And_Close_ApplicationContext()
     {
-        using var host = new HostBuilder()
+        using IHost host = new HostBuilder()
             .UseWindowsFormsLifetime<TestContext>()
             .ConfigureServices(services => services.AddSingleton<Action<TestContext>>(context => Application.Exit()))
             .Build();
@@ -203,8 +203,8 @@ public class WindowsFormsLifetimeTests
     [Fact]
     public async Task Should_Run_And_Close_ApplicationContext_When_Cancelling()
     {
-        using var cancelToken = new CancellationTokenSource();
-        using var host = new HostBuilder()
+        using CancellationTokenSource cancelToken = new();
+        using IHost host = new HostBuilder()
             .UseWindowsFormsLifetime<TestContext>()
             .ConfigureServices(services => services.AddSingleton<Action<TestContext>>(_ => cancelToken.Cancel()))
             .Build();
@@ -217,10 +217,10 @@ public class WindowsFormsLifetimeTests
     [Fact]
     public async Task Invokes_ThreadException_Handler()
     {
-        var expectedException = new InvalidOperationException();
-        var exceptionHandled = new TaskCompletionSource<Exception>(TaskCreationOptions.RunContinuationsAsynchronously);
-        using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-        using var host = new HostBuilder()
+        InvalidOperationException expectedException = new();
+        TaskCompletionSource<Exception> exceptionHandled = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        using CancellationTokenSource cancellationTokenSource = new(TimeSpan.FromSeconds(10));
+        using IHost host = new HostBuilder()
             .UseWindowsFormsLifetime<TestContext>(
                 configure: options => options.OnThreadException = exception =>
                 {
@@ -231,8 +231,8 @@ public class WindowsFormsLifetimeTests
                 new Action<TestContext>(_ => throw expectedException)))
             .Build();
 
-        var hostTask = host.RunAsync(cancellationTokenSource.Token);
-        var completedTask = await Task.WhenAny(
+        Task hostTask = host.RunAsync(cancellationTokenSource.Token);
+        Task completedTask = await Task.WhenAny(
             exceptionHandled.Task,
             hostTask,
             Task.Delay(TimeSpan.FromSeconds(10)));
@@ -243,7 +243,7 @@ public class WindowsFormsLifetimeTests
 
         Assert.Same(exceptionHandled.Task, completedTask);
 
-        var actualException = await exceptionHandled.Task;
+        Exception actualException = await exceptionHandled.Task;
         await hostTask.WaitAsync(TimeSpan.FromSeconds(10));
 
         Assert.Same(expectedException, actualException);

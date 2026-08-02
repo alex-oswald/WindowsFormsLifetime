@@ -11,6 +11,7 @@
 
 - Make surgical edits. Do not reformat unrelated code, reorder existing `using` directives, normalize whitespace, or change a file's established tabs-versus-spaces indentation.
 - Follow the local C# style: file-scoped namespaces, PascalCase public members, camelCase parameters, underscore-prefixed private fields, braces for multi-statement blocks, and expression-bodied members only for simple forwarding logic.
+- Use explicit types for local variables; do not use `var`.
 - Continue using XML documentation for public APIs where the surrounding code documents them. Match the existing concise summaries and parameter descriptions.
 - Keep project XML grouped and indented like the file being edited. Do not move unrelated properties or package references.
 

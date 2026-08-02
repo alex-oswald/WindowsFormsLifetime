@@ -79,7 +79,7 @@ public class WindowsFormsHostedService : IHostedService, IDisposable
                 _threadExceptionHandlerAttached = true;
             }
 
-            var applicationContext = _serviceProvider.GetService<ApplicationContext>();
+            ApplicationContext applicationContext = _serviceProvider.GetService<ApplicationContext>();
             PreApplicationRunAction?.Invoke(_serviceProvider);
             Application.Run(applicationContext);
         }
@@ -96,8 +96,8 @@ public class WindowsFormsHostedService : IHostedService, IDisposable
 
     private void OnApplicationStopping()
     {
-        var applicationContext = _serviceProvider.GetService<ApplicationContext>();
-        var form = applicationContext.MainForm;
+        ApplicationContext applicationContext = _serviceProvider.GetService<ApplicationContext>();
+        Form form = applicationContext.MainForm;
 
         // If the form is closed then the handle no longer exists
         // We would get an exception trying to invoke from the control when it is already closed

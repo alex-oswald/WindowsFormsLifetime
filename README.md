@@ -37,10 +37,10 @@ using Microsoft.Extensions.Hosting;
 using WinFormsApp1;
 using WindowsFormsLifetime;
 
-var builder = Host.CreateApplicationBuilder(args);
+HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
 builder.UseWindowsFormsLifetime<Form1>();
 
-var app = builder.Build();
+IHost app = builder.Build();
 app.Run();
 ```
 
@@ -72,10 +72,10 @@ Allows the use of Ctrl+C to shutdown the host while the console is being used.
 Add more forms to the DI container.
 
 ```csharp
-var builder = Host.CreateApplicationBuilder(args);
+HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
 builder.UseWindowsFormsLifetime<Form1>();
 builder.Services.AddTransient<Form2>();
-var app = builder.Build();
+IHost app = builder.Build();
 app.Run();
 ```
 
@@ -102,7 +102,7 @@ public partial class Form1 : Form
     private async void button1_Click(object sender, EventArgs e)
     {
         _logger.LogInformation("Show Form2");
-        var form = await _formProvider.GetFormAsync<Form2>();
+        Form2 form = await _formProvider.GetFormAsync<Form2>();
         form.Show();
     }
 }
@@ -143,7 +143,7 @@ public class HostedService1 : BackgroundService
             {
                 await _guiContext.InvokeAsync(async () =>
                 {
-                    var form = await _fp.GetFormAsync<Form2>();
+                    Form2 form = await _fp.GetFormAsync<Form2>();
                     form.Show();
                 });
             }

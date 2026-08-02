@@ -25,7 +25,7 @@ public class FormProviderTests(FormProviderTests.HostFixture host) : IClassFixtu
 
         public HostFixture()
         {
-            var hostBuilder = new HostBuilder()
+            IHostBuilder hostBuilder = new HostBuilder()
                 .UseWindowsFormsLifetime<WindowsFormsLifetimeTests.TestForm>()
                 .ConfigureServices(services =>
                 {
@@ -144,7 +144,7 @@ public class FormProviderTests(FormProviderTests.HostFixture host) : IClassFixtu
         ScopedDependency? scopedDep = null;
         SingletonDependency? singletonDep = null;
         TransientDependency? transientDep = null;
-        using (var form = _host.Host.Services.GetService<TestFormWithDependencies>())
+        using (TestFormWithDependencies? form = _host.Host.Services.GetService<TestFormWithDependencies>())
         {
             Assert.NotNull(form);
 
@@ -172,7 +172,7 @@ public class FormProviderTests(FormProviderTests.HostFixture host) : IClassFixtu
         ScopedDependency? scopedDep = null;
         SingletonDependency? singletonDep = null;
         TransientDependency? transientDep = null;
-        using (var form = GuiContext.Invoke(() => _host.Host.Services.GetRequiredService<IFormProvider>().GetForm<TestFormWithDependencies>()))
+        using (TestFormWithDependencies form = GuiContext.Invoke(() => _host.Host.Services.GetRequiredService<IFormProvider>().GetForm<TestFormWithDependencies>()))
         {
             Assert.NotNull(form);
 
@@ -200,7 +200,7 @@ public class FormProviderTests(FormProviderTests.HostFixture host) : IClassFixtu
         ScopedDependency? scopedDep = null;
         SingletonDependency? singletonDep = null;
         TransientDependency? transientDep = null;
-        using (var form = await _host.Host.Services.GetRequiredService<IFormProvider>().GetFormAsync<TestFormWithDependencies>())
+        using (TestFormWithDependencies form = await _host.Host.Services.GetRequiredService<IFormProvider>().GetFormAsync<TestFormWithDependencies>())
         {
             Assert.NotNull(form);
 
@@ -228,9 +228,9 @@ public class FormProviderTests(FormProviderTests.HostFixture host) : IClassFixtu
         ScopedDependency? scopedDep = null;
         SingletonDependency? singletonDep = null;
         TransientDependency? transientDep = null;
-        using (var scope = _host.Host.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
+        using (IServiceScope scope = _host.Host.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
         {
-            using (var form = GuiContext.Invoke(() => _host.Host.Services.GetRequiredService<IFormProvider>().GetForm<TestFormWithDependencies>(scope)))
+            using (TestFormWithDependencies form = GuiContext.Invoke(() => _host.Host.Services.GetRequiredService<IFormProvider>().GetForm<TestFormWithDependencies>(scope)))
             {
                 Assert.NotNull(form);
 
@@ -243,7 +243,7 @@ public class FormProviderTests(FormProviderTests.HostFixture host) : IClassFixtu
                 transientDep = form.TransientDependency;
                 Assert.False(transientDep.IsDisposed, "TransientDependency is disposed, but should not be disposed.");
 
-                using (var form2 = GuiContext.Invoke(() => _host.Host.Services.GetRequiredService<IFormProvider>().GetForm<TestFormWithDependencies>(scope)))
+                using (TestFormWithDependencies form2 = GuiContext.Invoke(() => _host.Host.Services.GetRequiredService<IFormProvider>().GetForm<TestFormWithDependencies>(scope)))
                 {
                     Assert.NotNull(form2);
 
@@ -283,9 +283,9 @@ public class FormProviderTests(FormProviderTests.HostFixture host) : IClassFixtu
         ScopedDependency? scopedDep = null;
         SingletonDependency? singletonDep = null;
         TransientDependency? transientDep = null;
-        using (var scope = _host.Host.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
+        using (IServiceScope scope = _host.Host.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
         {
-            using (var form = await _host.Host.Services.GetRequiredService<IFormProvider>().GetFormAsync<TestFormWithDependencies>(scope))
+            using (TestFormWithDependencies form = await _host.Host.Services.GetRequiredService<IFormProvider>().GetFormAsync<TestFormWithDependencies>(scope))
             {
                 Assert.NotNull(form);
 
@@ -298,7 +298,7 @@ public class FormProviderTests(FormProviderTests.HostFixture host) : IClassFixtu
                 transientDep = form.TransientDependency;
                 Assert.False(transientDep.IsDisposed, "TransientDependency is disposed, but should not be disposed.");
 
-                using (var form2 = await _host.Host.Services.GetRequiredService<IFormProvider>().GetFormAsync<TestFormWithDependencies>(scope))
+                using (TestFormWithDependencies form2 = await _host.Host.Services.GetRequiredService<IFormProvider>().GetFormAsync<TestFormWithDependencies>(scope))
                 {
                     Assert.NotNull(form2);
 
@@ -335,7 +335,7 @@ public class FormProviderTests(FormProviderTests.HostFixture host) : IClassFixtu
     [Fact]
     public void GetForm_With_One_To_Eight_Parameters_Constructs_And_Disposes_Dependencies()
     {
-        var provider = _host.Host.Services.GetRequiredService<IFormProvider>();
+        IFormProvider provider = _host.Host.Services.GetRequiredService<IFormProvider>();
 
         AssertParameterizedForm(
             GuiContext.Invoke(() => provider.GetForm<TestFormWithParameters, string>(ParameterValues[0])),
@@ -366,7 +366,7 @@ public class FormProviderTests(FormProviderTests.HostFixture host) : IClassFixtu
     [Fact]
     public async Task GetFormAsync_With_One_To_Eight_Parameters_Constructs_And_Disposes_Dependencies()
     {
-        var provider = _host.Host.Services.GetRequiredService<IFormProvider>();
+        IFormProvider provider = _host.Host.Services.GetRequiredService<IFormProvider>();
 
         AssertParameterizedForm(
             await provider.GetFormAsync<TestFormWithParameters, string>(ParameterValues[0]),
@@ -397,7 +397,7 @@ public class FormProviderTests(FormProviderTests.HostFixture host) : IClassFixtu
     [Fact]
     public async Task GetForm_With_Parameters_Outside_Ui_Thread_Throws()
     {
-        var provider = _host.Host.Services.GetRequiredService<IFormProvider>();
+        IFormProvider provider = _host.Host.Services.GetRequiredService<IFormProvider>();
 
         await Assert.ThrowsAsync<InvalidOperationException>(
             () => Task.Run(() => provider.GetForm<TestFormWithParameters, string>(ParameterValues[0])));
@@ -406,15 +406,15 @@ public class FormProviderTests(FormProviderTests.HostFixture host) : IClassFixtu
     [Fact]
     public async Task GetFormAsync_Releases_Semaphore_After_Creation_Failure()
     {
-        var provider = _host.Host.Services.GetRequiredService<IFormProvider>();
+        IFormProvider provider = _host.Host.Services.GetRequiredService<IFormProvider>();
 
         await Assert.ThrowsAsync<InvalidOperationException>(() => provider.GetFormAsync<ThrowingForm>());
 
-        var succeedingRequest = provider.GetFormAsync<TestFormWithDependencies>();
-        var completedRequest = await Task.WhenAny(succeedingRequest, Task.Delay(TimeSpan.FromSeconds(5)));
+        Task<TestFormWithDependencies> succeedingRequest = provider.GetFormAsync<TestFormWithDependencies>();
+        Task completedRequest = await Task.WhenAny(succeedingRequest, Task.Delay(TimeSpan.FromSeconds(5)));
         Assert.Same(succeedingRequest, completedRequest);
 
-        using var form = await succeedingRequest;
+        using TestFormWithDependencies form = await succeedingRequest;
         Assert.NotNull(form);
     }
 
@@ -424,12 +424,12 @@ public class FormProviderTests(FormProviderTests.HostFixture host) : IClassFixtu
     {
         using (form)
         {
-            for (var index = 0; index < expectedParameters.Length; index++)
+            for (int index = 0; index < expectedParameters.Length; index++)
             {
                 Assert.Equal(expectedParameters[index], form.Parameters[index]);
             }
 
-            for (var index = expectedParameters.Length; index < form.Parameters.Length; index++)
+            for (int index = expectedParameters.Length; index < form.Parameters.Length; index++)
             {
                 Assert.Null(form.Parameters[index]);
             }

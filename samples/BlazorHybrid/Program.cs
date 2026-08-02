@@ -2,10 +2,10 @@ using BlazorHybrid;
 using MudBlazor.Services;
 using WindowsFormsLifetime;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Host.UseWindowsFormsLifetime<Form1>();
 builder.Services.AddWindowsFormsBlazorWebView();
 builder.Services.AddMudServices();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 app.Run();

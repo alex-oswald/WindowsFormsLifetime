@@ -60,7 +60,7 @@ public class FormProvider : IFormProvider
 
     public Task<Form> GetMainFormAsync()
     {
-        var applicationContext = _serviceProvider.GetService<ApplicationContext>();
+        ApplicationContext applicationContext = _serviceProvider.GetService<ApplicationContext>();
         return Task.FromResult(applicationContext.MainForm);
     }
 
@@ -69,7 +69,7 @@ public class FormProvider : IFormProvider
         EnsureUiThread();
 
         T form = null;
-        var scope = _serviceScopeFactory.CreateScope();
+        IServiceScope scope = _serviceScopeFactory.CreateScope();
         try
         {
             form = scope.ServiceProvider.GetService<T>();
@@ -140,7 +140,7 @@ public class FormProvider : IFormProvider
     private TForm CreateFormWithScope<TForm>(Func<IServiceScope, TForm> formFactory) where TForm : Form
     {
         TForm form;
-        var scope = _serviceScopeFactory.CreateScope();
+        IServiceScope scope = _serviceScopeFactory.CreateScope();
         try
         {
             form = formFactory(scope);
@@ -167,7 +167,7 @@ public class FormProvider : IFormProvider
 
     private async Task<T> InvokeOnUiThreadAsync<T>(Func<T> formFactory)
     {
-        var synchronizationContext = GetUiSynchronizationContext();
+        WindowsFormsSynchronizationContext synchronizationContext = GetUiSynchronizationContext();
         await _semaphore.WaitAsync();
 
         try
@@ -182,7 +182,7 @@ public class FormProvider : IFormProvider
 
     private void EnsureUiThread()
     {
-        var synchronizationContext = GetUiSynchronizationContext();
+        WindowsFormsSynchronizationContext synchronizationContext = GetUiSynchronizationContext();
         if (!ReferenceEquals(SynchronizationContext.Current, synchronizationContext))
         {
             throw new InvalidOperationException("Synchronous form creation must be called on the Windows Forms UI thread.");

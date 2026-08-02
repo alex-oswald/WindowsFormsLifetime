@@ -12,9 +12,9 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IHostLifetime, WindowsFormsLifetime>();
         services.AddHostedService(sp =>
         {
-            var options = sp.GetRequiredService<IOptions<WindowsFormsLifetimeOptions>>();
-            var life = sp.GetRequiredService<IHostApplicationLifetime>();
-            var sync = sp.GetRequiredService<WindowsFormsSynchronizationContextProvider>();
+            IOptions<WindowsFormsLifetimeOptions> options = sp.GetRequiredService<IOptions<WindowsFormsLifetimeOptions>>();
+            IHostApplicationLifetime life = sp.GetRequiredService<IHostApplicationLifetime>();
+            WindowsFormsSynchronizationContextProvider sync = sp.GetRequiredService<WindowsFormsSynchronizationContextProvider>();
             return new WindowsFormsHostedService(options, life, sp, sync, preApplicationRunAction);
         });
         services.Configure(configure ?? (_ => new WindowsFormsLifetimeOptions()));
@@ -113,7 +113,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<TStartForm>();
         services.AddSingleton<TAppContext>(provider =>
         {
-            var startForm = provider.GetRequiredService<TStartForm>();
+            TStartForm startForm = provider.GetRequiredService<TStartForm>();
             return applicationContextFactory(startForm);
         });
         services.AddSingleton<ApplicationContext>(provider => provider.GetRequiredService<TAppContext>());

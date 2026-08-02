@@ -7,7 +7,7 @@
   <Folder Name="/Solution Items/">
     <File Path=".gitattributes" />
     <File Path=".gitignore" />
-    <File Path="azure-pipelines.yml" />
+    <File Path=".github/workflows/test.yml" />
     <File Path="LICENSE.txt" />
     <File Path="README.md" />
   </Folder>

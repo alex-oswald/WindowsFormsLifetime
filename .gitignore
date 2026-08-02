@@ -12,8 +12,3 @@ TestResults/
 *.user
 *.userosscache
 *.slnx.docstates
-
-# JetBrains Rider local state
-.idea/
-*.slnx.iml
-*.DotSettings.user

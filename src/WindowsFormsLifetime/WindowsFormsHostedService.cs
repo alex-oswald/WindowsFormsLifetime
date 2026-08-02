@@ -68,7 +68,7 @@ public class WindowsFormsHostedService : IHostedService, IDisposable
         WindowsFormsSynchronizationContext.AutoInstall = false;
 
         // Create the sync context on our UI thread
-        _syncContextManager.SynchronizationContext = new();
+        _syncContextManager.SynchronizationContext = new WindowsFormsSynchronizationContext();
         SynchronizationContext.SetSynchronizationContext(_syncContextManager.SynchronizationContext);
 
         try
@@ -79,7 +79,7 @@ public class WindowsFormsHostedService : IHostedService, IDisposable
                 _threadExceptionHandlerAttached = true;
             }
 
-            ApplicationContext applicationContext = _serviceProvider.GetService<ApplicationContext>();
+            var applicationContext = _serviceProvider.GetService<ApplicationContext>();
             PreApplicationRunAction?.Invoke(_serviceProvider);
             Application.Run(applicationContext);
         }
@@ -96,20 +96,19 @@ public class WindowsFormsHostedService : IHostedService, IDisposable
 
     private void OnApplicationStopping()
     {
-        ApplicationContext applicationContext = _serviceProvider.GetService<ApplicationContext>();
-        Form form = applicationContext.MainForm;
+        var applicationContext = _serviceProvider.GetService<ApplicationContext>();
+        var form = applicationContext.MainForm;
 
         // If the form is closed then the handle no longer exists
         // We would get an exception trying to invoke from the control when it is already closed
         if (form != null && form.IsHandleCreated)
         {
             // If the host lifetime is stopped, gracefully close and dispose of forms in the service provider
-            Action closeAndDispose = () =>
+            form.Invoke(new Action(() =>
             {
                 form.Close();
                 form.Dispose();
-            };
-            form.Invoke(closeAndDispose);
+            }));
         }
     }
 

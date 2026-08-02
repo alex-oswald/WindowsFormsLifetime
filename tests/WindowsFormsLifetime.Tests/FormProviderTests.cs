@@ -22,15 +22,15 @@ public class FormProviderTests(FormProviderTests.HostFixture host) : IClassFixtu
 
         public HostFixture()
         {
-            HostBuilder hostBuilder = new();
-            hostBuilder.UseWindowsFormsLifetime<WindowsFormsLifetimeTests.TestForm>();
-            hostBuilder.ConfigureServices(services =>
-            {
-                services.AddScoped<ScopedDependency>();
-                services.AddSingleton<SingletonDependency>();
-                services.AddTransient<TransientDependency>();
-                services.AddTransient<TestFormWithDependencies>();
-            });
+            var hostBuilder = new HostBuilder()
+                .UseWindowsFormsLifetime<WindowsFormsLifetimeTests.TestForm>()
+                .ConfigureServices(services =>
+                {
+                    services.AddScoped<ScopedDependency>();
+                    services.AddSingleton<SingletonDependency>();
+                    services.AddTransient<TransientDependency>();
+                    services.AddTransient<TestFormWithDependencies>();
+                });
             Host = hostBuilder.Build();
 
             TokenSource = new();
@@ -99,7 +99,7 @@ public class FormProviderTests(FormProviderTests.HostFixture host) : IClassFixtu
         ScopedDependency? scopedDep = null;
         SingletonDependency? singletonDep = null;
         TransientDependency? transientDep = null;
-        using (TestFormWithDependencies? form = _host.Host.Services.GetService<TestFormWithDependencies>())
+        using (var form = _host.Host.Services.GetService<TestFormWithDependencies>())
         {
             Assert.NotNull(form);
 
@@ -127,7 +127,7 @@ public class FormProviderTests(FormProviderTests.HostFixture host) : IClassFixtu
         ScopedDependency? scopedDep = null;
         SingletonDependency? singletonDep = null;
         TransientDependency? transientDep = null;
-        using (TestFormWithDependencies form = _host.Host.Services.GetRequiredService<IFormProvider>().GetForm<TestFormWithDependencies>())
+        using (var form = _host.Host.Services.GetRequiredService<IFormProvider>().GetForm<TestFormWithDependencies>())
         {
             Assert.NotNull(form);
 
@@ -155,7 +155,7 @@ public class FormProviderTests(FormProviderTests.HostFixture host) : IClassFixtu
         ScopedDependency? scopedDep = null;
         SingletonDependency? singletonDep = null;
         TransientDependency? transientDep = null;
-        using (TestFormWithDependencies form = await _host.Host.Services.GetRequiredService<IFormProvider>().GetFormAsync<TestFormWithDependencies>())
+        using (var form = await _host.Host.Services.GetRequiredService<IFormProvider>().GetFormAsync<TestFormWithDependencies>())
         {
             Assert.NotNull(form);
 
@@ -183,9 +183,9 @@ public class FormProviderTests(FormProviderTests.HostFixture host) : IClassFixtu
         ScopedDependency? scopedDep = null;
         SingletonDependency? singletonDep = null;
         TransientDependency? transientDep = null;
-        using (IServiceScope scope = _host.Host.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
+        using (var scope = _host.Host.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
         {
-            using (TestFormWithDependencies form = _host.Host.Services.GetRequiredService<IFormProvider>().GetForm<TestFormWithDependencies>(scope))
+            using (var form = _host.Host.Services.GetRequiredService<IFormProvider>().GetForm<TestFormWithDependencies>(scope))
             {
                 Assert.NotNull(form);
 
@@ -198,7 +198,7 @@ public class FormProviderTests(FormProviderTests.HostFixture host) : IClassFixtu
                 transientDep = form.TransientDependency;
                 Assert.False(transientDep.IsDisposed, "TransientDependency is disposed, but should not be disposed.");
 
-                using (TestFormWithDependencies form2 = _host.Host.Services.GetRequiredService<IFormProvider>().GetForm<TestFormWithDependencies>(scope))
+                using (var form2 = _host.Host.Services.GetRequiredService<IFormProvider>().GetForm<TestFormWithDependencies>(scope))
                 {
                     Assert.NotNull(form2);
 
@@ -238,9 +238,9 @@ public class FormProviderTests(FormProviderTests.HostFixture host) : IClassFixtu
         ScopedDependency? scopedDep = null;
         SingletonDependency? singletonDep = null;
         TransientDependency? transientDep = null;
-        using (IServiceScope scope = _host.Host.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
+        using (var scope = _host.Host.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
         {
-            using (TestFormWithDependencies form = await _host.Host.Services.GetRequiredService<IFormProvider>().GetFormAsync<TestFormWithDependencies>(scope))
+            using (var form = await _host.Host.Services.GetRequiredService<IFormProvider>().GetFormAsync<TestFormWithDependencies>(scope))
             {
                 Assert.NotNull(form);
 
@@ -253,7 +253,7 @@ public class FormProviderTests(FormProviderTests.HostFixture host) : IClassFixtu
                 transientDep = form.TransientDependency;
                 Assert.False(transientDep.IsDisposed, "TransientDependency is disposed, but should not be disposed.");
 
-                using (TestFormWithDependencies form2 = await _host.Host.Services.GetRequiredService<IFormProvider>().GetFormAsync<TestFormWithDependencies>(scope))
+                using (var form2 = await _host.Host.Services.GetRequiredService<IFormProvider>().GetFormAsync<TestFormWithDependencies>(scope))
                 {
                     Assert.NotNull(form2);
 

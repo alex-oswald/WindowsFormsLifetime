@@ -12,13 +12,12 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IHostLifetime, WindowsFormsLifetime>();
         services.AddHostedService(sp =>
         {
-            IOptions<WindowsFormsLifetimeOptions> options = sp.GetRequiredService<IOptions<WindowsFormsLifetimeOptions>>();
-            IHostApplicationLifetime life = sp.GetRequiredService<IHostApplicationLifetime>();
-            WindowsFormsSynchronizationContextProvider sync = sp.GetRequiredService<WindowsFormsSynchronizationContextProvider>();
-            WindowsFormsHostedService hostedService = new(options, life, sp, sync, preApplicationRunAction);
-            return hostedService;
+            var options = sp.GetRequiredService<IOptions<WindowsFormsLifetimeOptions>>();
+            var life = sp.GetRequiredService<IHostApplicationLifetime>();
+            var sync = sp.GetRequiredService<WindowsFormsSynchronizationContextProvider>();
+            return new WindowsFormsHostedService(options, life, sp, sync, preApplicationRunAction);
         });
-        services.Configure(configure ?? (_ => { }));
+        services.Configure(configure ?? (_ => new WindowsFormsLifetimeOptions()));
 
         services.AddSingleton<IFormProvider, FormProvider>();
 
@@ -43,7 +42,7 @@ public static class ServiceCollectionExtensions
         where TStartForm : Form
         => services
             .AddSingleton<TStartForm>()
-            .AddSingleton<ApplicationContext>(provider => new(provider.GetRequiredService<TStartForm>()))
+            .AddSingleton(provider => new ApplicationContext(provider.GetRequiredService<TStartForm>()))
             .AddWindowsFormsLifetime(configure, preApplicationRunAction);
 
     /// <summary>
@@ -86,7 +85,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<TStartForm>();
         services.AddSingleton<TAppContext>(provider =>
         {
-            TStartForm startForm = provider.GetRequiredService<TStartForm>();
+            var startForm = provider.GetRequiredService<TStartForm>();
             return applicationContextFactory(startForm);
         });
         services.AddSingleton<ApplicationContext, TAppContext>();

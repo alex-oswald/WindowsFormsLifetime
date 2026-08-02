@@ -28,33 +28,33 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.button1 = new();
-            this.ThreadLabel = new();
+            this.button1 = new System.Windows.Forms.Button();
+            this.ThreadLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // button1
             // 
-            this.button1.Location = new(89, 45);
+            this.button1.Location = new System.Drawing.Point(89, 45);
             this.button1.Name = "button1";
-            this.button1.Size = new(131, 56);
+            this.button1.Size = new System.Drawing.Size(131, 56);
             this.button1.TabIndex = 0;
             this.button1.Text = "button1";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += this.button1_Click;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // ThreadLabel
             // 
             this.ThreadLabel.AutoSize = true;
-            this.ThreadLabel.Location = new(147, 196);
+            this.ThreadLabel.Location = new System.Drawing.Point(147, 196);
             this.ThreadLabel.Name = "ThreadLabel";
-            this.ThreadLabel.Size = new(0, 15);
+            this.ThreadLabel.Size = new System.Drawing.Size(0, 15);
             this.ThreadLabel.TabIndex = 1;
             // 
             // Form2
             // 
-            this.AutoScaleDimensions = new(7F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new(800, 450);
+            this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.ThreadLabel);
             this.Controls.Add(this.button1);
             this.Name = "Form2";

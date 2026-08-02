@@ -21,7 +21,7 @@ internal static class SynchronizationContextExtensions
 
     public static Task<TResult> InvokeAsync<TResult>(this SynchronizationContext context, Func<TResult> func)
     {
-        TaskCompletionSource<TResult> tcs = new();
+        var tcs = new TaskCompletionSource<TResult>();
         context.Post(delegate {
             try
             {
@@ -38,7 +38,7 @@ internal static class SynchronizationContextExtensions
 
     public static Task<TResult> InvokeAsync<TResult, TInput>(this SynchronizationContext context, Func<TInput, TResult> func, TInput input)
     {
-        TaskCompletionSource<TResult> tcs = new();
+        var tcs = new TaskCompletionSource<TResult>();
         context.Post(delegate {
             try
             {

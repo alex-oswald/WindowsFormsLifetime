@@ -30,7 +30,7 @@ public partial class Form1 : Form
     private async void button1_Click(object sender, EventArgs e)
     {
         _logger.LogInformation("Show");
-        Form2 form = await _formProvider.GetFormAsync<Form2>();
+        var form = await _formProvider.GetFormAsync<Form2>();
         form.Show();
     }
 

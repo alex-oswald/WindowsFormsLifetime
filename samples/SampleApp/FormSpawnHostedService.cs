@@ -32,7 +32,7 @@ public class FormSpawnHostedService : BackgroundService
                 // The form provider will get the form from the DI container on the gui thread
                 // Then we must invoke the Show method on the gui thread as well using IGuiContext
                 _logger.LogInformation($"GetFormAsync {Thread.CurrentThread.ManagedThreadId} {Thread.CurrentThread.Name}");
-                Form2 form = await _fp.GetFormAsync<Form2>();
+                var form = await _fp.GetFormAsync<Form2>();
                 _guiContext.Invoke(() => form.Show());
             }
             count++;

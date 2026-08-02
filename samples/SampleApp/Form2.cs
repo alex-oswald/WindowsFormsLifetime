@@ -27,14 +27,12 @@ public partial class Form2 : Form
         Task.Run(() =>
         {
             _logger.LogInformation($"Task.Run Thread {Thread.CurrentThread.ManagedThreadId}  {Thread.CurrentThread.Name}");
-            Action updateButton = async () =>
+            _guiContext.Invoke(new Action(async () =>
             {
                 await Task.Delay(1000);
                 _logger.LogInformation($"GuiContext Thread {Thread.CurrentThread.ManagedThreadId}  {Thread.CurrentThread.Name}");
-                Random random = new();
-                button1.Text = random.Next(1, 10).ToString();
-            };
-            _guiContext.Invoke(updateButton);
+                button1.Text = new Random().Next(1, 10).ToString();
+            }));
         });
     }
 }

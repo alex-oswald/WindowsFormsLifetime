@@ -28,17 +28,17 @@
         /// </summary>
         private void InitializeComponent()
         {
-            button1 = new();
-            button2 = new();
-            ThreadLabel = new();
-            TickLabel = new();
+            button1 = new Button();
+            button2 = new Button();
+            ThreadLabel = new Label();
+            TickLabel = new Label();
             SuspendLayout();
             // 
             // button1
             // 
-            button1.Location = new(12, 12);
+            button1.Location = new Point(12, 12);
             button1.Name = "button1";
-            button1.Size = new(150, 63);
+            button1.Size = new Size(150, 63);
             button1.TabIndex = 0;
             button1.Text = "Open Form2";
             button1.UseVisualStyleBackColor = true;
@@ -46,9 +46,9 @@
             // 
             // button2
             // 
-            button2.Location = new(168, 12);
+            button2.Location = new Point(168, 12);
             button2.Name = "button2";
-            button2.Size = new(150, 63);
+            button2.Size = new Size(150, 63);
             button2.TabIndex = 1;
             button2.Text = "Exit";
             button2.UseVisualStyleBackColor = true;
@@ -57,26 +57,26 @@
             // ThreadLabel
             // 
             ThreadLabel.AutoSize = true;
-            ThreadLabel.Location = new(49, 108);
+            ThreadLabel.Location = new Point(49, 108);
             ThreadLabel.Name = "ThreadLabel";
-            ThreadLabel.Size = new(46, 15);
+            ThreadLabel.Size = new Size(46, 15);
             ThreadLabel.TabIndex = 2;
             ThreadLabel.Text = "Thread:";
             // 
             // TickLabel
             // 
             TickLabel.AutoSize = true;
-            TickLabel.Location = new(49, 147);
+            TickLabel.Location = new Point(49, 147);
             TickLabel.Name = "TickLabel";
-            TickLabel.Size = new(31, 15);
+            TickLabel.Size = new Size(31, 15);
             TickLabel.TabIndex = 3;
             TickLabel.Text = "Tick:";
             // 
             // Form1
             // 
-            AutoScaleDimensions = new(7F, 15F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new(446, 244);
+            ClientSize = new Size(446, 244);
             Controls.Add(TickLabel);
             Controls.Add(ThreadLabel);
             Controls.Add(button2);
@@ -95,3 +95,4 @@
         private Label TickLabel;
     }
 }
+

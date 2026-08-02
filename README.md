@@ -1,186 +1,180 @@
 # WindowsFormsLifetime
 
-[![NuGet](https://img.shields.io/nuget/v/OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime)](https://www.nuget.org/packages/OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime/)
-[![NuGet downloads](https://img.shields.io/nuget/dt/OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime)](https://www.nuget.org/packages/OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime/)
+[![Build Status](https://dev.azure.com/oswaldtechnologies/WindowsFormsLifetime/_apis/build/status/alex-oswald.WindowsFormsLifetime?branchName=main)](https://dev.azure.com/oswaldtechnologies/WindowsFormsLifetime/_build/latest?definitionId=21&branchName=main)
+[![Nuget](https://img.shields.io/nuget/v/OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime)](https://www.nuget.org/packages/OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime/)
+[![Nuget](https://img.shields.io/nuget/dt/OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime)](https://www.nuget.org/packages/OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime/)
 
-WindowsFormsLifetime integrates Windows Forms with the [.NET Generic Host](https://learn.microsoft.com/dotnet/core/extensions/generic-host). It registers Windows Forms as the host lifetime, runs the application loop on a dedicated STA UI thread, and makes the application's forms available through dependency injection.
+A Windows Forms hosting extension for the [.NET Generic Host](https://learn.microsoft.com/en-us/dotnet/core/extensions/generic-host).
+This library enables you to configure the generic host to use the lifetime of Windows Forms. When configured,
+the generic host will start an `IHostedService` that runs Windows Forms in a separate UI specific thread.
 
-Closing the startup form or ending the `ApplicationContext` stops the host. Stopping the host also closes the main form when it is still open.
+- The Generic Host will use Windows Forms as it's lifetime (when the main form closes, the host shuts down)
+- All the benefits of .NET and the Generic Host, dependency injection, configuration, logging...
+- Easier multi-threading in Windows Forms
 
-## Requirements
+## Quick Start
 
-- Windows
-- .NET 9 (`net9.0-windows`) or .NET 10 (`net10.0-windows`)
-- A project with Windows Forms enabled
+Install the `OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime` package from NuGet.
 
-```xml
-<PropertyGroup>
-  <TargetFramework>net9.0-windows</TargetFramework>
-  <UseWindowsForms>true</UseWindowsForms>
-</PropertyGroup>
-```
-
-## Install
+Using Powershell
 
 ```powershell
-dotnet add package OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
+Install-Package OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
 ```
 
-## Quick start
+Using the .NET CLI
 
-Use `Host.CreateApplicationBuilder` for a Windows Forms application that uses the Generic Host:
+```
+dotnet add package OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime
+``` 
+
+Create a new **Windows Forms App**.
+
+Replace the contents of `Program.cs` with the following.
 
 ```csharp
 using Microsoft.Extensions.Hosting;
+using WinFormsApp1;
 using WindowsFormsLifetime;
 
 var builder = Host.CreateApplicationBuilder(args);
-builder.UseWindowsFormsLifetime<MainForm>();
-
-using var host = builder.Build();
-host.Run();
-```
-
-`UseWindowsFormsLifetime<MainForm>()` registers `MainForm` and an `ApplicationContext` in the service container, starts the Windows Forms message loop, and connects its lifetime to the host.
-
-The library also supports `IHostBuilder`:
-
-```csharp
-var host = Host.CreateDefaultBuilder(args)
-    .UseWindowsFormsLifetime<MainForm>()
-    .Build();
-
-host.Run();
-```
-
-### WebApplication and Blazor Hybrid hosts
-
-For `WebApplicationBuilder`, configure its underlying host:
-
-```csharp
-using WindowsFormsLifetime;
-
-var builder = WebApplication.CreateBuilder(args);
-builder.Host.UseWindowsFormsLifetime<MainForm>();
-
-builder.Services.AddWindowsFormsBlazorWebView();
+builder.UseWindowsFormsLifetime<Form1>();
 
 var app = builder.Build();
 app.Run();
 ```
 
-See [samples/BlazorHybrid](samples/BlazorHybrid) for a complete Blazor Hybrid example.
+**Run the app!**
 
-## Application contexts
+**Your Windows Forms app is now running with the Generic Host!**
 
-Use an `ApplicationContext` when the application lifetime should not be controlled by a single startup form, such as a notification-area application:
+### Passing options
 
-```csharp
-var builder = Host.CreateApplicationBuilder(args);
-
-builder.UseWindowsFormsLifetime<TrayApplicationContext, MainForm>(
-    mainForm => new TrayApplicationContext(mainForm));
-
-using var host = builder.Build();
-host.Run();
-```
-
-The available registration patterns are:
-
-| Pattern | Use case |
-| --- | --- |
-| `UseWindowsFormsLifetime<TStartForm>()` | Start with a form managed by the default `ApplicationContext`. |
-| `UseWindowsFormsLifetime<TAppContext>()` | Resolve a custom `ApplicationContext` from DI or a factory. |
-| `UseWindowsFormsLifetime<TAppContext, TStartForm>(...)` | Create a custom application context using the DI-managed startup form. |
-
-The same generic overloads are available directly on `IServiceCollection` through `AddWindowsFormsLifetime`.
-
-## Configuration
-
-Pass a `WindowsFormsLifetimeOptions` delegate to configure Windows Forms initialization and host behavior:
+You can further configure the Windows Forms lifetime by passing `Action<WindowsFormsLifeTimeOptions>`.
+For example, with the default options:
 
 ```csharp
-builder.UseWindowsFormsLifetime<MainForm>(options =>
+builder.UseWindowsFormsLifetime<Form1>(options =>
 {
-    options.HighDpiMode = HighDpiMode.PerMonitorV2;
+    options.HighDpiMode = HighDpiMode.SystemAware;
+    options.EnableVisualStyles = true;
+    options.CompatibleTextRenderingDefault = false;
+    options.SuppressStatusMessages = false;
     options.EnableConsoleShutdown = true;
 });
 ```
 
-| Option | Default | Description |
-| --- | --- | --- |
-| `HighDpiMode` | `HighDpiMode.SystemAware` | DPI-awareness mode passed to `Application.SetHighDpiMode`. |
-| `EnableVisualStyles` | `true` | Calls `Application.EnableVisualStyles` before the message loop starts. |
-| `CompatibleTextRenderingDefault` | `false` | Value passed to `Application.SetCompatibleTextRenderingDefault`. |
-| `SuppressStatusMessages` | `false` | Suppresses Generic Host startup and shutdown log messages. |
-| `EnableConsoleShutdown` | `false` | Lets Ctrl+C stop the host when the application has a console. |
+`EnableConsoleShutdown`
+Allows the use of Ctrl+C to shutdown the host while the console is being used.
 
-## Forms, dependency injection, and the UI thread
+### Instantiating and Showing Forms
 
-Register secondary forms with the container before building the host:
+Add more forms to the DI container.
 
 ```csharp
-builder.Services.AddTransient<SettingsForm>();
+var builder = Host.CreateApplicationBuilder(args);
+builder.UseWindowsFormsLifetime<Form1>();
+builder.Services.AddTransient<Form2>();
+var app = builder.Build();
+app.Run();
 ```
 
-`IFormProvider` creates forms on the Windows Forms UI thread. In a form event handler, resolve and show another form as follows:
+To get a form, use the `IFormProvider`. The form provider fetches an instance of the form from the DI
+container on the GUI thread. `IFormProvider` has the method, `GetFormAsync<T>`, used to fetch a form
+instance.
+
+In this example, we inject `IFormProvider` into the main form, and use that to instantiate a new
+instance of `Form2`, then show the form.
 
 ```csharp
-public partial class MainForm : Form
+public partial class Form1 : Form
 {
-    private readonly IFormProvider _forms;
+    private readonly ILogger<Form1> _logger;
+    private readonly IFormProvider _formProvider;
 
-    public MainForm(IFormProvider forms)
+    public Form1(ILogger<Form1> logger, IFormProvider formProvider)
     {
         InitializeComponent();
-        _forms = forms;
+        _logger = logger;
+        _formProvider = formProvider;
     }
 
-    private async void showSettingsButton_Click(object? sender, EventArgs e)
+    private async void button1_Click(object sender, EventArgs e)
     {
-        var settings = await _forms.GetFormAsync<SettingsForm>();
-        settings.Show();
+        _logger.LogInformation("Show Form2");
+        var form = await _formProvider.GetFormAsync<Form2>();
+        form.Show();
     }
 }
 ```
 
-When code runs away from the UI thread, use `IGuiContext` to interact with controls:
+### Invoking on the GUI thread
+
+Sometimes you need to invoke an action on the GUI thread. Say you want to spawn a form from a background
+service. Use the `IGuiContext` to invoke actions on the GUI thread.
+
+In this example, a form is fetched and shown, in an action that is invoked on the GUI thread. Then a second
+form is shown. This example shows how the GUI does not lock up during this process.
 
 ```csharp
-public sealed class SettingsLauncher(
-    IFormProvider formProvider,
-    IGuiContext guiContext)
+public class HostedService1 : BackgroundService
 {
-    public async Task ShowAsync()
+    private readonly ILogger _logger;
+    private readonly IFormProvider _fp;
+    private readonly IGuiContext _guiContext;
+
+    public HostedService1(
+        ILogger<HostedService1> logger,
+        IFormProvider formProvider,
+        IGuiContext guiContext)
     {
-        var settings = await formProvider.GetFormAsync<SettingsForm>();
-        guiContext.Invoke(settings.Show);
+        _logger = logger;
+        _fp = formProvider;
+        _guiContext = guiContext;
+    }
+
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        int count = 0;
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            await Task.Delay(5000, stoppingToken);
+            if (count < 5)
+            {
+                await _guiContext.InvokeAsync(async () =>
+                {
+                    var form = await _fp.GetFormAsync<Form2>();
+                    form.Show();
+                });
+            }
+            count++;
+            _logger.LogInformation("HostedService1 Tick 1000ms");
+        }
     }
 }
 ```
 
-`IFormProvider.GetForm<T>()` is available for code already running on the UI thread. Use `GetFormAsync<T>()` from background code. The parameterless `GetForm` and `GetFormAsync` methods create a DI scope for the form and dispose that scope when the form is disposed. Overloads that accept an `IServiceScope` allow callers to share and own a scope explicitly.
+## Only use the Console while debugging
 
-The library registers these services:
+I like to configure my `csproj` so that the `Console` runs only while my configuration is set to `Debug`,
+and doesn't run when set to `Release`. Here is an example of how to do this. Setting the `OutputType` to
+`Exe` will run the console, while setting it to `WinExe` will not.
 
-| Service | Purpose |
-| --- | --- |
-| `IFormProvider` | Creates DI-managed forms on the UI thread and retrieves the main form. |
-| `IGuiContext` | Dispatches work to the UI thread. |
-| `IWindowsFormsSynchronizationContextProvider` | Exposes the Windows Forms synchronization context for advanced integrations. |
+```xml
+<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+  <OutputType>Exe</OutputType>
+</PropertyGroup>
 
-## Shutdown behavior
+<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+  <OutputType>WinExe</OutputType>
+</PropertyGroup>
+```
 
-- Closing the startup form or ending the `ApplicationContext` calls `StopApplication` on the host.
-- Cancelling or stopping the host closes and disposes the main form when its handle still exists.
-- Set `EnableConsoleShutdown` to `true` to treat Ctrl+C as a host shutdown request.
+## Credits
 
-## Samples
+The layout of the `WindowsFormsLifetime` class is based on .NET Core's
+[ConsoleLifetime](https://github.com/dotnet/extensions/blob/b83b27d76439497459fe9cf7337d5128c900eb5a/src/Hosting/Hosting/src/Internal/ConsoleLifetime.cs).
 
-- [SampleApp](samples/SampleApp) demonstrates a Generic Host, background services, DI-managed forms, and UI-thread invocation.
-- [AppContext](samples/AppContext) demonstrates a custom `ApplicationContext` with a startup form.
-- [BlazorHybrid](samples/BlazorHybrid) demonstrates Windows Forms hosted from a `WebApplicationBuilder`.
+[ExecutionContext vs SynchronizationContext](https://devblogs.microsoft.com/pfxteam/executioncontext-vs-synchronizationcontext/)
 
-## License
-
-MIT. See [LICENSE.txt](LICENSE.txt).
+[Implementing a SynchronizationContext.SendAsync method](https://devblogs.microsoft.com/pfxteam/implementing-a-synchronizationcontext-sendasync-method/)

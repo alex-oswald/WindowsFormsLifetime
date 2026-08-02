@@ -1,41 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace WindowsFormsLifetime;
-
-public interface IFormProvider
-{
-    /// <summary>
-    /// Gets the requested form type and ensures it is created on the UI thread.
-    /// </summary>
-    /// <typeparam name="T">The form type to get.</typeparam>
-    /// <returns>An instance of the form, asynchronously.</returns>
-    Task<T> GetFormAsync<T>() where T : Form;
-
-    /// <summary>
-    /// Gets the requested form type and ensures it is created on the UI thread. Creates the form in the given scope.
-    /// </summary>
-    /// <typeparam name="T">The form type to get.</typeparam>
-    /// <param name="scope">The scope in which the form should be created.</param>
-    /// <returns>An instance of the form, asynchronously.</returns>
-    Task<T> GetFormAsync<T>(IServiceScope scope) where T : Form;
-
-    Task<Form> GetMainFormAsync();
-
-    /// <summary>
-    /// Gets the requested form type on the current thread. Should only be called on the UI thread. All scoped and transient dependencies will be disposed when the form is disposed.
-    /// </summary>
-    /// <typeparam name="T">The form type to get.</typeparam>
-    /// <returns>An instance of the form.</returns>
-    T GetForm<T>() where T : Form;
-
-    /// <summary>
-    /// Gets the requested form type on the current thread. Should only be called on the UI thread.  Creates the form in the given scope.
-    /// </summary>
-    /// <typeparam name="T">The form type to get.</typeparam>
-    /// <param name="scope">The scope in which the form should be created.</param>
-    /// <returns>An instance of the form.</returns>
-    T GetForm<T>(IServiceScope scope) where T : Form;
-}
 
 public class FormProvider : IFormProvider
 {
@@ -54,30 +19,44 @@ public class FormProvider : IFormProvider
         _serviceScopeFactory = serviceScopeFactory;
     }
 
-    public async Task<T> GetFormAsync<T>()
+    public Task<T> GetFormAsync<T>()
         where T : Form
-    {
-        // We are throttling this because there is only one gui thread
-        await _semaphore.WaitAsync();
+        => InvokeOnUiThreadAsync(GetForm<T>);
 
-        var form = await _syncContextManager.SynchronizationContext.InvokeAsync(GetForm<T>);
+    /// <inheritdoc />
+    public Task<TForm> GetFormAsync<TForm, T1>(T1 param1) where TForm : Form
+        => CreateFormAsyncWithParameters<TForm>(param1);
 
-        _semaphore.Release();
+    /// <inheritdoc />
+    public Task<TForm> GetFormAsync<TForm, T1, T2>(T1 param1, T2 param2) where TForm : Form
+        => CreateFormAsyncWithParameters<TForm>(param1, param2);
 
-        return form;
-    }
+    /// <inheritdoc />
+    public Task<TForm> GetFormAsync<TForm, T1, T2, T3>(T1 param1, T2 param2, T3 param3) where TForm : Form
+        => CreateFormAsyncWithParameters<TForm>(param1, param2, param3);
 
-    public async Task<T> GetFormAsync<T>(IServiceScope scope) where T : Form
-    {
-        // We are throttling this because there is only one gui thread
-        await _semaphore.WaitAsync();
+    /// <inheritdoc />
+    public Task<TForm> GetFormAsync<TForm, T1, T2, T3, T4>(T1 param1, T2 param2, T3 param3, T4 param4) where TForm : Form
+        => CreateFormAsyncWithParameters<TForm>(param1, param2, param3, param4);
 
-        var form = await _syncContextManager.SynchronizationContext.InvokeAsync(() => scope.ServiceProvider.GetService<T>());
+    /// <inheritdoc />
+    public Task<TForm> GetFormAsync<TForm, T1, T2, T3, T4, T5>(T1 param1, T2 param2, T3 param3, T4 param4, T5 param5) where TForm : Form
+        => CreateFormAsyncWithParameters<TForm>(param1, param2, param3, param4, param5);
 
-        _semaphore.Release();
+    /// <inheritdoc />
+    public Task<TForm> GetFormAsync<TForm, T1, T2, T3, T4, T5, T6>(T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, T6 param6) where TForm : Form
+        => CreateFormAsyncWithParameters<TForm>(param1, param2, param3, param4, param5, param6);
 
-        return form;
-    }
+    /// <inheritdoc />
+    public Task<TForm> GetFormAsync<TForm, T1, T2, T3, T4, T5, T6, T7>(T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, T6 param6, T7 param7) where TForm : Form
+        => CreateFormAsyncWithParameters<TForm>(param1, param2, param3, param4, param5, param6, param7);
+
+    /// <inheritdoc />
+    public Task<TForm> GetFormAsync<TForm, T1, T2, T3, T4, T5, T6, T7, T8>(T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, T6 param6, T7 param7, T8 param8) where TForm : Form
+        => CreateFormAsyncWithParameters<TForm>(param1, param2, param3, param4, param5, param6, param7, param8);
+
+    public Task<T> GetFormAsync<T>(IServiceScope scope) where T : Form
+        => InvokeOnUiThreadAsync(() => scope.ServiceProvider.GetService<T>());
 
     public Task<Form> GetMainFormAsync()
     {
@@ -87,6 +66,8 @@ public class FormProvider : IFormProvider
 
     public T GetForm<T>() where T : Form
     {
+        EnsureUiThread();
+
         T form = null;
         var scope = _serviceScopeFactory.CreateScope();
         try
@@ -110,8 +91,105 @@ public class FormProvider : IFormProvider
         return form;
     }
 
+    /// <inheritdoc />
+    public TForm GetForm<TForm, T1>(T1 param1) where TForm : Form
+        => CreateFormWithParameters<TForm>(param1);
+
+    /// <inheritdoc />
+    public TForm GetForm<TForm, T1, T2>(T1 param1, T2 param2) where TForm : Form
+        => CreateFormWithParameters<TForm>(param1, param2);
+
+    /// <inheritdoc />
+    public TForm GetForm<TForm, T1, T2, T3>(T1 param1, T2 param2, T3 param3) where TForm : Form
+        => CreateFormWithParameters<TForm>(param1, param2, param3);
+
+    /// <inheritdoc />
+    public TForm GetForm<TForm, T1, T2, T3, T4>(T1 param1, T2 param2, T3 param3, T4 param4) where TForm : Form
+        => CreateFormWithParameters<TForm>(param1, param2, param3, param4);
+
+    /// <inheritdoc />
+    public TForm GetForm<TForm, T1, T2, T3, T4, T5>(T1 param1, T2 param2, T3 param3, T4 param4, T5 param5) where TForm : Form
+        => CreateFormWithParameters<TForm>(param1, param2, param3, param4, param5);
+
+    /// <inheritdoc />
+    public TForm GetForm<TForm, T1, T2, T3, T4, T5, T6>(T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, T6 param6) where TForm : Form
+        => CreateFormWithParameters<TForm>(param1, param2, param3, param4, param5, param6);
+
+    /// <inheritdoc />
+    public TForm GetForm<TForm, T1, T2, T3, T4, T5, T6, T7>(T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, T6 param6, T7 param7) where TForm : Form
+        => CreateFormWithParameters<TForm>(param1, param2, param3, param4, param5, param6, param7);
+
+    /// <inheritdoc />
+    public TForm GetForm<TForm, T1, T2, T3, T4, T5, T6, T7, T8>(T1 param1, T2 param2, T3 param3, T4 param4, T5 param5, T6 param6, T7 param7, T8 param8) where TForm : Form
+        => CreateFormWithParameters<TForm>(param1, param2, param3, param4, param5, param6, param7, param8);
+
     public T GetForm<T>(IServiceScope scope) where T : Form
-        => scope.ServiceProvider.GetService<T>();
+    {
+        EnsureUiThread();
+        return scope.ServiceProvider.GetService<T>();
+    }
 
     public void Dispose() => _semaphore?.Dispose();
+
+    private TForm CreateFormWithParameters<TForm>(params object[] parameters) where TForm : Form
+    {
+        EnsureUiThread();
+        return CreateFormWithScope(scope => ActivatorUtilities.CreateInstance<TForm>(scope.ServiceProvider, parameters));
+    }
+
+    private TForm CreateFormWithScope<TForm>(Func<IServiceScope, TForm> formFactory) where TForm : Form
+    {
+        TForm form;
+        var scope = _serviceScopeFactory.CreateScope();
+        try
+        {
+            form = formFactory(scope);
+            if (form == null)
+            {
+                scope.Dispose();
+            }
+            else
+            {
+                form.Disposed += (_, _) => scope.Dispose();
+            }
+        }
+        catch
+        {
+            scope.Dispose();
+            throw;
+        }
+
+        return form;
+    }
+
+    private Task<TForm> CreateFormAsyncWithParameters<TForm>(params object[] parameters) where TForm : Form
+        => InvokeOnUiThreadAsync(() => CreateFormWithParameters<TForm>(parameters));
+
+    private async Task<T> InvokeOnUiThreadAsync<T>(Func<T> formFactory)
+    {
+        var synchronizationContext = GetUiSynchronizationContext();
+        await _semaphore.WaitAsync();
+
+        try
+        {
+            return await synchronizationContext.InvokeAsync(formFactory);
+        }
+        finally
+        {
+            _semaphore.Release();
+        }
+    }
+
+    private void EnsureUiThread()
+    {
+        var synchronizationContext = GetUiSynchronizationContext();
+        if (!ReferenceEquals(SynchronizationContext.Current, synchronizationContext))
+        {
+            throw new InvalidOperationException("Synchronous form creation must be called on the Windows Forms UI thread.");
+        }
+    }
+
+    private WindowsFormsSynchronizationContext GetUiSynchronizationContext()
+        => _syncContextManager.SynchronizationContext
+            ?? throw new InvalidOperationException("The Windows Forms UI thread is not available.");
 }

@@ -7,7 +7,9 @@ namespace WindowsFormsLifetime;
 public class WindowsFormsHostedService : IHostedService, IDisposable
 {
     private CancellationTokenRegistration _applicationStoppingRegistration;
+    private bool _threadExceptionHandlerAttached;
     private readonly WindowsFormsLifetimeOptions _options;
+    private readonly Action<Exception> _onThreadException;
     private readonly IHostApplicationLifetime _hostApplicationLifetime;
     private readonly IServiceProvider _serviceProvider;
     private readonly WindowsFormsSynchronizationContextProvider _syncContextManager;
@@ -20,6 +22,7 @@ public class WindowsFormsHostedService : IHostedService, IDisposable
         Action<IServiceProvider> preApplicationRunAction)
     {
         _options = options.Value;
+        _onThreadException = _options.OnThreadException;
         _hostApplicationLifetime = hostApplicationLifetime;
         _serviceProvider = serviceProvider;
         _syncContextManager = syncContextManager;
@@ -68,9 +71,27 @@ public class WindowsFormsHostedService : IHostedService, IDisposable
         _syncContextManager.SynchronizationContext = new WindowsFormsSynchronizationContext();
         SynchronizationContext.SetSynchronizationContext(_syncContextManager.SynchronizationContext);
 
-        var applicationContext = _serviceProvider.GetService<ApplicationContext>();
-        PreApplicationRunAction?.Invoke(_serviceProvider);
-        Application.Run(applicationContext);
+        try
+        {
+            if (_onThreadException != null)
+            {
+                Application.ThreadException += OnApplicationThreadException;
+                _threadExceptionHandlerAttached = true;
+            }
+
+            var applicationContext = _serviceProvider.GetService<ApplicationContext>();
+            PreApplicationRunAction?.Invoke(_serviceProvider);
+            Application.Run(applicationContext);
+        }
+        finally
+        {
+            RemoveThreadExceptionHandler();
+        }
+    }
+
+    private void OnApplicationThreadException(object sender, ThreadExceptionEventArgs e)
+    {
+        _onThreadException(e.Exception);
     }
 
     private void OnApplicationStopping()
@@ -93,7 +114,17 @@ public class WindowsFormsHostedService : IHostedService, IDisposable
 
     private void OnApplicationExit(object sender, EventArgs e)
     {
+        RemoveThreadExceptionHandler();
         _hostApplicationLifetime.StopApplication();
+    }
+
+    private void RemoveThreadExceptionHandler()
+    {
+        if (_threadExceptionHandlerAttached)
+        {
+            Application.ThreadException -= OnApplicationThreadException;
+            _threadExceptionHandlerAttached = false;
+        }
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA1816:Dispose methods should call SuppressFinalize", Justification = "<Pending>")]

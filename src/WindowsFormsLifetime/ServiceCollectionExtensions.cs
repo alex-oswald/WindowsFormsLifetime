@@ -62,7 +62,7 @@ public static class ServiceCollectionExtensions
             ? services.AddSingleton<TAppContext>()
             : services.AddSingleton<TAppContext>(provider => applicationContextFactory());
 
-        services.AddSingleton<ApplicationContext, TAppContext>();
+        services.AddSingleton<ApplicationContext>(provider => provider.GetRequiredService<TAppContext>());
         services.AddWindowsFormsLifetime(configure, preApplicationRunAction);
 
         return services;
@@ -80,7 +80,7 @@ public static class ServiceCollectionExtensions
     /// <returns>The same instance of the <see cref="IServiceCollection"/> for chaining.</returns>
     public static IServiceCollection AddWindowsFormsLifetime<TAppContext>(
         this IServiceCollection services,
-        Func<IServiceProvider, TAppContext> applicationContextFactory = null,
+        Func<IServiceProvider, TAppContext> applicationContextFactory,
         Action<WindowsFormsLifetimeOptions> configure = null,
         Action<IServiceProvider> preApplicationRunAction = null)
         where TAppContext : ApplicationContext
@@ -90,7 +90,7 @@ public static class ServiceCollectionExtensions
             : services.AddSingleton<TAppContext>(provider => applicationContextFactory(provider));
 
         services
-            .AddSingleton<ApplicationContext, TAppContext>()
+            .AddSingleton<ApplicationContext>(provider => provider.GetRequiredService<TAppContext>())
             .AddWindowsFormsLifetime(configure, preApplicationRunAction);
 
         return services;
@@ -116,7 +116,7 @@ public static class ServiceCollectionExtensions
             var startForm = provider.GetRequiredService<TStartForm>();
             return applicationContextFactory(startForm);
         });
-        services.AddSingleton<ApplicationContext, TAppContext>();
+        services.AddSingleton<ApplicationContext>(provider => provider.GetRequiredService<TAppContext>());
         services.AddWindowsFormsLifetime(configure, preApplicationRunAction);
 
         return services;

@@ -5,7 +5,7 @@ namespace WindowsFormsLifetime;
 public static class HostBuilderExtensions
 {
     /// <summary>
-    /// Enables Windows Forms support, builds and starts the host, starts the startup <see cref="Form"/>, 
+    /// Enables Windows Forms support, builds and starts the host, starts the startup <see cref="Form"/>,
     /// then waits for the startup form to close before shutting down.
     /// </summary>
     /// <typeparam name="TStartForm">The type of the startup form.</typeparam>
@@ -103,7 +103,7 @@ public static class HostBuilderExtensions
     }
 
     /// <summary>
-    /// Enables Windows Forms support, builds and starts the host, starts the starup <see cref="ApplicationContext"/>,
+    /// Enables Windows Forms support, builds and starts the host, starts the startup <see cref="ApplicationContext"/>,
     /// then waits for the startup context to close before shutting down.
     /// </summary>
     /// <typeparam name="TAppContext">The type of <see cref="ApplicationContext"/> to manage.</typeparam>
@@ -111,7 +111,6 @@ public static class HostBuilderExtensions
     /// <param name="applicationContextFactory">The <see cref="ApplicationContext"/> factory.</param>
     /// <param name="configure">The delegate for configuring the <see cref="WindowsFormsLifetimeOptions"/>.</param>
     /// <returns>The same instance of the <see cref="IHostApplicationBuilder"/> for chaining.</returns>
-    /// <returns></returns>
     public static IHostApplicationBuilder UseWindowsFormsLifetime<TAppContext>(
         this IHostApplicationBuilder hostAppBuilder,
         Func<IServiceProvider, TAppContext> applicationContextFactory,

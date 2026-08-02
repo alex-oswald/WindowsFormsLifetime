@@ -10,7 +10,7 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  solution: '**/*.sln'
+  solution: '**/*.slnx'
   libraryName: 'WindowsFormsLifetime'
 
 steps:

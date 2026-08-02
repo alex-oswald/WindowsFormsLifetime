@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/Samples/">
+    <Project Path="samples/AppContext/AppContext.csproj" />
+    <Project Path="samples/BlazorHybrid/BlazorHybrid.csproj" />
+    <Project Path="samples/SampleApp/SampleApp.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path="azure-pipelines.yml" />
+    <File Path="LICENSE.txt" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="src/WindowsFormsLifetime/WindowsFormsLifetime.csproj" />
+  <Project Path="tests/WindowsFormsLifetime.Tests/WindowsFormsLifetimeTests.csproj" />
+</Solution>

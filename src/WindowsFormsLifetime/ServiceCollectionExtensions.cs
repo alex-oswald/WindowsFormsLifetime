@@ -62,8 +62,36 @@ public static class ServiceCollectionExtensions
             ? services.AddSingleton<TAppContext>()
             : services.AddSingleton<TAppContext>(provider => applicationContextFactory());
 
-        services.AddSingleton<ApplicationContext, TAppContext>();
+        services.AddSingleton<ApplicationContext>(provider => provider.GetRequiredService<TAppContext>());
         services.AddWindowsFormsLifetime(configure, preApplicationRunAction);
+
+        return services;
+    }
+
+    /// <summary>
+    /// Enables Windows Forms support, builds and starts the host, starts the startup <see cref="ApplicationContext"/>,
+    /// then waits for the startup context to close before shutting down.
+    /// </summary>
+    /// <typeparam name="TAppContext">The type of <see cref="ApplicationContext"/> to manage.</typeparam>
+    /// <param name="services">The <see cref="IServiceCollection" /> to add the required services to.</param>
+    /// <param name="applicationContextFactory">The <see cref="ApplicationContext"/> factory.</param>
+    /// <param name="configure">The delegate for configuring the <see cref="WindowsFormsLifetimeOptions"/>.</param>
+    /// <param name="preApplicationRunAction">The delegate to execute before the application starts running.</param>
+    /// <returns>The same instance of the <see cref="IServiceCollection"/> for chaining.</returns>
+    public static IServiceCollection AddWindowsFormsLifetime<TAppContext>(
+        this IServiceCollection services,
+        Func<IServiceProvider, TAppContext> applicationContextFactory,
+        Action<WindowsFormsLifetimeOptions> configure = null,
+        Action<IServiceProvider> preApplicationRunAction = null)
+        where TAppContext : ApplicationContext
+    {
+        services = applicationContextFactory is null
+            ? services.AddSingleton<TAppContext>()
+            : services.AddSingleton<TAppContext>(provider => applicationContextFactory(provider));
+
+        services
+            .AddSingleton<ApplicationContext>(provider => provider.GetRequiredService<TAppContext>())
+            .AddWindowsFormsLifetime(configure, preApplicationRunAction);
 
         return services;
     }
@@ -88,7 +116,7 @@ public static class ServiceCollectionExtensions
             var startForm = provider.GetRequiredService<TStartForm>();
             return applicationContextFactory(startForm);
         });
-        services.AddSingleton<ApplicationContext, TAppContext>();
+        services.AddSingleton<ApplicationContext>(provider => provider.GetRequiredService<TAppContext>());
         services.AddWindowsFormsLifetime(configure, preApplicationRunAction);
 
         return services;

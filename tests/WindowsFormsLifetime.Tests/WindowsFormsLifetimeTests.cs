@@ -41,6 +41,20 @@ public class WindowsFormsLifetimeTests
         }
     }
 
+    private sealed class TestDependency
+    {
+    }
+
+    private sealed class ServiceProviderTestContext : ApplicationContext
+    {
+        public ServiceProviderTestContext(TestDependency dependency)
+        {
+            Dependency = dependency;
+        }
+
+        public TestDependency Dependency { get; }
+    }
+
     [Fact]
     public void Services_Available_With_Form()
     {
@@ -64,8 +78,10 @@ public class WindowsFormsLifetimeTests
 
         Assert.IsType<WindowsFormsLifetime.WindowsFormsLifetime>(host.Services.GetService<IHostLifetime>());
         Assert.IsType<WindowsFormsHostedService>(host.Services.GetService<IHostedService>());
-        Assert.NotNull(host.Services.GetService<ApplicationContext>());
-        Assert.NotNull(host.Services.GetService<TestContext>());
+        var applicationContext = host.Services.GetRequiredService<ApplicationContext>();
+        var testContext = host.Services.GetRequiredService<TestContext>();
+
+        Assert.Same(testContext, applicationContext);
         Assert.NotNull(host.Services.GetService<IFormProvider>());
         Assert.Null(host.Services.GetService<TestForm>());
     }
@@ -79,10 +95,69 @@ public class WindowsFormsLifetimeTests
 
         Assert.IsType<WindowsFormsLifetime.WindowsFormsLifetime>(host.Services.GetService<IHostLifetime>());
         Assert.IsType<WindowsFormsHostedService>(host.Services.GetService<IHostedService>());
-        Assert.NotNull(host.Services.GetService<ApplicationContext>());
-        Assert.NotNull(host.Services.GetService<TestContext>());
+        var applicationContext = host.Services.GetRequiredService<ApplicationContext>();
+        var testContext = host.Services.GetRequiredService<TestContext>();
+
+        Assert.Same(testContext, applicationContext);
         Assert.NotNull(host.Services.GetService<TestForm>());
         Assert.NotNull(host.Services.GetService<IFormProvider>());
+    }
+
+    [Fact]
+    public void Services_Available_With_ApplicationContext_With_ServiceProvider()
+    {
+        var dependency = new TestDependency();
+        var hostBuilder = new HostBuilder()
+            .ConfigureServices(services => services.AddSingleton<TestDependency>(dependency))
+            .UseWindowsFormsLifetime<ServiceProviderTestContext>(
+                static provider => new(provider.GetRequiredService<TestDependency>()));
+
+        using var host = hostBuilder.Build();
+
+        Assert.IsType<WindowsFormsLifetime.WindowsFormsLifetime>(host.Services.GetService<IHostLifetime>());
+        Assert.IsType<WindowsFormsHostedService>(host.Services.GetService<IHostedService>());
+        var applicationContext = host.Services.GetRequiredService<ApplicationContext>();
+        var testContext = host.Services.GetRequiredService<ServiceProviderTestContext>();
+
+        Assert.Same(testContext, applicationContext);
+        Assert.Same(dependency, testContext.Dependency);
+        Assert.NotNull(host.Services.GetService<IFormProvider>());
+        Assert.Null(host.Services.GetService<TestForm>());
+    }
+
+    [Fact]
+    public void Services_Available_With_ApplicationContext_With_ServiceProvider_On_HostApplicationBuilder()
+    {
+        var dependency = new TestDependency();
+        var hostBuilder = Host.CreateApplicationBuilder();
+        hostBuilder.Services.AddSingleton<TestDependency>(dependency);
+
+        var returnedBuilder = hostBuilder.UseWindowsFormsLifetime<ServiceProviderTestContext>(
+            static provider => new(provider.GetRequiredService<TestDependency>()));
+
+        Assert.Same(hostBuilder, returnedBuilder);
+
+        using var host = hostBuilder.Build();
+
+        var applicationContext = host.Services.GetRequiredService<ApplicationContext>();
+        var testContext = host.Services.GetRequiredService<ServiceProviderTestContext>();
+
+        Assert.Same(testContext, applicationContext);
+        Assert.Same(dependency, testContext.Dependency);
+    }
+
+    [Fact]
+    public void Services_Available_With_ApplicationContext_Without_Factory_From_ServiceCollection()
+    {
+        var services = new ServiceCollection();
+        services.AddWindowsFormsLifetime<TestContext>();
+
+        using var serviceProvider = services.BuildServiceProvider();
+
+        var applicationContext = serviceProvider.GetRequiredService<ApplicationContext>();
+        var testContext = serviceProvider.GetRequiredService<TestContext>();
+
+        Assert.Same(testContext, applicationContext);
     }
 
     [Fact]

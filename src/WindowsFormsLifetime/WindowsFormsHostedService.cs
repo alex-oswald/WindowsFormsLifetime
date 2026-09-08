@@ -80,6 +80,11 @@ public class WindowsFormsHostedService : IHostedService, IDisposable
             }
 
             ApplicationContext applicationContext = _serviceProvider.GetService<ApplicationContext>();
+            if (applicationContext?.MainForm != null)
+            {
+                _serviceProvider.GetService<IControlServiceInjector>()?.Inject(applicationContext.MainForm, _serviceProvider);
+            }
+
             PreApplicationRunAction?.Invoke(_serviceProvider);
             Application.Run(applicationContext);
         }

@@ -1,0 +1,81 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "*"
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            9.0.x
+            10.0.x
+
+      - name: Restore solution
+        run: dotnet restore WindowsFormsLifetime.slnx
+
+      - name: Build solution
+        run: dotnet build WindowsFormsLifetime.slnx --configuration Release --no-restore
+
+      - name: Run tests with coverage
+        shell: pwsh
+        run: |
+          dotnet test tests\WindowsFormsLifetime.Tests\WindowsFormsLifetimeTests.csproj `
+            --configuration Release `
+            --no-build `
+            --results-directory TestResults `
+            --collect:"XPlat Code Coverage" `
+            --logger "trx;LogFileName=WindowsFormsLifetime.TestResult.trx"
+
+      - name: Set up Python
+        if: github.ref_type != 'tag'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install diff-cover
+        if: github.ref_type != 'tag'
+        run: python -m pip install --disable-pip-version-check diff-cover==10.4.1
+
+      - name: Check changed-line coverage
+        if: github.ref_type != 'tag'
+        shell: pwsh
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          $coverageFile = Get-ChildItem -Path TestResults -Recurse -Filter coverage.cobertura.xml | Select-Object -First 1
+          if ($null -eq $coverageFile) {
+            throw "Coverage report was not generated."
+          }
+
+          if ([string]::IsNullOrWhiteSpace($env:BASE_SHA) -or $env:BASE_SHA -match '^0+$') {
+            $baseSha = "origin/$env:DEFAULT_BRANCH"
+          }
+          else {
+            $baseSha = $env:BASE_SHA
+          }
+
+          $diffCover = Join-Path (python -c "import sysconfig; print(sysconfig.get_path('scripts'))") "diff-cover.exe"
+          & $diffCover $coverageFile.FullName --compare-branch $baseSha --fail-under 80 --show-uncovered

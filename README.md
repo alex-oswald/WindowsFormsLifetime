@@ -1,6 +1,6 @@
 # WindowsFormsLifetime
 
-[![Build Status](https://dev.azure.com/oswaldtechnologies/WindowsFormsLifetime/_apis/build/status/alex-oswald.WindowsFormsLifetime?branchName=main)](https://dev.azure.com/oswaldtechnologies/WindowsFormsLifetime/_build/latest?definitionId=21&branchName=main)
+[![Test](https://github.com/alex-oswald/WindowsFormsLifetime/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/alex-oswald/WindowsFormsLifetime/actions/workflows/test.yml?query=branch%3Amain)
 [![Nuget](https://img.shields.io/nuget/v/OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime)](https://www.nuget.org/packages/OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime/)
 [![Nuget](https://img.shields.io/nuget/dt/OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime)](https://www.nuget.org/packages/OswaldTechnologies.Extensions.Hosting.WindowsFormsLifetime/)
 

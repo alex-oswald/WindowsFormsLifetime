@@ -11,6 +11,9 @@
     <File Path="LICENSE.txt" />
     <File Path="README.md" />
   </Folder>
+  <Project Path="src/WindowsFormsLifetime.Analyzers/WindowsFormsLifetime.Analyzers.csproj" />
+  <Project Path="src/WindowsFormsLifetime.CodeFixes/WindowsFormsLifetime.CodeFixes.csproj" />
   <Project Path="src/WindowsFormsLifetime/WindowsFormsLifetime.csproj" />
+  <Project Path="tests/WindowsFormsLifetime.Analyzers.Tests/WindowsFormsLifetime.Analyzers.Tests.csproj" />
   <Project Path="tests/WindowsFormsLifetime.Tests/WindowsFormsLifetimeTests.csproj" />
 </Solution>

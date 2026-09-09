@@ -1,11 +1,24 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace WindowsFormsLifetime;
 
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Enables runtime service injection into designer-created user controls on library-managed forms.
+    /// </summary>
+    /// <param name="services">The services that also register the Windows Forms lifetime.</param>
+    /// <returns>The same service collection for chaining.</returns>
+    public static IServiceCollection AddWindowsFormsControlInjection(this IServiceCollection services)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+        services.TryAddSingleton<IControlServiceInjector, ControlServiceInjector>();
+        return services;
+    }
+
     public static IServiceCollection AddWindowsFormsLifetime(
         this IServiceCollection services, Action<WindowsFormsLifetimeOptions> configure, Action<IServiceProvider> preApplicationRunAction = null)
     {

@@ -1,0 +1,97 @@
+name: Publish to NuGet
+
+on:
+  push:
+    tags:
+      - "*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Get package version from tag
+        shell: pwsh
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          $number = '(0|[1-9][0-9]*)'
+          $identifier = '(0|[1-9][0-9]*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)'
+          $pattern = "^v?(?<version>$number\.$number\.$number(-$identifier(\.$identifier)*)?)$"
+          if ($env:RELEASE_TAG -cnotmatch $pattern) {
+            throw "Tag '$env:RELEASE_TAG' must be a version such as 2.0.0 or 2.1.0-rc.1, optionally prefixed with v. Build metadata is not supported."
+          }
+
+          "PACKAGE_VERSION=$($Matches.version)" >> $env:GITHUB_ENV
+
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            9.0.x
+            10.0.x
+
+      - name: Restore solution
+        run: dotnet restore WindowsFormsLifetime.slnx
+
+      - name: Build solution
+        run: dotnet build WindowsFormsLifetime.slnx --configuration Release --no-restore -p:Version=$env:PACKAGE_VERSION
+
+      - name: Run tests
+        run: dotnet test tests\WindowsFormsLifetime.Tests\WindowsFormsLifetimeTests.csproj --configuration Release --no-build
+
+      - name: Pack library
+        run: dotnet pack src\WindowsFormsLifetime\WindowsFormsLifetime.csproj --configuration Release --no-build --output artifacts -p:Version=$env:PACKAGE_VERSION
+
+      - name: Upload NuGet packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages
+          path: |
+            artifacts\*.nupkg
+            artifacts\*.snupkg
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    runs-on: windows-latest
+    environment: nuget
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Download NuGet packages
+        uses: actions/download-artifact@v4
+        with:
+          name: nuget-packages
+          path: artifacts
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Log in to NuGet
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: ${{ secrets.NUGET_USER }}
+
+      - name: Publish NuGet packages
+        env:
+          NUGET_API_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
+        run: dotnet nuget push "artifacts\*.nupkg" --api-key $env:NUGET_API_KEY --source https://api.nuget.org/v3/index.json

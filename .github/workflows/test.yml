@@ -48,6 +48,16 @@ jobs:
             --collect:"XPlat Code Coverage" `
             --logger "trx;LogFileName=WindowsFormsLifetime.TestResult.trx"
 
+      - name: Run analyzer tests with coverage
+        shell: pwsh
+        run: |
+          dotnet test tests\WindowsFormsLifetime.Analyzers.Tests\WindowsFormsLifetime.Analyzers.Tests.csproj `
+            --configuration Release `
+            --no-build `
+            --results-directory TestResults `
+            --collect:"XPlat Code Coverage" `
+            --logger "trx;LogFileName=WindowsFormsLifetime.Analyzers.TestResult.trx"
+
       - name: Set up Python
         if: github.ref_type != 'tag'
         uses: actions/setup-python@v5
@@ -65,8 +75,8 @@ jobs:
           BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
           DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
         run: |
-          $coverageFile = Get-ChildItem -Path TestResults -Recurse -Filter coverage.cobertura.xml | Select-Object -First 1
-          if ($null -eq $coverageFile) {
+          $coverageFiles = @(Get-ChildItem -Path TestResults -Recurse -Filter coverage.cobertura.xml)
+          if ($coverageFiles.Count -eq 0) {
             throw "Coverage report was not generated."
           }
 
@@ -78,4 +88,5 @@ jobs:
           }
 
           $diffCover = Join-Path (python -c "import sysconfig; print(sysconfig.get_path('scripts'))") "diff-cover.exe"
-          & $diffCover $coverageFile.FullName --compare-branch $baseSha --fail-under 80 --show-uncovered
+          $coveragePaths = $coverageFiles.FullName
+          & $diffCover @coveragePaths --compare-branch $baseSha --fail-under 80 --show-uncovered

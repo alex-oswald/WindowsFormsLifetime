@@ -56,7 +56,7 @@ public class FormProvider : IFormProvider
         => CreateFormAsyncWithParameters<TForm>(param1, param2, param3, param4, param5, param6, param7, param8);
 
     public Task<T> GetFormAsync<T>(IServiceScope scope) where T : Form
-        => InvokeOnUiThreadAsync(() => scope.ServiceProvider.GetService<T>());
+        => InvokeOnUiThreadAsync(() => GetForm<T>(scope));
 
     public Task<Form> GetMainFormAsync()
     {
@@ -67,28 +67,7 @@ public class FormProvider : IFormProvider
     public T GetForm<T>() where T : Form
     {
         EnsureUiThread();
-
-        T form = null;
-        IServiceScope scope = _serviceScopeFactory.CreateScope();
-        try
-        {
-            form = scope.ServiceProvider.GetService<T>();
-            if (form == null)
-            {
-                scope.Dispose();
-            }
-            else
-            {
-                form.Disposed += (s, e) => scope.Dispose();
-            }
-        }
-        catch
-        {
-            scope.Dispose();
-            throw;
-        }
-
-        return form;
+        return CreateFormWithScope(scope => scope.ServiceProvider.GetService<T>());
     }
 
     /// <inheritdoc />
@@ -126,7 +105,9 @@ public class FormProvider : IFormProvider
     public T GetForm<T>(IServiceScope scope) where T : Form
     {
         EnsureUiThread();
-        return scope.ServiceProvider.GetService<T>();
+        T form = scope.ServiceProvider.GetService<T>();
+        InjectControlServices(form, scope.ServiceProvider);
+        return form;
     }
 
     public void Dispose() => _semaphore?.Dispose();
@@ -134,12 +115,12 @@ public class FormProvider : IFormProvider
     private TForm CreateFormWithParameters<TForm>(params object[] parameters) where TForm : Form
     {
         EnsureUiThread();
-        return CreateFormWithScope(scope => ActivatorUtilities.CreateInstance<TForm>(scope.ServiceProvider, parameters));
+        return CreateFormWithScope(scope => ActivatorUtilities.CreateInstance<TForm>(scope.ServiceProvider, parameters), ownsForm: true);
     }
 
-    private TForm CreateFormWithScope<TForm>(Func<IServiceScope, TForm> formFactory) where TForm : Form
+    private TForm CreateFormWithScope<TForm>(Func<IServiceScope, TForm> formFactory, bool ownsForm = false) where TForm : Form
     {
-        TForm form;
+        TForm form = null;
         IServiceScope scope = _serviceScopeFactory.CreateScope();
         try
         {
@@ -150,16 +131,36 @@ public class FormProvider : IFormProvider
             }
             else
             {
+                InjectControlServices(form, scope.ServiceProvider);
                 form.Disposed += (_, _) => scope.Dispose();
             }
         }
         catch
         {
-            scope.Dispose();
+            try
+            {
+                if (ownsForm)
+                {
+                    form?.Dispose();
+                }
+            }
+            finally
+            {
+                scope.Dispose();
+            }
+
             throw;
         }
 
         return form;
+    }
+
+    private void InjectControlServices(Form form, IServiceProvider services)
+    {
+        if (form != null)
+        {
+            _serviceProvider.GetService<IControlServiceInjector>()?.Inject(form, services);
+        }
     }
 
     private Task<TForm> CreateFormAsyncWithParameters<TForm>(params object[] parameters) where TForm : Form
@@ -181,15 +182,8 @@ public class FormProvider : IFormProvider
     }
 
     private void EnsureUiThread()
-    {
-        WindowsFormsSynchronizationContext synchronizationContext = GetUiSynchronizationContext();
-        if (!ReferenceEquals(SynchronizationContext.Current, synchronizationContext))
-        {
-            throw new InvalidOperationException("Synchronous form creation must be called on the Windows Forms UI thread.");
-        }
-    }
+        => WindowsFormsThread.EnsureUiThread(_syncContextManager, "Synchronous form creation");
 
     private WindowsFormsSynchronizationContext GetUiSynchronizationContext()
-        => _syncContextManager.SynchronizationContext
-            ?? throw new InvalidOperationException("The Windows Forms UI thread is not available.");
+        => WindowsFormsThread.GetSynchronizationContext(_syncContextManager);
 }

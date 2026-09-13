@@ -32,6 +32,7 @@
             button2 = new Button();
             ThreadLabel = new Label();
             TickLabel = new Label();
+            tickDashboardControl = new TickDashboardControl();
             SuspendLayout();
             // 
             // button1
@@ -72,11 +73,19 @@
             TickLabel.TabIndex = 3;
             TickLabel.Text = "Tick:";
             // 
+            // tickDashboardControl
+            //
+            tickDashboardControl.Location = new Point(12, 184);
+            tickDashboardControl.Name = "tickDashboardControl";
+            tickDashboardControl.Size = new Size(422, 72);
+            tickDashboardControl.TabIndex = 4;
+            //
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(446, 244);
+            ClientSize = new Size(446, 268);
+            Controls.Add(tickDashboardControl);
             Controls.Add(TickLabel);
             Controls.Add(ThreadLabel);
             Controls.Add(button2);
@@ -93,6 +102,6 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Label ThreadLabel;
         private Label TickLabel;
+        private TickDashboardControl tickDashboardControl;
     }
 }
-

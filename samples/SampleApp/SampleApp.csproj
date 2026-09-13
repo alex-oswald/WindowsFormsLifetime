@@ -18,6 +18,8 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\WindowsFormsLifetime\WindowsFormsLifetime.csproj" />
+		<ProjectReference Include="..\..\src\WindowsFormsLifetime.Analyzers\WindowsFormsLifetime.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
+		<ProjectReference Include="..\..\src\WindowsFormsLifetime.CodeFixes\WindowsFormsLifetime.CodeFixes.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
 	</ItemGroup>
 
 </Project>
